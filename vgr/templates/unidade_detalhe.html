@@ -1,0 +1,358 @@
+{% extends "base_vgr.html" %}
+{% block title %}VGR  -  Unidade {{ unidade.id_unidade }}{% endblock %}
+{% block nav_section %}unidades{% endblock %}
+{% block header_title %}<strong>VGR</strong>  -  Unidade · {{ unidade.nome_unidade }}{% endblock %}
+
+{% block content %}
+  <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
+    <div class="d-flex flex-wrap gap-2">
+      <a href="{{ url_for('vgr.unidades_page') }}" class="btn btn-sm btn-outline-secondary">&larr; Voltar</a>
+      <a href="{{ url_for('vgr.cliente_detalhe_page', id_cliente=unidade.id_cliente) }}" class="btn btn-sm btn-outline-primary">Ver cliente</a>
+    </div>
+    <div class="d-flex flex-wrap gap-2">
+      <a href="{{ url_for('vgr.unidades_page') }}?edit={{ unidade.id_unidade }}"
+         class="btn btn-sm btn-outline-secondary">Editar unidade</a>
+      {% if unidade.ativo %}
+      <button type="button" class="btn btn-sm btn-outline-danger" id="btnVgrUniDetalheDesativar"
+              data-id="{{ unidade.id_unidade }}">Desativar</button>
+      {% else %}
+      <button type="button" class="btn btn-sm btn-outline-success" id="btnVgrUniDetalheReativar"
+              data-id="{{ unidade.id_unidade }}">Reativar</button>
+      {% endif %}
+    </div>
+  </div>
+
+  <div class="card border-0 shadow-sm mb-3">
+    <div class="card-body">
+      <h2 class="h6 text-muted mb-2">Cliente</h2>
+      <div class="row g-2 small mb-3">
+        <div class="col-md-4"><strong>Razão social:</strong> {{ unidade.razao_social }}</div>
+        <div class="col-md-4"><strong>CNPJ Cliente:</strong> {{ unidade.cnpj_cliente or ' - ' }}</div>
+        <div class="col-md-4"><strong>LT:</strong> {{ unidade.lider_tecnico or ' - ' }}</div>
+        <div class="col-md-8"><strong>Endereço (cliente):</strong> {{ unidade.cliente_endereco_principal or ' - ' }}</div>
+        <div class="col-md-2"><strong>Cidade:</strong> {{ unidade.cliente_cidade or ' - ' }}</div>
+        <div class="col-md-2"><strong>UF:</strong> {{ unidade.cliente_uf or ' - ' }}</div>
+      </div>
+      <h2 class="h6 text-muted mb-2">Unidade</h2>
+      <div class="row g-2 small">
+        <div class="col-md-3"><strong>ID:</strong> {{ unidade.id_unidade }}</div>
+        <div class="col-md-3"><strong>Tipo:</strong> {{ unidade.tipo_unidade or ' - ' }}</div>
+        <div class="col-md-3"><strong>Contato:</strong> {{ unidade.contato_unidade or ' - ' }}</div>
+        <div class="col-md-3"><strong>Topologia:</strong>{{ unidade.topologia_unidades or ' - ' }}</div>
+        <div class="col-md-3"><strong>Ativo:</strong> {{ 'Sim' if unidade.ativo else 'Não' }}</div>
+        <div class="col-md-3"><strong>HA:</strong> {{ 'Sim' if unidade.ha else 'Não' }}</div>
+        <div class="col-md-3"><strong>Código:</strong> {{ unidade.codigo_unidade or ' - ' }}</div>
+        <div class="col-md-3"><strong>CNPJ unidade:</strong> {{ unidade.cnpj_unidade or ' - ' }}</div>
+        <div class="col-md-3">
+          <strong>SDWAN ativos:</strong> {{ sdwan_ativos }}
+          {% if unidade.ha and sdwan_ativos < 2 %}
+          <span class="badge text-bg-warning ms-1">HA exige 2× SDWAN</span>
+          {% endif %}
+        </div>
+        <div class="col-md-8"><strong>Endereço:</strong> {{ unidade.endereco or ' - ' }}</div>
+        <div class="col-md-4"><strong>Bairro:</strong> {{ unidade.bairro or ' - ' }}</div>
+        <div class="col-md-4"><strong>Cidade:</strong> {{ unidade.cidade or ' - ' }}</div>
+        <div class="col-md-2"><strong>UF:</strong> {{ unidade.uf or ' - ' }}</div>
+        <div class="col-md-2"><strong>CEP:</strong> {{ unidade.cep or ' - ' }}</div>
+        <div class="col-md-3"><strong>Latitude:</strong> {{ unidade.latitude or ' - ' }}</div>
+        <div class="col-md-3"><strong>Longitude:</strong> {{ unidade.longitude or ' - ' }}</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-1">
+    <h2 class="h6 mb-0">Equipamentos</h2>
+    <button type="button" class="btn btn-sm btn-primary" id="btnVgrEqNovo">
+      <i class="fa-solid fa-plus me-1"></i> Novo equipamento
+    </button>
+  </div>
+  <div class="table-wrap card border-0 shadow-sm mb-4">
+    <div class="card-body p-2">
+      <table id="tblVgrUnidadeEq" class="table table-sm table-striped table-hover mb-0" style="width:100%">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th class="cc">Vendor</th>
+            <th class="cc">Modelo</th>
+            <th class="cc">Serial</th>
+            <th class="cc">Hostname</th>
+            <th class="cc">Tipo serviço</th>
+            <th class="cc">Ativo</th>
+            <th class="col-acoes">Ações</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-1">
+    <h2 class="h6 mb-0">Links WAN</h2>
+    <button type="button" class="btn btn-sm btn-primary" id="btnVgrLinkNovo">
+      <i class="fa-solid fa-plus me-1"></i> Novo link WAN
+    </button>
+  </div>
+  <p class="form-text small mb-1">Circuito WAN amarrado a um equipamento da unidade.</p>
+  <div class="table-wrap card border-0 shadow-sm mb-4">
+    <div class="card-body p-2">
+      <table id="tblVgrUnidadeLinks" class="table table-sm table-striped table-hover mb-0" style="width:100%">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th class="cc">Equipamento</th>
+            <th class="cc">Tipo link</th>
+            <th class="cc">Modo</th>
+            <th class="cc">Designador</th>
+            <th class="cc">IP</th>
+            <th class="cc">Operadora</th>
+            <th class="cc">Ativo</th>
+            <th class="col-acoes">Ações</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-1">
+    <h2 class="h6 mb-0">Conectividade da unidade</h2>
+    <button type="button" class="btn btn-sm btn-primary" id="btnVgrConnNovo">
+      <i class="fa-solid fa-plus me-1"></i> Nova conectividade
+    </button>
+  </div>
+  <p class="form-text small mb-1">LAN, loopbacks, túneis e ranges — compartilhados pelos equipamentos (sem amarração a CPE).</p>
+  <div class="table-wrap card border-0 shadow-sm mb-4">
+    <div class="card-body p-2">
+      <table id="tblVgrUnidadeConn" class="table table-sm table-striped table-hover mb-0" style="width:100%">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th class="cc">Tipo</th>
+            <th class="cc">IP</th>
+            <th class="cc">Máscara</th>
+            <th class="cc">VLAN</th>
+            <th class="cc">Ativo</th>
+            <th class="col-acoes">Ações</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </div>
+
+  <h2 class="h6">Agendamentos desta unidade</h2>
+  <div class="table-wrap card border-0 shadow-sm mb-4">
+    <div class="card-body p-2">
+      <table id="tblVgrUnidadeAg" class="table table-sm table-striped table-hover mb-0" style="width:100%">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th class="cc">Status</th>
+            <th class="cc">Data</th>
+            <th class="cc">Tipo</th>
+            <th class="cc">Analista</th>
+            <th class="cc">Ativo</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </div>
+
+  <h2 class="h6">Atendimentos desta unidade</h2>
+  <div class="table-wrap card border-0 shadow-sm">
+    <div class="card-body p-2">
+      <table id="tblVgrUnidadeAt" class="table table-sm table-striped table-hover mb-0" style="width:100%">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th class="cc">Status</th>
+            <th class="cc">Substatus</th>
+            <th class="cc">Analista</th>
+            <th class="cc">Agenda</th>
+            <th class="cc">Ativo</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </div>
+
+{# Modal equipamento #}
+<div class="modal fade portal-modal" id="modalVgrEq" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-xl modal-dialog-scrollable">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="modalVgrEqTitle">Equipamento</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+      </div>
+      <div class="modal-body">
+        <input type="hidden" id="vgrEqId" value="">
+        <div class="row g-2">
+          <div class="col-md-4">
+            <label class="form-label" for="vgrEqSerial">Serial *</label>
+            <input type="text" class="form-control form-control-sm" id="vgrEqSerial" maxlength="100" required autocomplete="off" placeholder="Fortinet: FGT40FTK2409D6QK">
+          </div>
+          <div class="col-md-4">
+            <label class="form-label" for="vgrEqVendor">Vendor</label>
+            <select class="form-select form-select-sm" id="vgrEqVendor"></select>
+          </div>
+          <div class="col-md-4">
+            <label class="form-label" for="vgrEqModelo">Modelo</label>
+            <input type="text" class="form-control form-control-sm" id="vgrEqModelo" maxlength="80">
+          </div>
+          <div class="col-md-4">
+            <label class="form-label" for="vgrEqHostname">Hostname</label>
+            <input type="text" class="form-control form-control-sm" id="vgrEqHostname" maxlength="80" autocomplete="off" placeholder="sem espaços (minúsculas)">
+          </div>
+          <div class="col-md-4">
+            <label class="form-label" for="vgrEqTipo">Tipo serviço</label>
+            <select class="form-select form-select-sm" id="vgrEqTipo">
+              <option value=""> - </option>
+              <option value="SDWAN">SDWAN</option>
+              <option value="SDWIFI">SDWIFI</option>
+              <option value="SDLAN">SDLAN</option>
+            </select>
+          </div>
+          <div class="col-md-4">
+            <label class="form-label" for="vgrEqLicenca">Licença</label>
+            <input type="text" class="form-control form-control-sm" id="vgrEqLicenca" maxlength="120">
+          </div>
+          <div class="col-md-6">
+            <label class="form-label" for="vgrEqTktSae">TKT SAE</label>
+            <input type="text" class="form-control form-control-sm" id="vgrEqTktSae" maxlength="64">
+          </div>
+          <div class="col-md-6">
+            <label class="form-label" for="vgrEqTktNoc">TKT NOC</label>
+            <input type="text" class="form-control form-control-sm" id="vgrEqTktNoc" maxlength="7" inputmode="numeric" autocomplete="off" placeholder="Ex.: 1680355">
+          </div>
+          <div class="col-12">
+            <label class="form-label" for="vgrEqFortcloud">FortiCloud key</label>
+            <input type="password" class="form-control form-control-sm" id="vgrEqFortcloud" maxlength="255" autocomplete="new-password" placeholder="Deixe em branco para não alterar">
+            <div class="form-text" id="vgrEqFortcloudHint"></div>
+          </div>
+        </div>
+        <p class="form-text text-danger mt-2 mb-0 d-none" id="vgrEqErro" role="alert"></p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Cancelar</button>
+        <button type="button" class="btn btn-primary btn-sm" id="btnVgrEqSalvar">Salvar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+{# Modal link #}
+<div class="modal fade portal-modal" id="modalVgrLink" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-xl modal-dialog-scrollable">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="modalVgrLinkTitle">Link</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+      </div>
+      <div class="modal-body">
+        <input type="hidden" id="vgrLinkId" value="">
+        <p class="form-text small" id="vgrLinkCampoHint"></p>
+        <div class="row g-2">
+          <div class="col-md-6" id="vgrLinkEqWrap">
+            <label class="form-label" for="vgrLinkEq">Equipamento *</label>
+            <select class="form-select form-select-sm" id="vgrLinkEq" required></select>
+          </div>
+          <div class="col-md-3">
+            <label class="form-label" for="vgrLinkTipo">Tipo link *</label>
+            <select class="form-select form-select-sm" id="vgrLinkTipo">
+              <option value="WAN">WAN</option>
+            </select>
+          </div>
+          <div class="col-md-3" id="vgrLinkModoWrap">
+            <label class="form-label" for="vgrLinkModo">Modo</label>
+            <select class="form-select form-select-sm" id="vgrLinkModo">
+              <option value="">Selecione...</option>
+              <option value="STATIC">STATIC</option>
+              <option value="DHCP">DHCP</option>
+              <option value="PPPOE">PPPOE</option>
+              <option value="MPLS">MPLS</option>
+            </select>
+          </div>
+          <div class="col-md-4" id="vgrLinkOperadoraWrap">
+            <label class="form-label" for="vgrLinkOperadora">Operadora</label>
+            <select class="form-select form-select-sm" id="vgrLinkOperadora"></select>
+          </div>
+          <div class="col-md-4 d-none" id="vgrLinkOperadoraOutrosWrap">
+            <label class="form-label" for="vgrLinkOperadoraOutros">Outra operadora *</label>
+            <input type="text" class="form-control form-control-sm text-uppercase" id="vgrLinkOperadoraOutros" maxlength="50" placeholder="Ex.: VTAL, EMBRATEL" autocomplete="off">
+          </div>
+          <div class="col-md-4 d-none" id="vgrLinkIdVgrWrap">
+            <label class="form-label" for="vgrLinkIdVgr">ID VGR do link *</label>
+            <input type="text" class="form-control form-control-sm" id="vgrLinkIdVgr" maxlength="64" inputmode="numeric" autocomplete="off" placeholder="Mín. 7 dígitos (VIVO)">
+          </div>
+          <div class="col-md-4 d-none" id="vgrLinkPortaWrap">
+            <label class="form-label" for="vgrLinkPorta">Identificação da porta *</label>
+            <input type="text" class="form-control form-control-sm" id="vgrLinkPorta" maxlength="50" placeholder="Porta conectada">
+          </div>
+          <div class="col-md-4" id="vgrLinkDesignadorWrap">
+            <label class="form-label" for="vgrLinkDesignador">Designador</label>
+            <input type="text" class="form-control form-control-sm" id="vgrLinkDesignador" maxlength="100" autocomplete="off" placeholder="LP (VIVO: 15 dígitos)">
+          </div>
+          <div class="col-md-4" id="vgrLinkIpWrap">
+            <label class="form-label" for="vgrLinkIp">IP</label>
+            <input type="text" class="form-control form-control-sm" id="vgrLinkIp" maxlength="50" autocomplete="off" placeholder="Ex.: 187.51.205.114 ou /30">
+          </div>
+          <div class="col-md-3" id="vgrLinkMascaraWrap">
+            <label class="form-label" for="vgrLinkMascara">Máscara</label>
+            <input type="text" class="form-control form-control-sm" id="vgrLinkMascara" maxlength="50" autocomplete="off" placeholder="Ex.: 255.255.255.252">
+          </div>
+          <div class="col-md-3" id="vgrLinkGatewayWrap">
+            <label class="form-label" for="vgrLinkGateway">Gateway</label>
+            <input type="text" class="form-control form-control-sm" id="vgrLinkGateway" maxlength="50" autocomplete="off">
+          </div>
+          <div class="col-md-3 d-none" id="vgrLinkSubredeWrap">
+            <label class="form-label" for="vgrLinkSubrede">Subrede</label>
+            <input type="text" class="form-control form-control-sm" id="vgrLinkSubrede" maxlength="50" autocomplete="off" placeholder="Endereço de rede (ex.: 10.1.2.0)">
+          </div>
+          <div class="col-md-3 d-none" id="vgrLinkRangeStartWrap">
+            <label class="form-label" for="vgrLinkRangeStart">Início do range</label>
+            <input type="text" class="form-control form-control-sm" id="vgrLinkRangeStart" maxlength="50" autocomplete="off">
+          </div>
+          <div class="col-md-3 d-none" id="vgrLinkRangeEndWrap">
+            <label class="form-label" for="vgrLinkRangeEnd">Fim do range</label>
+            <input type="text" class="form-control form-control-sm" id="vgrLinkRangeEnd" maxlength="50" autocomplete="off">
+          </div>
+          <div class="col-md-3" id="vgrLinkVlanWrap">
+            <label class="form-label" for="vgrLinkVlan">VLAN</label>
+            <input type="text" class="form-control form-control-sm" id="vgrLinkVlan" maxlength="50" inputmode="numeric" autocomplete="off" placeholder="1 a 4094">
+          </div>
+          <div class="col-md-3" id="vgrLinkVelWrap">
+            <label class="form-label" for="vgrLinkVel">Velocidade</label>
+            <input type="text" class="form-control form-control-sm" id="vgrLinkVel" maxlength="50">
+          </div>
+          <div class="col-md-6 d-none" id="vgrLinkPppoeUserWrap">
+            <label class="form-label" for="vgrLinkPppoeUser">PPPoE user</label>
+            <input type="text" class="form-control form-control-sm" id="vgrLinkPppoeUser" maxlength="255" autocomplete="off" placeholder="Em branco = não alterar">
+          </div>
+          <div class="col-md-6 d-none" id="vgrLinkPppoePassWrap">
+            <label class="form-label" for="vgrLinkPppoePass">PPPoE pass</label>
+            <input type="password" class="form-control form-control-sm" id="vgrLinkPppoePass" maxlength="255" autocomplete="new-password" placeholder="Em branco = não alterar">
+          </div>
+        </div>
+        <div class="alert alert-warning small py-2 px-3 mt-2 mb-0 d-none" id="vgrLinkPendencias" role="status"></div>
+        <p class="form-text text-danger mt-2 mb-0 d-none" id="vgrLinkErro" role="alert"></p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Cancelar</button>
+        <button type="button" class="btn btn-primary btn-sm" id="btnVgrLinkSalvar">Salvar</button>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+  window.VGR_UNIDADE_ID = {{ unidade.id_unidade | tojson }};
+</script>
+<script src="/core/static/js/utils/portal_field_validation.js?v=7"></script>
+<script src="{{ url_for('vgr.static', filename='js/vgr_dt_common.js') }}?v=19"></script>
+<script src="{{ url_for('vgr.static', filename='js/vgr_field_rules.js') }}?v=1"></script>
+<script src="{{ url_for('vgr.static', filename='js/vgr_unidade_detalhe.js') }}?v=12"></script>
+{% endblock %}

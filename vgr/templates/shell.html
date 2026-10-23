@@ -1,0 +1,14 @@
+{% extends "base_vgr.html" %}
+{% block title %}VGR — {{ titulo }}{% endblock %}
+{% block nav_section %}{{ nav }}{% endblock %}
+{% block header_title %}<strong>VGR</strong> — {{ titulo }}{% endblock %}
+
+{% block content %}
+<div class="alert alert-info mb-0">
+    Shell da Fase 1 — implementação completa desta superfície nas fases seguintes do plano VGR.
+    Cadastros com DataTables (padrão PortalDt) já disponíveis em
+    <a href="{{ url_for('vgr.clientes_page') }}">Clientes</a>,
+    <a href="{{ url_for('vgr.unidades_page') }}">Unidades</a> e
+    <a href="{{ url_for('vgr.fields_page') }}">Field</a>.
+  </div>
+{% endblock %}
