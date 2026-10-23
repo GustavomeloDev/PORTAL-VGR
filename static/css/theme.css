@@ -1,33 +1,39 @@
 :root {
-    /* Removido color-scheme para garantir modo claro por padrão em todos os navegadores */
-    /* color-scheme: light; */
-    --primary: hwb(279 0% 66%);
+    --primary: #380057;
     --accent: #380057;
     --secondary: #f40a78;
     /* --primary: #5b1a6e;
     --accent: #f40a78;
     --secondary: #9b00d1; */
 
-  --dark: #343a40;
-  --light: #f8f9fa;
-  --white: #ffffff;
-  --gray: #ced4da;
-  --gray-dark: #6c757d;
-  --radius: 8px;
-  --space: 1rem;
-  --font-base: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-}
-
-*,
-*::before,
-*::after {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-}
-
-/* Badge Cyan (Azul Ciano) */
-.bg-cyan {
-  background-color: #00bcd4 !important; /* Material Cyan */
-  color: #ffffff !important;
-}
+    --dark: #343a40;
+    --light: #f8f9fa;
+    --white: #ffffff;
+    --gray: #ced4da;
+    --gray-dark: #6c757d;
+    --radius: 8px;
+    --space: 1rem;
+    --font-base: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    /* Select2 / filtros de coluna (DataTables) */
+    --color-dark-gray: #343a40;
+    --color-white: #fff;
+    --color-medium-gray: #6c757d;
+    --color-light-gray: #bbb;
+    --color-darker-gray: #444;
+    --color-bootstrap-blue-opacity: #007bff80;
+    --svg-fill-white: '%23ffffff';
+  }
+  
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+  
+  body {
+    font-family: var(--font-base);
+    background-color: var(--light);
+    color: var(--dark);
+  }

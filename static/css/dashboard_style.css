@@ -1,0 +1,1103 @@
+/* Importa o CSS do Font Awesome de uma CDN */
+
+
+/* Cores customizadas baseadas no seu portal (ajuste conforme a sua paleta) */
+:root {
+    --primary-portal: #5a2e7c; /* Um roxo/magenta escuro, talvez do seu logo */
+    --secondary-portal: #6c757d; /* Cinza do Bootstrap */
+    --info-portal: #17a2b8; /* Azul claro do Bootstrap info */
+    --success-portal: #28a745; /* Verde do Bootstrap success */
+    --warning-portal: #ffc107; /* Amarelo do Bootstrap warning */
+    --danger-portal: #dc3545; /* Vermelho do Bootstrap danger */
+}
+
+/* Classes para usar as cores customizadas */
+.text-primary-custom { color: var(--primary-portal) !important; }
+.text-info-custom { color: var(--info-portal) !important; } /* Para "No Prazo" e "Total Chamados" (um azul mais claro que o primary do portal) */
+.text-success-custom { color: var(--success-portal) !important; }
+.text-warning-custom { color: var(--warning-portal) !important; }
+.text-danger-custom { color: var(--danger-portal) !important; }
+.text-secondary-custom { color: var(--secondary-portal) !important; }
+
+/* Card total do período — texto legível (evita branco sobre fundo claro) */
+#card-total-periodo.dashboard-total-periodo-card .card-title,
+#card-total-periodo.dashboard-total-periodo-card #total-periodo-desc,
+#card-total-periodo.dashboard-total-periodo-card #total-periodo-hint {
+    color: #6c757d !important;
+    min-height: 0;
+    display: block;
+}
+
+#card-total-periodo.dashboard-total-periodo-card #total-atendimentos-count {
+    color: #343a40 !important;
+}
+
+/* Estilo geral dos cards */
+.card {
+    border: none; /* Remove a borda padrão */
+    border-radius: 0.5rem; /* Bordas levemente arredondadas */
+    /* Box shadow do Bootstrap (shadow-sm) é sutil e bom */
+    box-shadow: 0 .125rem .25rem rgba(0,0,0,.075);
+    transition: transform .2s ease-in-out; /* Efeito de hover */
+}
+
+.card:hover {
+    transform: translateY(-3px); /* Eleva o card ao passar o mouse */
+}
+
+.card-title {
+    font-size: 0.9rem; /* Títulos um pouco menores */
+    font-weight: 500;
+    margin-bottom: 0.25rem; /* Menos espaço abaixo do título */
+    color: #6c757d !important; /* Cor do texto do título mais discreta */
+    min-height: 2.5em; /* Garante que o título ocupe espaço para 2 linhas */
+    display: flex; /* Para centralizar o texto verticalmente dentro do min-height */
+    align-items: center; /* Centraliza verticalmente */
+    justify-content: center; /* Centraliza horizontalmente */
+}
+
+.card-text.display-4 {
+    font-size: 2.2rem; /* Levemente menor que o display-4 padrão */
+    font-weight: 700; /* Mais negrito para os números */
+    color: #343a40 !important; /* Cor escura para os números */
+}
+
+/* Ajuste para ícones */
+.card-body i.fa-2x {
+    font-size: 1.8rem; /* Ícones um pouco menores */
+}
+
+/* Estilo para fazer os cards se distribuírem igualmente */
+#dashboard-contadores {
+    display: flex; /* Habilita o Flexbox no container da linha */
+    flex-wrap: wrap; /* Permite que os itens quebrem para a próxima linha em telas menores */
+    justify-content: space-between; /* Distribui os itens com espaço entre eles */
+    /* Ou use justify-content: space-around; para ter espaço nas bordas também */
+    /* Ou justify-content: center; se preferir centralizá-los quando há espaço sobrando */
+}
+
+.dashboard-card-col {
+    flex-grow: 1; /* Faz com que as colunas cresçam para preencher o espaço disponível */
+    flex-basis: calc(100% / 7 - 10px); /* Define uma largura base para cada card (100% dividido por 7 cards) menos a margem. Ajuste o 10px conforme a sua necessidade de espaçamento. */
+    max-width: calc(100% / 7 - 10px); /* Garante que não cresçam mais que isso */
+    margin: 5px; /* Pequena margem para espaçamento entre os cards */
+}
+
+/* Opcional: Para telas muito pequenas, talvez seja melhor quebrar para 2 ou 3 cards por linha */
+@media (max-width: 991.98px) { /* Por exemplo, em telas menores que 'md' (992px) */
+    .dashboard-card-col {
+        flex-basis: calc(100% / 3 - 10px); /* 3 cards por linha */
+        max-width: calc(100% / 3 - 10px);
+    }
+}
+
+@media (max-width: 767.98px) { /* Em telas menores que 'sm' (768px) */
+    .dashboard-card-col {
+        flex-basis: calc(100% / 2 - 10px); /* 2 cards por linha */
+        max-width: calc(100% / 2 - 10px);
+    }
+}
+
+/* Estilos para o Acompanhamento de Desempenho (copiado de chamados_fust.html) */
+.analyst-performance-container {
+  background-color: #f8f9fa;
+  border: 1px solid #dee2e6;
+  border-radius: .375rem;
+  padding: 1.25rem;
+  margin-left: 0;
+  margin-right: 0;
+  position: relative; /* Necessário para o posicionamento do loader */
+}
+
+.performance-title {
+  color: #0d6efd; /* Azul primário do Bootstrap */ 
+  margin-bottom: 1rem;
+  font-weight: 600;
+  font-size: 1.1rem;
+  border-bottom: 2px solid #e9ecef;
+  padding-bottom: 0.5rem;
+}
+
+.performance-card {
+  cursor: pointer;
+  background-color: #fff;
+  border: 1px solid #e9ecef;
+  border-radius: .375rem;
+  padding: 1rem;
+  text-align: center;
+  box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, .075);
+  transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.performance-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, .15);
+}
+
+.performance-card h6 {
+  font-size: 0.9rem;
+  color: #6c757d;
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+  text-transform: uppercase;
+}
+
+.performance-card .performance-value {
+  font-size: 2.25rem;
+  font-weight: 700;
+  margin: 0;
+  line-height: 1;
+  color: #212529; /* Cor preta padrão */ 
+}
+
+/* Estilo para remover o efeito de 'pulo' em cards que não devem ter animação */
+.no-hover-effect:hover {
+  transform: none !important;
+  box-shadow: none !important;
+}
+
+/* Estilo para o overlay de carregamento dentro dos cards */
+.loader-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(255, 255, 255, 0.75); /* Fundo branco semi-transparente */
+  z-index: 10; /* Garante que fique sobre o conteúdo */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: .375rem; /* Mesma borda do card */
+}
+
+/*
+ * ColumnControl + scrollX: com scroll horizontal o DT mantém um <thead> “espelho”
+ * dentro de .dt-scroll-body (só para medir/alinhar). Os estilos abaixo valem APENAS
+ * para o cabeçalho visível em .dt-scroll-head — assim não duplicam ícones (.dtcc)
+ * nem quebram o alinhamento com o corpo.
+ */
+
+/* 1. Cabeçalho visível (clone no .dt-scroll-head) */
+#tabela-atendimentos_wrapper .dt-scroll-head table.dataTable thead th.cc,
+#tabela-gestao-atendimentos_wrapper .dt-scroll-head table.dataTable thead th.cc {
+  position: relative;
+  cursor: pointer;
+}
+
+/* Visual unificado — cabeçalho escuro (gestão + fila), alinhado a tables.css */
+#tabela-atendimentos_wrapper .dt-scroll-head table.dataTable thead th,
+#tabela-gestao-atendimentos_wrapper .dt-scroll-head table.dataTable thead th {
+  background-color: #343a40 !important;
+  color: #fff !important;
+  font-weight: 600 !important;
+  font-size: 0.8rem !important;
+  letter-spacing: 0.02em;
+  border-bottom: 2px solid #495057 !important;
+  text-transform: none !important;
+}
+
+#tabela-atendimentos_wrapper .dt-scroll-body tbody tr:hover,
+#tabela-gestao-atendimentos_wrapper .dt-scroll-body tbody tr:hover {
+  background-color: rgba(0, 123, 255, 0.05) !important;
+}
+
+#table-section-header.card-header {
+  background: transparent;
+  border-bottom: none;
+  padding-top: 0.5rem;
+  padding-bottom: 0;
+}
+
+.prodesp-dt-toolbar .btn-primary {
+  white-space: nowrap;
+}
+
+#tabela-atendimentos_wrapper .dt-scroll-head table.dataTable th .dtcc-button,
+#tabela-gestao-atendimentos_wrapper .dt-scroll-head table.dataTable th .dtcc-button {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  z-index: 10;
+  cursor: pointer;
+  pointer-events: auto;
+  border: none;
+  background: transparent;
+}
+
+#tabela-atendimentos_wrapper .dt-scroll-head table.dataTable th span.dtcc,
+#tabela-gestao-atendimentos_wrapper .dt-scroll-head table.dataTable th span.dtcc {
+  display: block;
+  padding: 0;
+  margin: 0;
+}
+
+/* 2. Cabeçalho espelho no corpo: esconder UI do ColumnControl (ícones / botões / filtros) */
+#tabela-atendimentos_wrapper .dt-scroll-body thead .dtcc,
+#tabela-atendimentos_wrapper .dt-scroll-body thead .dtcc-button,
+#tabela-atendimentos_wrapper .dt-scroll-body thead .select2,
+#tabela-atendimentos_wrapper .dt-scroll-body thead .select2-container,
+#tabela-gestao-atendimentos_wrapper .dt-scroll-body thead .dtcc,
+#tabela-gestao-atendimentos_wrapper .dt-scroll-body thead .dtcc-button,
+#tabela-gestao-atendimentos_wrapper .dt-scroll-body thead .select2,
+#tabela-gestao-atendimentos_wrapper .dt-scroll-body thead .select2-container {
+  display: none !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+}
+
+/* DataTables 2: sem setas nativas de ordenação (ColumnControl cuida da ordenação) */
+#tabela-atendimentos_wrapper thead th span.dt-column-order,
+#tabela-gestao-atendimentos_wrapper thead th span.dt-column-order {
+  display: none !important;
+}
+
+/*
+ * scrollX + fust (.table): remove truncamento nas células do corpo; não forçar
+ * width:auto na <table> (o DataTables define largura para alinhar head/body).
+ */
+/* Tamanho da fonte: variável no #…_wrapper (setada via JS); padrão 14px */
+#tabela-atendimentos_wrapper.prodesp-dt-font-on,
+#tabela-gestao-atendimentos_wrapper.prodesp-dt-font-on {
+  --prodesp-dt-font-size: 14px;
+}
+
+#tabela-atendimentos_wrapper.prodesp-dt-font-on table.table,
+#tabela-gestao-atendimentos_wrapper.prodesp-dt-font-on table.table {
+  font-size: var(--prodesp-dt-font-size, 14px) !important;
+}
+
+#tabela-atendimentos_wrapper.prodesp-dt-font-on table.dataTable th,
+#tabela-atendimentos_wrapper.prodesp-dt-font-on table.dataTable td,
+#tabela-atendimentos_wrapper.prodesp-dt-font-on .dt-scroll-head thead th,
+#tabela-atendimentos_wrapper.prodesp-dt-font-on .dt-scroll-body tbody td,
+#tabela-atendimentos_wrapper.prodesp-dt-font-on .dt-scroll-body thead th div.dt-scroll-sizing,
+#tabela-gestao-atendimentos_wrapper.prodesp-dt-font-on table.dataTable th,
+#tabela-gestao-atendimentos_wrapper.prodesp-dt-font-on table.dataTable td,
+#tabela-gestao-atendimentos_wrapper.prodesp-dt-font-on .dt-scroll-head thead th,
+#tabela-gestao-atendimentos_wrapper.prodesp-dt-font-on .dt-scroll-body tbody td,
+#tabela-gestao-atendimentos_wrapper.prodesp-dt-font-on .dt-scroll-body thead th div.dt-scroll-sizing {
+  font-size: var(--prodesp-dt-font-size, 14px) !important;
+}
+
+.prodesp-dt-font-control label {
+  font-size: 0.8125rem;
+  white-space: nowrap;
+}
+
+.prodesp-datatable-scroll-host {
+  min-width: 0;
+  width: 100%;
+}
+
+/* Larguras fixas (columnDefs em px) + alinhamento head/body com scrollX */
+#tabela-atendimentos_wrapper .dt-scroll-head table.dataTable.table,
+#tabela-atendimentos_wrapper .dt-scroll-body table.dataTable.table,
+#tabela-gestao-atendimentos_wrapper .dt-scroll-head table.dataTable.table,
+#tabela-gestao-atendimentos_wrapper .dt-scroll-body table.dataTable.table {
+  table-layout: fixed !important;
+  max-width: none !important;
+}
+
+/* Corpo: altura de linha; conteúdo contido na célula (evita sobreposição entre colunas) */
+#tabela-atendimentos_wrapper .dt-scroll-body tbody td,
+#tabela-gestao-atendimentos_wrapper .dt-scroll-body tbody td {
+  overflow: hidden !important;
+  text-overflow: clip !important;
+  vertical-align: middle !important;
+  line-height: 1.35 !important;
+  padding-top: 0.55rem !important;
+  padding-bottom: 0.55rem !important;
+}
+
+/* Alinhamento cabeçalho = alinhamento das linhas (atendimentos + gestão) */
+#tabela-atendimentos_wrapper .dt-scroll-head thead th.prodesp-th-center,
+#tabela-gestao-atendimentos_wrapper .dt-scroll-head thead th.prodesp-th-center,
+#tabela-atendimentos_wrapper .dt-scroll-body tbody td.prodesp-dt-center,
+#tabela-gestao-atendimentos_wrapper .dt-scroll-body tbody td.prodesp-dt-center {
+  text-align: center !important;
+}
+
+#tabela-atendimentos_wrapper .dt-scroll-head thead th.prodesp-th-left,
+#tabela-gestao-atendimentos_wrapper .dt-scroll-head thead th.prodesp-th-left,
+#tabela-atendimentos_wrapper .dt-scroll-body tbody td.prodesp-dt-left,
+#tabela-gestao-atendimentos_wrapper .dt-scroll-body tbody td.prodesp-dt-left {
+  text-align: left !important;
+}
+
+#tabela-atendimentos_wrapper .dt-scroll-head thead th.prodesp-th-center .dtcc,
+#tabela-gestao-atendimentos_wrapper .dt-scroll-head thead th.prodesp-th-center .dtcc,
+#tabela-atendimentos_wrapper .dt-scroll-head thead th.prodesp-th-left .dtcc,
+#tabela-gestao-atendimentos_wrapper .dt-scroll-head thead th.prodesp-th-left .dtcc {
+  text-align: inherit !important;
+}
+
+/* Corpo: colunas com texto longo quebram linha e a linha cresce */
+#tabela-atendimentos_wrapper .dt-scroll-body tbody td.prodesp-dt-wrap,
+#tabela-gestao-atendimentos_wrapper .dt-scroll-body tbody td.prodesp-dt-wrap {
+  white-space: normal !important;
+  word-break: break-word !important;
+  overflow-wrap: anywhere !important;
+  hyphens: auto;
+  overflow: visible !important;
+}
+
+/* Título no cabeçalho: quebra se passar da largura (cabeçalho cresce) */
+#tabela-atendimentos_wrapper .dt-scroll-head thead th .dt-column-title,
+#tabela-gestao-atendimentos_wrapper .dt-scroll-head thead th .dt-column-title {
+  white-space: normal !important;
+  word-break: break-word !important;
+  overflow-wrap: break-word !important;
+  overflow: visible !important;
+  max-height: none !important;
+  text-overflow: clip !important;
+}
+
+#tabela-atendimentos_wrapper .prodesp-dt-contratada-text,
+#tabela-gestao-atendimentos_wrapper .prodesp-dt-contratada-text {
+  display: block;
+  max-width: 100%;
+  overflow: hidden;
+  word-break: break-word;
+  overflow-wrap: anywhere;
+  line-height: 1.3;
+}
+
+/* Cabeçalho visível (.dt-scroll-head): quebra em todas as colunas (fust usa thead th { nowrap }) */
+#tabela-atendimentos_wrapper .dt-scroll-head thead th,
+#tabela-gestao-atendimentos_wrapper .dt-scroll-head thead th {
+  white-space: normal !important;
+  word-break: break-word !important;
+  overflow-wrap: break-word !important;
+  hyphens: auto;
+  overflow: visible !important;
+  text-overflow: clip !important;
+  height: auto !important;
+  line-height: 1.35 !important;
+  padding-top: 0.55rem !important;
+  padding-bottom: 0.55rem !important;
+  vertical-align: middle !important;
+}
+
+#tabela-atendimentos_wrapper .dt-scroll-head thead th .dtcc,
+#tabela-gestao-atendimentos_wrapper .dt-scroll-head thead th .dtcc {
+  white-space: normal !important;
+  word-break: break-word !important;
+}
+
+/* Corpo: legado compact (nowrap). Preferir prodesp-dt-wrap nas colunas de dados. */
+#tabela-atendimentos_wrapper .dt-scroll-body tbody td.prodesp-dt-compact,
+#tabela-gestao-atendimentos_wrapper .dt-scroll-body tbody td.prodesp-dt-compact {
+  white-space: nowrap !important;
+}
+
+/* ID VGR: não quebrar dígitos (evita 221664 / 1 em duas linhas) */
+#tabela-atendimentos_wrapper .dt-scroll-head thead th.col-id-vgr,
+#tabela-gestao-atendimentos_wrapper .dt-scroll-head thead th.col-id-vgr,
+#tabela-atendimentos_wrapper .dt-scroll-body tbody td.col-id-vgr,
+#tabela-gestao-atendimentos_wrapper .dt-scroll-body tbody td.col-id-vgr {
+  min-width: 92px;
+  width: 92px !important;
+  white-space: nowrap !important;
+  word-break: normal !important;
+  overflow-wrap: normal !important;
+}
+
+#tabela-atendimentos_wrapper .dt-scroll-body tbody td.prodesp-dt-acoes,
+#tabela-gestao-atendimentos_wrapper .dt-scroll-body tbody td.prodesp-dt-acoes {
+  overflow: visible !important;
+}
+
+/* Coluna Ações — largura confortável, ícones em linha e fixa à direita no scrollX */
+#tabela-atendimentos_wrapper .dt-scroll-head thead th.col-acoes,
+#tabela-gestao-atendimentos_wrapper .dt-scroll-head thead th.col-acoes {
+  position: sticky;
+  right: 0;
+  z-index: 12;
+  min-width: 104px;
+  width: 104px !important;
+  background-color: #343a40 !important;
+  box-shadow: -4px 0 8px -4px rgba(0, 0, 0, 0.35);
+  border-left: 1px solid #495057 !important;
+}
+
+#tabela-atendimentos_wrapper .dt-scroll-body tbody td.prodesp-dt-acoes,
+#tabela-gestao-atendimentos_wrapper .dt-scroll-body tbody td.prodesp-dt-acoes {
+  position: sticky;
+  right: 0;
+  z-index: 3;
+  min-width: 104px;
+  width: 104px !important;
+  background-color: #fff;
+  box-shadow: -4px 0 8px -4px rgba(0, 0, 0, 0.1);
+  border-left: 1px solid var(--bs-border-color, #dee2e6);
+  padding-left: 0.35rem !important;
+  padding-right: 0.35rem !important;
+}
+
+#tabela-atendimentos_wrapper .dt-scroll-body table.table-striped > tbody > tr:nth-of-type(odd) > td.prodesp-dt-acoes,
+#tabela-gestao-atendimentos_wrapper .dt-scroll-body table.table-striped > tbody > tr:nth-of-type(odd) > td.prodesp-dt-acoes {
+  background-color: var(--bs-table-striped-bg, #f2f2f3) !important;
+}
+
+#tabela-atendimentos_wrapper .dt-scroll-body table.table-striped > tbody > tr:nth-of-type(even) > td.prodesp-dt-acoes,
+#tabela-gestao-atendimentos_wrapper .dt-scroll-body table.table-striped > tbody > tr:nth-of-type(even) > td.prodesp-dt-acoes {
+  background-color: #fff !important;
+}
+
+#tabela-atendimentos_wrapper .dt-scroll-body tbody tr:hover > td.prodesp-dt-acoes,
+#tabela-gestao-atendimentos_wrapper .dt-scroll-body tbody tr:hover > td.prodesp-dt-acoes {
+  background-color: rgba(0, 123, 255, 0.05) !important;
+}
+
+.prodesp-dt-acoes-inner {
+  display: inline-flex;
+  flex-wrap: nowrap;
+  align-items: center;
+  justify-content: center;
+  gap: 0.2rem;
+  min-width: max-content;
+}
+
+#tabela-atendimentos_wrapper .prodesp-dt-acoes .btn-icon,
+#tabela-gestao-atendimentos_wrapper .prodesp-dt-acoes .btn-icon {
+  font-size: 1.05rem;
+  padding: 0.12rem 0.2rem;
+  flex-shrink: 0;
+  line-height: 1;
+}
+
+#tabela-atendimentos_wrapper .prodesp-dt-acoes .btn-icon.text-danger,
+#tabela-gestao-atendimentos_wrapper .prodesp-dt-acoes .btn-icon.text-danger {
+  color: #dc3545;
+}
+
+#tabela-atendimentos_wrapper .prodesp-dt-acoes .btn-icon.text-danger:hover,
+#tabela-gestao-atendimentos_wrapper .prodesp-dt-acoes .btn-icon.text-danger:hover {
+  color: #b02a37;
+}
+
+/* Tempo etapa / vida: badge contido na célula (quebra se necessário) */
+#tabela-atendimentos_wrapper .dt-scroll-body tbody td.prodesp-dt-tempo-etapa,
+#tabela-gestao-atendimentos_wrapper .dt-scroll-body tbody td.prodesp-dt-tempo-etapa,
+#tabela-atendimentos_wrapper .dt-scroll-body tbody td.prodesp-dt-tempo-vida,
+#tabela-gestao-atendimentos_wrapper .dt-scroll-body tbody td.prodesp-dt-tempo-vida {
+  white-space: normal !important;
+  overflow: hidden !important;
+  vertical-align: middle !important;
+}
+
+#tabela-atendimentos_wrapper .prodesp-dt-tempo-etapa .prodesp-tempo-badge,
+#tabela-gestao-atendimentos_wrapper .prodesp-dt-tempo-etapa .prodesp-tempo-badge,
+#tabela-atendimentos_wrapper .prodesp-dt-tempo-vida .prodesp-tempo-badge,
+#tabela-gestao-atendimentos_wrapper .prodesp-dt-tempo-vida .prodesp-tempo-badge,
+#tabela-atendimentos_wrapper td.prodesp-dt-tempo-etapa .badge,
+#tabela-gestao-atendimentos_wrapper td.prodesp-dt-tempo-etapa .badge,
+#tabela-atendimentos_wrapper td.prodesp-dt-tempo-vida .badge,
+#tabela-gestao-atendimentos_wrapper td.prodesp-dt-tempo-vida .badge {
+  display: inline-block;
+  max-width: 100%;
+  white-space: normal !important;
+  word-break: break-word;
+  overflow-wrap: anywhere;
+  line-height: 1.2;
+}
+
+#tabela-atendimentos_wrapper .dt-scroll-body tbody td.prodesp-dt-duracao,
+#tabela-gestao-atendimentos_wrapper .dt-scroll-body tbody td.prodesp-dt-duracao {
+  text-align: center !important;
+  overflow: hidden !important;
+  padding-left: 0.25rem !important;
+  padding-right: 0.25rem !important;
+}
+
+#tabela-atendimentos_wrapper .prodesp-dt-duracao-inner,
+#tabela-gestao-atendimentos_wrapper .prodesp-dt-duracao-inner {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 0.25rem;
+  width: 100%;
+}
+
+/* Reforço: fust / outros CSS não podem anular o thead “invisível” do scrollX (evita ícones sobre as linhas) */
+#tabela-atendimentos_wrapper div.dt-scroll-body thead tr,
+#tabela-gestao-atendimentos_wrapper div.dt-scroll-body thead tr {
+  height: 0 !important;
+}
+#tabela-atendimentos_wrapper div.dt-scroll-body thead tr th,
+#tabela-atendimentos_wrapper div.dt-scroll-body thead tr td,
+#tabela-gestao-atendimentos_wrapper div.dt-scroll-body thead tr th,
+#tabela-gestao-atendimentos_wrapper div.dt-scroll-body thead tr td {
+  height: 0 !important;
+  overflow: hidden !important;
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
+  border-top-width: 0 !important;
+  border-bottom-width: 0 !important;
+}
+#tabela-atendimentos_wrapper div.dt-scroll-body thead tr th div.dt-scroll-sizing,
+#tabela-gestao-atendimentos_wrapper div.dt-scroll-body thead tr th div.dt-scroll-sizing {
+  height: 0 !important;
+  overflow: hidden !important;
+}
+
+/* Cabeçalho pode crescer em altura com quebra de linha (scroll-head padrão usa overflow:hidden) */
+#tabela-atendimentos_wrapper .dt-scroll-head,
+#tabela-gestao-atendimentos_wrapper .dt-scroll-head {
+  overflow-x: hidden !important;
+  overflow-y: visible !important;
+}
+
+#tabela-atendimentos_wrapper .dt-scroll-headInner,
+#tabela-gestao-atendimentos_wrapper .dt-scroll-headInner {
+  overflow-y: visible !important;
+}
+
+#tabela-atendimentos_wrapper .dt-scroll-body,
+#tabela-gestao-atendimentos_wrapper .dt-scroll-body {
+  overflow-x: auto !important;
+}
+
+#tabela-atendimentos_wrapper .dt-scroll,
+#tabela-gestao-atendimentos_wrapper .dt-scroll {
+  min-width: 0;
+}
+
+/* Grupos Status / Substatus no dashboard — grid 2 colunas (lg+) */
+.dashboard-status-groups-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1rem;
+    align-items: start;
+}
+
+@media (min-width: 992px) {
+    .dashboard-status-groups-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+/* Auditoria admin — coluna Ações (todas as tabelas do painel) */
+#edit-admin-audit-pane table th.prodesp-admin-audit-col-acoes,
+#edit-admin-audit-pane table td.prodesp-admin-audit-col-acoes {
+    min-width: 11rem;
+    width: 11rem;
+    white-space: normal;
+    vertical-align: middle;
+    border-left: 1px solid var(--bs-border-color, #dee2e6);
+}
+
+/* Mesmo visual do thead do modal (.modal-body .table-responsive thead tr th em modals.css) */
+#edit-admin-audit-pane .prodesp-admin-audit-scroll thead th.prodesp-admin-audit-col-acoes {
+    position: sticky;
+    right: 0;
+    top: 0;
+    z-index: 11;
+    background: #343a40 !important;
+    color: #fff !important;
+    font-weight: 600;
+    box-shadow: -2px 0 4px -2px rgba(0, 0, 0, 0.25);
+}
+
+#edit-admin-audit-pane table tbody td.prodesp-admin-audit-col-acoes {
+    position: sticky;
+    right: 0;
+    z-index: 2;
+    background-color: #fff;
+    box-shadow: -2px 0 4px -2px rgba(0, 0, 0, 0.06);
+}
+
+#edit-admin-audit-pane table.table-striped > tbody > tr:nth-of-type(odd) > td.prodesp-admin-audit-col-acoes {
+    background-color: var(--bs-table-striped-bg, #f2f2f3) !important;
+}
+
+#edit-admin-audit-pane table.table-striped > tbody > tr:nth-of-type(even) > td.prodesp-admin-audit-col-acoes {
+    background-color: #fff !important;
+}
+
+#edit-admin-audit-pane table td.prodesp-admin-audit-col-acoes .d-flex {
+    min-width: 10rem;
+}
+
+#edit-admin-audit-pane .prodesp-admin-audit-table-sl {
+    min-width: 44rem;
+}
+
+#edit-admin-audit-pane .prodesp-admin-audit-table-hist {
+    min-width: 78rem;
+}
+
+#edit-admin-audit-pane .prodesp-admin-audit-table-eq {
+    min-width: 52rem;
+}
+
+#edit-admin-audit-pane .prodesp-admin-audit-table-lnk {
+    min-width: 44rem;
+}
+
+#edit-admin-audit-pane .prodesp-admin-audit-scroll {
+    overflow-x: auto !important;
+    overflow-y: auto;
+}
+
+.prodesp-historico-accordion .accordion-button {
+    font-size: 0.95rem;
+}
+
+.prodesp-historico-accordion .accordion-button:not(.collapsed) {
+    background-color: rgba(13, 110, 253, 0.06);
+}
+
+.dashboard-status-group {
+    border-radius: 0.5rem;
+    border: 1px solid #e9ecef;
+    background: #fafbfc;
+    padding: 0.75rem 0.85rem 0.5rem;
+    margin-bottom: 0;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+}
+
+.dashboard-status-group--span-full {
+    grid-column: 1 / -1;
+}
+
+/* Substatus empilhados em grade (capacidade definida em script_gestao_atendimentos_prodesp.js) */
+.dashboard-substatus-cards {
+    display: grid;
+    gap: 0.5rem;
+    min-width: 0;
+    width: 100%;
+}
+
+.dashboard-substatus-cards--grid-cols-1 {
+    grid-template-columns: minmax(0, 1fr);
+}
+
+.dashboard-substatus-cards--grid-cols-2 {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.dashboard-substatus-cards--grid-cols-3 {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.dashboard-substatus-cards--grid-cols-4 {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.dashboard-substatus-card-item {
+    min-width: 0;
+    max-width: 100%;
+}
+
+@media (max-width: 767.98px) {
+    .dashboard-substatus-cards--grid-cols-3,
+    .dashboard-substatus-cards--grid-cols-4 {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 575.98px) {
+    .dashboard-substatus-cards--grid-cols-2,
+    .dashboard-substatus-cards--grid-cols-3,
+    .dashboard-substatus-cards--grid-cols-4 {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+.dashboard-substatus-card-item .substatus-label {
+    line-height: 1.2;
+    word-break: break-word;
+    hyphens: auto;
+}
+
+.dashboard-status-group-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 0.75rem;
+    margin-bottom: 0.65rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid #e9ecef;
+}
+
+.dashboard-status-group-title {
+    font-size: 0.95rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+    margin: 0;
+}
+
+.dashboard-status-group-hint {
+    font-size: 0.72rem;
+    color: #6c757d;
+    margin: 0.15rem 0 0;
+}
+
+.dashboard-status-group-total {
+    font-size: 1.5rem;
+    font-weight: 700;
+    line-height: 1;
+    white-space: nowrap;
+}
+
+.dashboard-group-migrados { border-left: 4px solid #198754; }
+.dashboard-group-em-atendimento { border-left: 4px solid #0d6efd; }
+.dashboard-group-quebra { border-left: 4px solid #dc3545; }
+.dashboard-group-parcial { border-left: 4px solid #0dcaf0; }
+.dashboard-group-resumo { border-left: 4px solid #6c757d; background: #fff; }
+
+.dashboard-kpi-agendado {
+    transition: all 0.2s ease-in-out;
+    cursor: pointer;
+}
+
+.dashboard-kpi-agendado:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 0.35rem 0.85rem rgba(0, 0, 0, .12) !important;
+}
+
+.dashboard-tempos-etapa-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 0.75rem;
+}
+
+.dashboard-tempo-etapa-card {
+    border: 1px solid #e9ecef;
+    border-radius: 0.5rem;
+    background: #fff;
+    padding: 0.85rem 1rem;
+    height: 100%;
+}
+
+.dashboard-tempo-etapa-card--compact {
+    padding: 0.55rem 0.75rem;
+}
+
+.dashboard-tempo-etapa-card--espera {
+    border-left: 4px solid #ffc107;
+}
+
+.dashboard-tempo-etapa-card--produtivo {
+    border-left: 4px solid #0d6efd;
+}
+
+.dashboard-tempo-etapa-card--resumo-geral {
+    border-left: 4px solid #6c757d;
+}
+
+.dashboard-tempo-etapa-card--resumo-atend {
+    border-left: 4px solid #0d6efd;
+}
+
+.dashboard-tempo-etapa-card--resumo-espera {
+    border-left: 4px solid #fd7e14;
+}
+
+.dashboard-tempo-etapa-card--compact .dashboard-tempo-etapa-metric {
+    font-size: 1.15rem;
+    margin-bottom: 0.15rem;
+}
+
+.dashboard-tempo-etapa-metric {
+    font-size: 1.35rem;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+    line-height: 1.2;
+}
+
+.dashboard-tempo-etapa-hint {
+    font-size: 0.68rem;
+    margin-top: 0.2rem;
+}
+
+.dashboard-tempo-etapa-meta {
+    font-size: 0.75rem;
+    line-height: 1.35;
+    color: #6c757d;
+    margin-top: 0.15rem;
+    padding-top: 0.35rem;
+    border-top: 1px dashed #dee2e6;
+}
+
+.dashboard-tempo-etapa-label {
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    font-weight: 600;
+    color: #6c757d;
+    letter-spacing: 0.02em;
+}
+
+.dashboard-tempo-ofensor {
+    display: inline;
+    font-size: inherit;
+    color: #495057;
+}
+
+.dashboard-tempo-ofensor-max strong {
+    font-variant-numeric: tabular-nums;
+}
+
+.dashboard-tempo-ofensor-ident {
+    color: #6c757d;
+}
+
+.dashboard-group-tempos-espera {
+    border-left: 4px solid #ffc107;
+}
+
+.dashboard-group-tempos-produtivo {
+    border-left: 4px solid #0d6efd;
+}
+
+/* Substatus — gráficos por status (barras horizontais) */
+.dashboard-substatus-charts-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.75rem;
+}
+
+@media (max-width: 575.98px) {
+    .dashboard-substatus-charts-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+.dashboard-substatus-chart-panel {
+    border: 1px solid #e9ecef;
+    border-radius: 0.5rem;
+    background: #fff;
+    padding: 0.65rem 0.75rem;
+    min-height: 5rem;
+}
+
+.dashboard-substatus-chart-panel--migrados {
+    border-left: 4px solid #198754;
+}
+
+.dashboard-substatus-chart-panel--em-atendimento {
+    border-left: 4px solid #0d6efd;
+}
+
+.dashboard-substatus-chart-panel--quebra {
+    border-left: 4px solid #dc3545;
+}
+
+.dashboard-substatus-chart-panel--parcial {
+    border-left: 4px solid #0dcaf0;
+}
+
+.dashboard-substatus-chart-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+    margin-bottom: 0.35rem;
+}
+
+.dashboard-substatus-chart-title {
+    font-size: 0.78rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+    color: #495057;
+}
+
+.dashboard-substatus-chart-panel .substatus-chart-total {
+    font-size: 0.7rem;
+    font-weight: 600;
+    background: #f8f9fa;
+    color: #495057;
+    border: 1px solid #dee2e6;
+}
+
+.dashboard-substatus-chart-canvas-wrap {
+    position: relative;
+    width: 100%;
+    min-height: 72px;
+}
+
+.dashboard-substatus-chart-panel .dashboard-substatus-chart-empty {
+    display: none;
+    padding: 0.5rem 0;
+    text-align: center;
+}
+
+.dashboard-substatus-chart-panel .dashboard-substatus-chart-canvas-wrap.d-none + .dashboard-substatus-chart-empty {
+    display: block;
+}
+
+/* Estilos para os cards de substatus */
+.substatus-card {
+    transition: all 0.2s ease-in-out;
+    cursor: pointer;
+}
+
+.substatus-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, .15) !important;
+}
+
+.substatus-icon {
+    font-size: 1.5rem; /* Tamanho do ícone */
+}
+
+.substatus-count {
+    font-size: 1.75rem; /* Tamanho do número */
+    color: #343a40;
+}
+
+.substatus-label {
+    font-size: 0.75rem; /* Tamanho do texto do label */
+    text-transform: uppercase;
+    font-weight: 500;
+}
+
+/* Classe icon-shape que estava faltando */
+.icon-shape {
+    width: 3rem;
+    height: 3rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* ==========================================================================
+   PRODESP — Indicadores legados e overlay (ex-fust_atendimento)
+   ========================================================================== */
+
+h4 {
+  font-weight: 400;
+  font-style: normal;
+  text-align: center;
+  color: rgb(0, 0, 0);
+}
+.tempo-atendimento,
+.tempo-etapa,
+.tempo-vida {
+  font-weight: bold;
+  color: #191e24;
+}
+
+/* PRODESP — badges de tempo (atendimentos + gestão)
+   ok:       < 15 min  | azul
+   atencao:  15–30 min | âmbar
+   critico:  ≥ 30 min  | vermelho
+   no-prazo: agendado, ainda não passou do horário | verde
+   pendente: sem horário/referência | cinza
+   sem-hora: não se aplica (ex.: vida em agendado) | cinza claro
+   finalizado: encerrado sem HH:MM:SS | cinza escuro
+*/
+.prodesp-tempo-badge {
+  font-weight: 600;
+  border: 1px solid transparent;
+}
+.prodesp-tempo-badge--ok {
+  background-color: #0dcaf0;
+  color: #052c33;
+  border-color: #0aa2c0;
+}
+.prodesp-tempo-badge--atencao {
+  background-color: #ffc107;
+  color: #332701;
+  border-color: #e0a800;
+}
+.prodesp-tempo-badge--critico {
+  background-color: #dc3545;
+  color: #fff;
+  border-color: #b02a37;
+}
+.prodesp-tempo-badge--no-prazo {
+  background-color: #198754;
+  color: #fff;
+  border-color: #146c43;
+}
+.prodesp-tempo-badge--pendente {
+  background-color: #e9ecef;
+  color: #495057;
+  border-color: #ced4da;
+}
+.prodesp-tempo-badge--sem-hora {
+  background-color: #f8f9fa;
+  color: #6c757d;
+  border-color: #dee2e6;
+}
+.prodesp-tempo-badge--finalizado {
+  background-color: #6c757d;
+  color: #fff;
+  border-color: #565e64;
+}
+
+#dashAzul {
+  border: 8px solid;
+  border-color: #b28ed3;
+  border-left-color: #007bff;
+  border-right-color: #007bff;
+}
+
+#dashAmarelo {
+  border: 8px solid;
+  border-color: #b28ed3;
+  border-left-color: yellow;
+  border-right-color: yellow
+
+}
+#dashVerde {
+  border: 8px solid;
+  border-color: #b28ed3;
+  border-left-color: green;
+  border-right-color: green;
+
+}
+
+#dashLaranja {
+  border: 8px solid;
+  border-color: #b28ed3;
+  border-left-color: #ed9506;
+  border-right-color: #ed9506;
+}
+
+#dashVerdeClaro {
+  border: 8px solid;
+  border-color: #b28ed3;
+  border-left-color: #00ffd5;
+  border-right-color: #00ffd5;
+}
+
+#dashContratadas {
+  border: 8px solid;
+  border-color: #b28ed3;
+  border-left-color: #6a488a;
+  border-right-color: #6a488a;
+}
+
+#dashVerde, #dashAmarelo, #dashAzul, #dashLaranja, #dashVerdeClaro, #dashContratadas {
+  padding: 5px;
+  border-radius: 30px 30px;
+  background-color: #b28ed3;
+}
+      .table-loader-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(255, 255, 255, 0.185);
+        z-index: 9999;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }

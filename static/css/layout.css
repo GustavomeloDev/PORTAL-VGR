@@ -1,24 +1,16 @@
 /* ==========================================================================
-Layout Geral com Grid
-Define a estrutura principal da página usando CSS Grid.
-========================================================================== */
-@import url('_variables.css');
-*{
+   Layout Geral com Grid
+   Define a estrutura principal da página usando CSS Grid.
+   ========================================================================== */
+   body {
+    display: grid;
+    grid-template-areas:
+      "sidebar header"
+      "sidebar main";
+    grid-template-columns: 250px 1fr; /* Sidebar com largura fixa de 250px e o restante para Header e Main */
+    grid-template-rows: auto 1fr;    /* Header com altura automática e Main ocupando o restante da altura */
+    min-height: 100vh;               /* Garante que o body ocupe pelo menos a altura total da tela */
     margin: 0;
-    padding: 0;
-    box-sizing: border-box !important;
-}
-
-body {
-    display: flex;
-    overflow: hidden;
-}
-
-/* DESTAQUE DOS CAMPOS PRINCIPAIS DE EQUIPAMENTOS E LINKS */
-.destaque {
-    outline-style: solid;
-    outline-width: medium;
-    outline-color: #FF6200;
 }
 
 /* ==========================================================================
@@ -26,86 +18,130 @@ body {
    Estilos para a barra lateral.
    ========================================================================== */
 .sidebar {
+    background-color: var(--primary);
+    padding: var(--space);
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
-    
-    background-color: var(--primary);
-    padding: 1rem 1rem;
-    width: 282px !important;
+    height: 100vh;
+    overflow-y: auto;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 250px; /* Adicione esta linha */
+    z-index: 1000;
 }
 
-/* Configurações de logo no menu */
-.sidebar img {
+/* Logo principal no topo da Sidebar */
+.sidebar-logo {
+    display: block;
     width: 70%;
-    margin-bottom: 20px;
+    margin: 0 auto var(--space); /* Reduzido ainda mais o espaçamento inferior do logo */
 }
 
-/* Estilo do menu lateral */
-.sidebar ul {
-    list-style-type: none;
+/* Menu da Sidebar */
+.sidebar-menu {
+    list-style: none;
     padding: 0;
+    margin: 0; /* Removi a margem padrão para aproximar do logo */
 }
 
-.sidebar ul li {
-    margin: 15px 0;
+.sidebar-menu li + li {
+    margin-top: calc(var(--space) / 5); /* Espaçamento mínimo entre itens do menu */
 }
 
-.sidebar.menu a {
-    display: flex;
-    align-items: center;
+.sidebar-menu a {
+    display: block;
+    color: var(--white);
     text-decoration: none;
-    font-weight: bold !important;
+    font-weight: 500; /* Um pouco menos bold para economizar espaço vertical se a fonte for grande */
+    padding: 0.3rem 0; /* Padding vertical bem reduzido */
+    text-align: left;
 }
 
-.sidebar ul li a:hover {
-    transition: .4s ease-in-out;
-    border-bottom: 1px solid white;
+.sidebar-menu a:hover {
+    text-decoration: underline;
 }
 
-p{
+/* Logo secundário no rodapé da Sidebar */
+.sidebar-footer {
+    text-align: center;
+    margin-bottom: 0.5rem;
+    margin-top: auto; /* Empurra o footer para a parte inferior */
+}
+
+.sidebar-footer-logo {
+    max-width: 80%;
+    height: auto;
+    opacity: 0.8;          /* Se quiser um efeito mais suave */
+}
+
+/* ==========================================================================
+   Sidebar — lista alinhada à direita (Duplicado - pode ser removido)
+   Parece ser uma repetição do estilo .sidebar-menu e seus itens
+   ========================================================================== */
+.sidebar ul {
+    list-style: none;
     padding: 0;
     margin: 0;
 }
 
-/* ==========================================================================
-CONTENT CONTAINER
-Estilos para o container de conteúdos
-========================================================================== */
-.content_container{
-    display: flex;
-    flex-direction: column;
+.sidebar li + li {
+    margin-top: 0.3rem; /* Reduzido espaçamento para listas genéricas também */
+}
 
-    width: 100% !important;
-    max-height: 100vh;
-    overflow-y: scroll;
+.sidebar a {
+    color: var(--white);
+    text-decoration: none;
+    font-weight: bold;
+    display: block;
+    text-align: left; /* Padding já é tratado em .sidebar-menu a e .sidebar li a */
+}
+
+.sidebar a:hover {
+    text-decoration: underline;
+}
+
+/* Botão para mostrar/ocultar a sidebar em dispositivos móveis */
+#sidebarToggle {
+    display: none;
+    font-size: 1.5rem;
+    background: none;
+    border: none;
+    color: var(--white);
+    cursor: pointer;
+    z-index: 1100;
 }
 
 /* ==========================================================================
-Header
-Estilos para o cabeçalho da página.
-========================================================================== */
-header {
-    position: sticky;
+   Header
+   Estilos para o cabeçalho da página.
+   ========================================================================== */
+   .header {
+    position: fixed; /* Adiciona esta linha */
     top: 0;
+    left: 250px; /* Largura do sidebar */
+    right: 0;
     display: flex;
     align-items: center;
-    justify-content: center; /* Alinha título à esquerda e ações à direita */
+    justify-content: center; /* Centraliza os elementos filhos horizontalmente */
     padding: var(--space);
     background: linear-gradient(to right, var(--accent), var(--secondary));
     color: var(--white);
-    height: var(--header-height);
-    z-index: 1;
-    h1 {
-        margin: 0 auto;
-    }
+    z-index: 1000; /* Garante que o header fique acima de outros elementos */
 }
 
 /* ==========================================================================
    Main
    Estilos para a área de conteúdo principal.
    ========================================================================== */
-
+.main {
+    grid-area: main;
+    overflow-y: auto; /* Adiciona barra de rolagem vertical se o conteúdo principal exceder a altura */
+    padding: var(--space);
+    background-color: var(--white);
+    padding-top: 140px; /* Ajustado para evitar ultrapassar o header */
+}
 
 /* ==========================================================================
    Botões
@@ -225,39 +261,11 @@ form select:focus {
    ========================================================================== */
 .header h1 {
     margin: 0;
-    position: absolute;
-    left: 50%;
-    transform: translateX(-50%);
 }
 
 .header .btn-icon {
-    position: static; /* Mantém o ícone dentro do fluxo para alinhamento à esquerda */
-}
-
-.header-actions {
-    display: flex;
-    align-items: center;
-    border: 1px solid red;
-}
-
-.toggle-btn {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.4rem;
-    padding: 0.35rem 0.8rem;
-    border-radius: 999px;
-    border: 1px solid rgba(255,255,255,0.6);
-    background: transparent;
-    color: var(--white);
-    font-size: 0.9rem;
-}
-.toggle-btn:hover {
-    border-color: #ffffff;
-}
-.toggle-btn.active {
-    background: var(--secondary);
-    border-color: var(--secondary);
-    color: #ffffff;
+    position: absolute;
+    right: var(--space);
 }
 
 /* ==========================================================================
@@ -374,11 +382,84 @@ form select:focus {
     margin: 10px auto 0; 
     max-width: 180px; 
     height: auto;
+    filter: brightness(0) invert(1); /* Deixa o SVG branco */
 }
 
-/* Estilo para aumentar a altura e o texto das badges na tabela de atendimentos */ 
+/* Estilo unificado — badges de tempo (fila de atendimentos + gestão) */
+#tabela-atendimentos .badge,
 #tabela-gestao-atendimentos .badge {
     padding: 0.6em 1em;
     font-size: 0.7rem;
     line-height: 1.6;
+}
+
+/* ==========================================================================
+   PRODESP — Container de página e submenu da sidebar (ex-fust_atendimento)
+   ========================================================================== */
+
+.rd-container {
+    margin: 30px auto;
+    background: #fff;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+    max-width: 1200px;
+    max-width: 1800px;
+}
+
+/* #tabela-gestao-atendimentos {
+    margin: 30px auto;
+    background: #fff;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+    max-width: 1200px;
+
+} */
+/* Título principal (h2) */
+h2 {
+    text-align: center;
+    margin-bottom: 30px;
+    color: #343a40;
+    font-weight: 500;
+}
+
+/* Ajuste para remover margem superior do elemento main */
+.main {
+    margin-top: 0;
+}
+/* Remove destaque de cor ativa/foco nos menus */
+.sidebar ul li a.active,
+.sidebar ul li a:focus {
+    background-color: transparent !important;
+    box-shadow: none !important;
+}
+
+/* Estilos para o submenu da sidebar */
+.sidebar ul li a.dropdown-toggle::after {
+    display: inline-block;
+    margin-left: .255em;
+    vertical-align: .255em;
+    content: "";
+    border-top: .3em solid;
+    border-right: .3em solid transparent;
+    border-bottom: 0;
+    border-left: .3em solid transparent;
+    float: right;
+    margin-top: 8px;
+    transition: transform .2s ease-in-out;
+}
+
+.sidebar ul li a[aria-expanded="true"]::after {
+    transform: rotate(180deg);
+}
+
+.sidebar ul ul.collapse {
+    padding-left: 20px; /* Indentação do submenu */
+    background-color: rgba(0,0,0,0.15);
+}
+
+.sidebar ul ul.collapse li a {
+    padding: 10px 20px;
+    font-size: 0.9em; /* Fonte um pouco menor para sub-itens */
 }

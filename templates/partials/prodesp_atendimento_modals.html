@@ -1,0 +1,1325 @@
+﻿      {% if admin_user == 1 and prodesp_analistas_implantacao %}
+      <datalist id="prodespAnalistasImplantacaoDatalist">
+        {% for nome in prodesp_analistas_implantacao %}
+        <option value="{{ nome }}"></option>
+        {% endfor %}
+      </datalist>
+      {% endif %}
+
+      <!-- ######################## Modal de Edição ######################## -->
+
+      <div class="modal fade" id="editModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-xl modal-dialog-centered">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title">Atendimento - Edição | Continuação</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" id="btn-close-modal-edit"></button>
+            </div>
+
+            <div class="modal-body">
+              <form id="editForm">
+                <input type="hidden" id="editAtendimentoId" />
+
+                <ul class="nav nav-tabs mb-3" id="editTab" role="tablist">
+                  <li class="nav-item" role="presentation">
+                    <button class="nav-link active" id="edit-dados-unidade-conectividade-tab" data-bs-toggle="tab"
+                      data-bs-target="#edit-dados-unidade-conectividade-pane" type="button" role="tab"
+                      aria-controls="edit-dados-unidade-conectividade-pane" aria-selected="true">Dados Unidade</button>
+                  </li>
+                  <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="edit-atendimento-tab" data-bs-toggle="tab"
+                      data-bs-target="#edit-atendimento-pane" type="button" role="tab"
+                      aria-controls="edit-atendimento-pane" aria-selected="false">Atendimento</button>
+                  </li>
+                  <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="edit-equipamentos-tab" data-bs-toggle="tab" data-bs-target="#edit-equipamentos-pane" type="button" role="tab" aria-controls="edit-equipamentos-pane" aria-selected="false">Equipamentos e Links</button>
+                  </li>
+                  {% if admin_user == 1 %}
+                  <li class="nav-item" role="presentation">
+                    <button class="nav-link text-danger" id="edit-admin-audit-tab" data-bs-toggle="tab" data-bs-target="#edit-admin-audit-pane" type="button" role="tab" aria-controls="edit-admin-audit-pane" aria-selected="false">Auditoria (Admin)</button>
+                  </li>
+                  {% endif %}
+                </ul>
+
+                <div class="tab-content" id="editTabContent">
+                  <!-- Tab 1: Dados Unidade e Conectividade -->
+                  <div class="tab-pane fade show active" id="edit-dados-unidade-conectividade-pane" role="tabpanel" aria-labelledby="edit-dados-unidade-conectividade-tab" tabindex="0">
+                    <h6 class="text-primary mb-3">Dados da Unidade</h6>
+                    <div class="row g-3 mb-4">
+
+                      <div class="col-md-4">
+                        <label class="form-label">Data Agendamento</label>
+                        <input type="date" id="editDataAgendamento" class="form-control" />
+                      </div>
+
+                      <div class="col-md-4">
+                        <label class="form-label">Hora Agendamento</label>
+                        <input type="time" id="editHoraAgendamento" class="form-control" />
+                      </div>
+
+                      <hr>
+
+                      <div class="col-md-4">
+                        <label for="editIdVgr" class="form-label fw-bold text-primary"><i class="fas fa-search me-1"></i>ID VGR</label>
+                        <input type="text" id="editIdVgr" class="form-control" readonly />  
+                      </div>
+
+                      <div class="col-md-4">
+                        <label class="form-label">ID Intragov</label>
+                        <input type="text" id="editIdintragov" class="form-control" />
+                      </div>
+
+                      <div class="col-md-4">
+                        <label class="form-label">Nome Unidade</label>
+                        <input type="text" id="editNome" class="form-control" />
+                      </div>
+
+                      <div class="col-md-4">
+                        <label class="form-label" for="editAcronimo">Sigla Secretaria (Acrônimo)</label>
+                        <input type="text" id="editAcronimo" class="form-control" placeholder="Ex.: {{ blueprint_acronimo_hint or 'DETRAN, PROCON, PRO-SANGUE…' }}" />
+                      </div>
+
+                      <div class="col-md-4">
+                        <label class="form-label">Endereço</label>
+                        <input type="text" id="editEndereco" class="form-control" />
+                      </div>
+
+                      <div class="col-md-4">
+                        <label class="form-label">Número</label>
+                        <input type="text" id="editNumero" class="form-control" maxlength="10" title="Máximo 10 caracteres (número do imóvel, não telefone)" />
+                      </div>
+
+                      <div class="col-md-4">
+                        <label class="form-label">Bairro</label>
+                        <input type="text" id="editBairro" class="form-control" />
+                      </div>
+
+                      <div class="col-md-4">
+                        <label class="form-label">Município</label>
+                        <input type="text" id="editMunicipio" class="form-control" />
+                      </div>
+
+                      <div class="col-md-4">
+                        <label class="form-label">UF</label>
+                        <input type="text" id="editEstado" class="form-control" />
+                      </div>
+
+                      <div class="col-md-4">
+                        <label class="form-label">Complemento</label>
+                        <input type="text" id="editComplemento" class="form-control" />
+                      </div>
+
+                      <div class="col-md-4">
+                        <label class="form-label">CEP</label>
+                        <input type="text" id="editCep" class="form-control" />
+                      </div>
+
+                      <div class="col-md-4">
+                        <label class="form-label">Latitude</label>
+                        <input type="text" id="editLatitude" class="form-control" />
+                      </div>
+
+                      <div class="col-md-4">
+                        <label class="form-label">Longitude</label>
+                        <input type="text" id="editLongitude" class="form-control" />
+                      </div>
+
+                      <div class="col-md-4">
+                        <label class="form-label">Telefone Contato</label>
+                        <input type="text" id="editTelefoneContato" class="form-control" />
+                      </div>
+
+                      <div class="col-12 mt-1">
+                        <button type="button" class="btn btn-sm btn-outline-primary" id="btnEnriquecerEnderecoEdit" title="Preenche número (do endereço), bairro, CEP e coordenadas quando vazios ou com dados fictícios (ex.: xxxxx)">
+                          <i class="fas fa-map-marked-alt me-1"></i>Completar endereço
+                        </button>
+                        <small class="text-muted ms-2">ViaCEP / OpenCEP / BrasilAPI e Nominatim (busca e reverso por coordenadas).</small>
+                      </div>
+
+                      <hr>
+
+                      <h6 class="text-primary mb-3">Dados Conectividade</h6>
+                      <p class="text-muted small mb-2">Rótulos e exemplos alinhados ao formulário <strong>Gerar Blueprint</strong> (mesmas colunas no banco).</p>
+                      <div class="row g-3 mb-4">
+                        
+                        <div class="col-md-4">
+                          <label class="form-label" for="editHostname">Hostname</label>
+                          <input type="text" id="editHostname" class="form-control" />
+                        </div>
+
+                        <div class="col-md-4">
+                          <label class="form-label" for="editIpLan01">IP LAN 1 (CIDR)</label>
+                          <input type="text" id="editIpLan01" class="form-control prodesp-ip-input" placeholder="Ex.: 10.14.128.1/24" />
+                          <small class="text-muted d-block">IP com máscara CIDR (ex.: 10.14.128.1/24).</small>
+                        </div>
+
+                        {% with lan_prefix='edit', lan_mode='form' %}
+                        {% include 'partials/prodesp_lan_extra_unidades.html' %}
+                        {% endwith %}
+                        
+                        <div class="col-md-4">
+                          <label class="form-label" for="editIpLanTransito">IP LAN Trânsito</label>
+                          <input type="text" id="editIpLanTransito" class="form-control prodesp-ip-input" placeholder="Ex.: 10.250.50.217 (gateway CPE)" />
+                          <small class="text-muted d-block">Gateway do link MPLS (na planilha: Trânsito_CPE).</small>
+                        </div>
+
+                        <div class="col-md-4">
+                          <label class="form-label" for="editLoopbackVivo">Loopback Vivo</label>
+                          <input type="text" id="editLoopbackVivo" class="form-control prodesp-ip-input prodesp-loopback-field" data-loopback-role="vivo" placeholder="Ex.: 10.254.x.x" />
+                        </div>
+
+                        <div class="col-md-4">
+                          <label class="form-label" for="editLoopbackCliente">Loopback Cliente</label>
+                          <input type="text" id="editLoopbackCliente" class="form-control prodesp-ip-input prodesp-loopback-field" data-loopback-role="cliente" placeholder="Ex.: 10.252.x.x" />
+                        </div>
+
+                        <div class="col-md-4">
+                          <label class="form-label" for="editLoopbackOnBgp">Loopback On BGP</label>
+                          <input type="text" id="editLoopbackOnBgp" class="form-control prodesp-ip-input prodesp-loopback-field" data-loopback-role="bgp" placeholder="Ex.: 10.253.x.x" />
+                        </div>
+
+                      </div>
+
+                      {% with mv_prefix='edit', mv_mode='form' %}
+                      {% include 'partials/prodesp_mv_opcionais_unidades.html' %}
+                      {% endwith %}
+
+                    </div>
+                  </div>
+
+                  <!-- Tab 2: Atendimento -->
+                  <div class="tab-pane fade" id="edit-atendimento-pane" role="tabpanel" aria-labelledby="edit-atendimento-tab" tabindex="0">
+                    <h6 class="text-primary mb-3">Dados Atendimento</h6>
+                    <div class="row g-3 mb-4">
+                      <div class="col-md-4">
+                        <label class="form-label">Status</label>
+                        <select id="editStatus" class="form-select" required>
+                          <option value="" selected disabled>Selecione o status...</option>
+                          <option value="Em Atendimento">Em Atendimento</option>
+                          <option value="Concluído">Concluído</option>
+                          <option value="Concluído Parcial">Concluído Parcial</option>
+                          <option value="Quebra">Quebra</option>
+                          <option value="Quebra TBRA">Quebra TBRA</option>
+                        </select>
+                      </div>
+                      <div class="col-md-4">
+                        <label class="form-label">Substatus</label>
+                        <select id="editSubstatus" class="form-select">
+                          <option selected disabled value="">Selecione o Substatus...</option>
+                          <!-- Options populated by JS -->
+                        </select>
+                      </div>
+                      <div class="col-12 d-none" id="editAguardandoClienteWrap">
+                        <label class="form-label" for="editAguardandoClienteMotivo">Descrição do ocorrido <span class="text-danger">*</span> <small class="text-muted">(obrigatório ao selecionar &quot;Aguardando Cliente&quot;)</small></label>
+                        <textarea id="editAguardandoClienteMotivo" class="form-control" rows="3" placeholder="Descreva por que o cliente não autorizou a continuidade neste momento..."></textarea>
+                      </div>
+                      <div class="col-md-4">
+                        <label class="form-label">Analista Gestão{% if admin_user == 1 %} <small class="text-muted">(admin pode alterar)</small>{% endif %}</label>
+                        <input type="text" id="editAnalistaAtuante" class="form-control" readonly />
+                      </div>
+                      <div class="col-md-4">
+                        <label class="form-label">Analista Configuração{% if admin_user == 1 %} <small class="text-muted">(admin pode alterar)</small>{% endif %}</label>
+                        <input type="text" id="editAnalistaConfiguracao" class="form-control" readonly />
+                      </div>
+                      <div class="col-md-4 prodesp-analista-mpls-field">
+                        <label class="form-label">Analista MPLS <small class="text-muted d-block" style="font-size:0.65rem;">Terceiro — obrigatório para entrar e sair de Em Config. MPLS</small></label>
+                        <input type="hidden" id="editAnalistaMplsAtendimentos" />
+                        <select id="editAnalistaMplsSelect" class="form-select prodesp-analista-mpls-select d-none" disabled aria-label="Selecionar analista MPLS terceiro">
+                          <option value="">Selecione o analista MPLS...</option>
+                        </select>
+                        <input type="text" id="editAnalistaMplsOutros" class="form-control prodesp-analista-mpls-outros d-none mt-1" maxlength="60" placeholder="Nome do analista MPLS (Outros)" disabled />
+                        <div id="editAnalistaMplsDisplay" class="form-control bg-light text-secondary prodesp-analista-mpls-display">—</div>
+                      </div>
+                      <div class="col-md-4">
+                        <label class="form-label">Analista Caderno Teste{% if admin_user == 1 %} <small class="text-muted">(admin pode alterar)</small>{% endif %}</label>
+                        <input type="text" id="editAnalistaCadernoTeste" class="form-control" readonly />
+                      </div>
+                      {% with prefix='edit' %}{% include "partials/prodesp_caderno_toolbar_inc.html" %}{% endwith %}
+                      {% with prefix='edit' %}{% include "partials/prodesp_certificado_toolbar_inc.html" %}{% endwith %}
+                      <div class="col-md-4">
+                        <label class="form-label">Ticket NOC <small class="text-muted">(obrigatório em Status e Substatus Concluído)</small></label>
+                        <input type="text" id="editTicketNoc" class="form-control" placeholder="Ex.: 1680355" maxlength="7" inputmode="numeric" autocomplete="off" />
+                      </div>
+                      <div class="col-md-12">
+                        <label class="form-label">Logs Configuração</label>
+                        <p class="prodesp-log-config-hint mb-1">
+                          O texto do log fica em caixa com rolagem. Arraste o canto inferior para ajustar a altura
+                          (<button type="button" class="btn btn-link btn-sm p-0 prodesp-log-config-reset-height" data-prodesp-log-reset-height>redefinir padrão</button>).
+                          Limite ampliado (MEDIUMTEXT) para coletas FGT extensas.
+                        </p>
+                        <div class="input-group mb-2">
+                          <textarea class="form-control" id="editLogInput" rows="1" placeholder="Inserir novo log..."></textarea>
+                          <button class="btn btn-primary" type="button" id="btn-add-log-edit">Adicionar</button>
+                        </div>
+                        <div name="log" id="log-configuracao-remota-edit" class="table-responsive">
+                          <div class="titles-incident">
+                            <span></span> <!-- Para o botão de exclusão -->
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    <hr>
+                    <h6 class="text-primary mb-1">Dados Field</h6>
+                    <p class="text-muted small mb-3">Editável antes de iniciar (Agendamento, SUPERVISORES/GP e Admin). Obrigatório ao iniciar «Em Atendimento» e ao enviar da Gestão para fila Aguardando.</p>
+
+                    <div class="row g-3 mb-4">
+                      <div class="col-md-4">
+                        <label class="form-label">Contratada</label>
+                        <select id="editContratada" class="form-select" required>
+                          <option selected disabled value="">Selecione a contratada...</option>
+                          {% for contratada in prodesp_contratadas_permitidas %}
+                          <option value="{{ contratada }}">{{ contratada }}</option>
+                          {% endfor %}
+                        </select>
+                      </div>
+                      <div class="col-md-4">
+                        <label class="form-label">Field</label>
+                        <input type="text" id="editField" class="form-control" required />
+                      </div>
+                      <div class="col-md-4">
+                        <label class="form-label">Contato Field</label>
+                        <input type="tel" id="editContatoField" class="form-control" required />
+                      </div>
+
+                    </div>
+
+                    <hr>
+
+                    <h6 class="text-primary mb-3">Fora do padrão <small class="text-muted fw-normal">(obrigatório ao encerrar com Quebra)</small></h6>
+                    <div id="motivos-container-edit" class="row g-2"></div>
+
+                    <hr>
+
+                    <h6 class="text-primary mb-3">Observações</h6>
+
+                    <div class="card mb-4 mt-3" id="editObservacoesCard">
+                      <div class="card-body">
+                        <div class="results">
+                          <div id="insert">
+                            <div class="col-md-12">
+                              <div class="input-group align-items-center">
+                                <textarea class="form-control" id="editObservacaoTexto" rows="2"></textarea>
+                              
+                                <div class="input-group-append">
+                                  <button type="button" id="btn-add-observacao-edit" class="btn btn-primary btn-sm ms-2">Adicionar</button>
+                                </div>
+                                
+                                <input type="hidden" value="" id="editObservacaoIdParent" />
+                              </div>
+                            </div>  
+                          </div>
+
+                          <hr class="my-4" />
+                          
+                          <div class="log">
+                            <label for="">Observações Adicionados</label>
+                            <div name="log" id="log-observacao-edit" class="table-responsive">
+                              <div class="titles-incident">
+                                <span>DATA</span>
+                                <span>OBSERVAÇÕES</span>
+                                <span></span>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                  </div>
+
+                  <!-- Tab 3: Equipamentos -->
+                  <div class="tab-pane fade" id="edit-equipamentos-pane" role="tabpanel" aria-labelledby="edit-equipamentos-tab" tabindex="0">
+                    <div class="mt-4">
+                      <h6 class="text-primary mb-3">Dados Equipamentos</h6>
+                      
+                      <div class="results">
+                        <div id="insert">
+                          <div class="input-group align-items-center">
+                            <div class="col-md-2 ms-2 align-items-center"> 
+                              <label for="editEquipamentoModelo" class="form-label">Modelo</label>
+                              <select class="form-select" id="editEquipamentoModelo">
+                                <option value="" selected disabled>Selecione...</option>
+                                <option value="FortiGate 40F">FortiGate 40F</option>
+                                <option value="FortiGate 60F">FortiGate 60F</option>
+                                <option value="FortiGate 120G">FortiGate 120G</option>
+                                <option value="FortiGate 900G">FortiGate 900G</option>
+                                <option value="FortiGate 3200F">FortiGate 3200F</option>
+                                <option value="FortiGate 3700F">FortiGate 3700F</option>
+                                <option value="FortiGate 600F">FortiGate 600F</option>
+                                <option value="FortiSwitch 2048F">FortiSwitch 2048F</option>
+                              </select>
+                            </div>
+
+                            <div class="col-md-3 ms-2 align-items-center">
+                              <label for="editEquipamentoDescricao" class="form-label">Descrição</label>
+                              <input type="text" class="form-control" id="editEquipamentoDescricao" readonly />
+                            </div>
+
+                            <div class="col-md-2 ms-2 align-items-center">
+                              <label for="editEquipamentoSerial" class="form-label">Serial</label>
+                              <input type="text" class="form-control" id="editEquipamentoSerial" />
+                            </div>
+
+                            <div class="col-md-2 ms-2 align-items-center">
+                              <label for="editEquipamentoVersao" class="form-label">Versão (FortiOS)</label>
+                              <input type="text" class="form-control" id="editEquipamentoVersao" value="7.4.11" placeholder="Padrão: 7.4.11" />
+                            </div>
+
+                            <div class="input-group-append align-items-center">
+                              <button type="button" id="btn-add-equipamento-edit" class="btn btn-primary btn-sm ms-2">Adicionar Equipamento</button>
+                              <button type="button" id="btn-confirm-equipamento-edit" class="btn btn-success btn-sm ms-2 d-none" title="Confirmar Edição"><i class="fas fa-check"></i></button>
+                              <button type="button" id="btn-cancel-equipamento-edit" class="btn btn-secondary btn-sm ms-2 d-none" title="Cancelar"><i class="fas fa-times"></i></button>
+                            </div>
+                          </div>
+                        </div>
+
+                        
+
+                        <hr class="my-4" />
+
+                        <div class="log">
+
+                          <label for="">Equipamentos Adicionados</label>
+
+                          <div name="log" id="log-equipamento-edit" class="prodesp-incident-list"></div>
+                        </div>
+
+                      </div>
+                      
+                    </div>
+
+                    <div class="mt-4" id="editLinksCard">
+                      <h6 class="text-primary mb-3">Dados Links</h6>
+                      <p class="text-muted small mb-2">Ao escolher o tipo: <strong>MPLS</strong> = link principal do Blueprint; <strong>STATIC</strong> = backup. Use os placeholders como referência das colunas CSV.</p>
+                      <div class="results mb-3">
+                        <div id="insert-link">
+                          <div class="row g-3" id="edit-link-fields-container">
+                            <div class="col-md-3 link-field-wrapper link-id-vgr-vivo-wrapper" data-link-type="STATIC MPLS" style="display:none;">
+                              <label for="editLinkIdVgr" class="form-label">ID VGR do Link <span class="text-danger">*</span></label>
+                              <input type="text" class="form-control prodesp-no-space-input" id="editLinkIdVgr" placeholder="MPLS: ID VTV SCM | STATIC: ID VTV SAI-BL" />
+                            </div>
+                            <div class="col-md-3">
+                              <label for="editLinkTipo" class="form-label">Tipo <span class="text-danger">*</span></label>
+                              <select class="form-select" id="editLinkTipo">
+                                <option value="" selected disabled>Selecione o tipo...</option>
+                                <option value="STATIC">STATIC</option>
+                                <option value="MPLS">MPLS</option>
+                                <option value="DHCP">DHCP</option>
+                                <option value="PPPoE">PPPoE</option>
+                              </select>
+                            </div>
+                            <div class="col-md-3">
+                              <label for="editLinkDesignador" class="form-label">Designador <span class="text-danger">*</span></label>
+                              <input type="text" class="form-control prodesp-no-space-input" id="editLinkDesignador" placeholder="MPLS: LP_SCM | STATIC: LP_SAI-BL" autocomplete="off" />
+                            </div>
+                            <div class="col-md-3">
+                              <label for="editLinkOperadora" class="form-label">Operadora <span class="text-danger">*</span></label>
+                              <select class="form-select" id="editLinkOperadora">
+                                <option value="">Selecione...</option>
+                                <option value="VIVO">VIVO</option>
+                                <option value="CLARO">CLARO</option>
+                                <option value="OUTRA">OUTRA</option>
+                              </select>
+                            </div>
+                            <div class="col-md-3">
+                              <label for="editLinkVlan" class="form-label">VLAN</label>
+                              <input type="text" class="form-control prodesp-no-space-input" id="editLinkVlan"/>
+                            </div>
+                            <div class="col-md-3">
+                              <label for="editLinkVelocidade" class="form-label">Velocidade (Mbps) <span class="text-danger">*</span></label>
+                              <input type="text" class="form-control prodesp-velocity-mbps-input" id="editLinkVelocidade" placeholder="Ex.: 300 Mbps, 10G ou 155000 Kbps — grava em Mbps" autocomplete="off" />
+                            </div>
+                            <div class="col-md-3 link-field-wrapper" data-link-type="STATIC MPLS">
+                              <label for="editLinkIpWan" class="form-label">IP WAN <span class="text-danger">*</span></label>
+                              <input type="text" class="form-control prodesp-ip-plain-only" id="editLinkIpWan" placeholder="MPLS: WAN do FG | STATIC: IP_WAN_SDWAN" />
+                            </div>
+                            <div class="col-md-3 link-field-wrapper" data-link-type="STATIC MPLS">
+                              <label for="editLinkIpGateway" class="form-label">IP Gateway <span class="text-danger">*</span></label>
+                              <input type="text" class="form-control prodesp-ip-plain-only" id="editLinkIpGateway" placeholder="MPLS: gateway CPE | STATIC: IP_Gateway_SAI" />
+                            </div>
+                            <div class="col-md-3 link-field-wrapper mpls-vivo-redundante-wrapper" data-link-type="MPLS" style="display:none;">
+                              <div class="form-check mt-4">
+                                <input type="checkbox" class="form-check-input" id="editLinkRedundanteCritico" value="1" />
+                                <label class="form-check-label" for="editLinkRedundanteCritico">Redundante Crítico</label>
+                              </div>
+                                <small class="text-muted d-block">MPLS + VIVO: sem RC → WAN = GW+1 / GW = WAN−1; com RC → WAN = GW+3 / GW = WAN−3.</small>
+                            </div>
+                            <div class="col-md-3 link-field-wrapper" data-link-type="STATIC MPLS">
+                              <label for="editLinkIpMascara" class="form-label">IP Máscara <span class="text-danger">*</span></label>
+                              <input type="text" class="form-control prodesp-ip-input" id="editLinkIpMascara" />
+                            </div>
+                            <div class="col-12 link-field-wrapper" data-link-type="STATIC MPLS">
+                              <small class="text-muted">Operadora VIVO: MPLS → máscara /29; sem RC: WAN = GW+1; com Redundante Crítico: WAN = GW+3. STATIC → par /30, ímpar /31; gateway = WAN − 1.</small>
+                            </div>
+                            <div class="col-md-3 link-field-wrapper" data-link-type="PPPoE">
+                              <label for="editLinkPppoeUser" class="form-label">PPPoE User <span class="text-danger">*</span></label>
+                              <input type="text" class="form-control" id="editLinkPppoeUser" />
+                            </div>
+                            <div class="col-md-3 link-field-wrapper" data-link-type="PPPoE">
+                              <label for="editLinkPppoePass" class="form-label">PPPoE Password <span class="text-danger">*</span></label>
+                              <input type="text" class="form-control" id="editLinkPppoePass" />
+                            </div>
+
+                          </div>
+                        </div>
+
+                        <div class="action text-end mt-3">
+                          <button type="button" id="btn-add-link-edit" class="btn btn-primary btn-sm">Adicionar Link</button>
+                          <button type="button" id="btn-confirm-link-edit" class="btn btn-success btn-sm d-none" title="Confirmar Edição"><i class="fas fa-check"></i></button>
+                          <button type="button" id="btn-cancel-link-edit" class="btn btn-secondary btn-sm d-none" title="Cancelar"><i class="fas fa-times"></i></button>
+                        </div>
+                        <hr class="my-4" />
+                        <div class="log">
+                          <label for="">Links Adicionados</label>
+                          <div name="log" id="log-link-edit" class="prodesp-incident-list"></div>
+                        </div>
+
+                      </div>
+                    </div>
+                  </div>
+
+                  {% if admin_user == 1 %}
+                  <div class="tab-pane fade" id="edit-admin-audit-pane" role="tabpanel" aria-labelledby="edit-admin-audit-tab" tabindex="0">
+                    <div class="alert alert-danger py-2 small mb-2">
+                      <strong>Auditoria administrativa.</strong> Alterações em logs, histórico, observações, equipamentos e links afetam timeline, marcos e relatórios.
+                    </div>
+                    <div class="alert alert-info py-2 small mb-3">
+                      Por padrão, edite <strong>apenas uma linha por vez</strong> (salve antes de alterar outra). Marque abaixo para permitir salvar várias linhas sem recarregar.
+                    </div>
+                    <div class="form-check mb-3">
+                      <input class="form-check-input" type="checkbox" id="adminAuditMultiEdit" />
+                      <label class="form-check-label small" for="adminAuditMultiEdit">Permitir edição simultânea de várias linhas</label>
+                    </div>
+                    <button type="button" class="btn btn-sm btn-outline-secondary mb-3" id="btnAdminAuditReload">Recarregar registros</button>
+
+                    <h6 class="text-primary">atendimentos_status_log</h6>
+                    <div class="table-responsive border rounded mb-3 prodesp-admin-audit-scroll" style="max-height: 280px; overflow: auto;">
+                      <table class="table table-sm table-striped mb-0 prodesp-admin-audit-table prodesp-admin-audit-table-sl">
+                        <thead class="table-light position-sticky top-0">
+                          <tr>
+                            <th>ID</th><th>Tipo</th><th>Valor ant.</th><th>Valor novo</th><th>alterado_em</th><th class="prodesp-admin-audit-col-acoes">Ações</th>
+                          </tr>
+                        </thead>
+                        <tbody id="tbodyAdminStatusLog"></tbody>
+                      </table>
+                    </div>
+                    <div class="card card-body py-2 mb-4">
+                      <strong class="small d-block mb-2">Inserir linha (status_log)</strong>
+                      <div class="row g-2">
+                        <div class="col-md-2"><label class="form-label small mb-0">Tipo</label>
+                          <select id="adminSlTipoNew" class="form-select form-select-sm"><option value="substatus">substatus</option><option value="status">status</option></select>
+                        </div>
+                        <div class="col-md-2"><label class="form-label small mb-0">Valor ant.</label><input type="text" id="adminSlAntNew" class="form-control form-control-sm" maxlength="50" /></div>
+                        <div class="col-md-2"><label class="form-label small mb-0">Valor novo</label><input type="text" id="adminSlNovoNew" class="form-control form-control-sm" maxlength="50" /></div>
+                        <div class="col-md-3"><label class="form-label small mb-0">alterado_em</label><input type="datetime-local" id="adminSlQuandoNew" class="form-control form-control-sm" /></div>
+                      </div>
+                      <button type="button" class="btn btn-sm btn-primary mt-2" id="btnAdminSlInsert">Inserir status_log</button>
+                    </div>
+
+                    <h6 class="text-primary">historico (atendimentos)</h6>
+                    <div class="table-responsive border rounded mb-3 prodesp-admin-audit-scroll" style="max-height: 320px; overflow: auto;">
+                      <table class="table table-sm table-striped mb-0 prodesp-admin-audit-table prodesp-admin-audit-table-hist">
+                        <thead class="table-light position-sticky top-0">
+                          <tr>
+                            <th>ID</th><th>Data</th><th>RE</th><th>Nome</th><th>Campo</th><th>Op.</th><th>Antigo</th><th>Novo</th><th class="prodesp-admin-audit-col-acoes">Ações</th>
+                          </tr>
+                        </thead>
+                        <tbody id="tbodyAdminHistorico"></tbody>
+                      </table>
+                    </div>
+                    <div class="card card-body py-2">
+                      <strong class="small d-block mb-2">Inserir linha (historico)</strong>
+                      <div class="row g-2">
+                        <div class="col-md-2"><label class="form-label small mb-0">data_alteracao</label><input type="datetime-local" id="adminHistQuandoNew" class="form-control form-control-sm" /></div>
+                        <div class="col-md-1"><label class="form-label small mb-0">RE</label><input type="text" id="adminHistReNew" class="form-control form-control-sm" maxlength="8" /></div>
+                        <div class="col-md-2"><label class="form-label small mb-0">Nome</label><input type="text" id="adminHistNomeNew" class="form-control form-control-sm" maxlength="100" /></div>
+                        <div class="col-md-2"><label class="form-label small mb-0">Campo</label><input type="text" id="adminHistCampoNew" class="form-control form-control-sm" maxlength="255" /></div>
+                        <div class="col-md-1"><label class="form-label small mb-0">Op.</label>
+                          <select id="adminHistOpNew" class="form-select form-select-sm"><option>UPDATE</option><option>INSERT</option><option>DELETE</option></select>
+                        </div>
+                        <div class="col-md-2"><label class="form-label small mb-0">Valor antigo</label><textarea id="adminHistAntNew" class="form-control form-control-sm" rows="1"></textarea></div>
+                        <div class="col-md-2"><label class="form-label small mb-0">Valor novo</label><textarea id="adminHistNovoNew" class="form-control form-control-sm" rows="1"></textarea></div>
+                      </div>
+                      <button type="button" class="btn btn-sm btn-primary mt-2" id="btnAdminHistInsert">Inserir histórico</button>
+                    </div>
+
+                    <h6 class="text-primary mt-4">historico (unidades)</h6>
+                    <div class="table-responsive border rounded mb-3 prodesp-admin-audit-scroll" style="max-height: 280px; overflow: auto;">
+                      <table class="table table-sm table-striped mb-0 prodesp-admin-audit-table prodesp-admin-audit-table-hist">
+                        <thead class="table-light position-sticky top-0">
+                          <tr>
+                            <th>ID</th><th>Data</th><th>RE</th><th>Nome</th><th>Campo</th><th>Op.</th><th>Antigo</th><th>Novo</th><th class="prodesp-admin-audit-col-acoes">Ações</th>
+                          </tr>
+                        </thead>
+                        <tbody id="tbodyAdminHistoricoUnidade"></tbody>
+                      </table>
+                    </div>
+                    <div class="card card-body py-2 mb-4">
+                      <strong class="small d-block mb-2">Inserir linha (historico unidade)</strong>
+                      <div class="row g-2">
+                        <div class="col-md-2"><label class="form-label small mb-0">data_alteracao</label><input type="datetime-local" id="adminHistUnQuandoNew" class="form-control form-control-sm" /></div>
+                        <div class="col-md-1"><label class="form-label small mb-0">RE</label><input type="text" id="adminHistUnReNew" class="form-control form-control-sm" maxlength="8" /></div>
+                        <div class="col-md-2"><label class="form-label small mb-0">Nome</label><input type="text" id="adminHistUnNomeNew" class="form-control form-control-sm" maxlength="100" /></div>
+                        <div class="col-md-2"><label class="form-label small mb-0">Campo</label><input type="text" id="adminHistUnCampoNew" class="form-control form-control-sm" maxlength="255" /></div>
+                        <div class="col-md-1"><label class="form-label small mb-0">Op.</label>
+                          <select id="adminHistUnOpNew" class="form-select form-select-sm"><option>UPDATE</option><option>INSERT</option><option>DELETE</option></select>
+                        </div>
+                        <div class="col-md-2"><label class="form-label small mb-0">Valor antigo</label><textarea id="adminHistUnAntNew" class="form-control form-control-sm" rows="1"></textarea></div>
+                        <div class="col-md-2"><label class="form-label small mb-0">Valor novo</label><textarea id="adminHistUnNovoNew" class="form-control form-control-sm" rows="1"></textarea></div>
+                      </div>
+                      <button type="button" class="btn btn-sm btn-primary mt-2" id="btnAdminHistUnInsert">Inserir histórico unidade</button>
+                    </div>
+
+                    <h6 class="text-primary">Observações (atendimento e unidade)</h6>
+                    <div class="table-responsive border rounded mb-3 prodesp-admin-audit-scroll" style="max-height: 240px; overflow: auto;">
+                      <table class="table table-sm table-striped mb-0 prodesp-admin-audit-table">
+                        <thead class="table-light position-sticky top-0">
+                          <tr>
+                            <th>ID</th><th>Escopo</th><th>Data</th><th>Texto</th><th class="prodesp-admin-audit-col-acoes">Ações</th>
+                          </tr>
+                        </thead>
+                        <tbody id="tbodyAdminObservacoes"></tbody>
+                      </table>
+                    </div>
+
+                    <h6 class="text-primary">Equipamentos (unidade)</h6>
+                    <div class="table-responsive border rounded mb-3 prodesp-admin-audit-scroll" style="max-height: 220px; overflow: auto;">
+                      <table class="table table-sm table-striped mb-0 prodesp-admin-audit-table prodesp-admin-audit-table-eq">
+                        <thead class="table-light position-sticky top-0">
+                          <tr>
+                            <th>ID</th><th>Modelo</th><th>Serial</th><th>Versão</th><th>Descrição</th><th class="prodesp-admin-audit-col-acoes">Ações</th>
+                          </tr>
+                        </thead>
+                        <tbody id="tbodyAdminEquipamentos"></tbody>
+                      </table>
+                    </div>
+
+                    <h6 class="text-primary">Links (unidade)</h6>
+                    <div class="table-responsive border rounded mb-3 prodesp-admin-audit-scroll" style="max-height: 220px; overflow: auto;">
+                      <table class="table table-sm table-striped mb-0 prodesp-admin-audit-table prodesp-admin-audit-table-lnk">
+                        <thead class="table-light position-sticky top-0">
+                          <tr>
+                            <th>ID</th><th>Designador</th><th>Tipo</th><th>Operadora</th><th>VLAN</th><th class="prodesp-admin-audit-col-acoes">Ações</th>
+                          </tr>
+                        </thead>
+                        <tbody id="tbodyAdminLinks"></tbody>
+                      </table>
+                    </div>
+                  </div>
+                  {% endif %}
+                </div>
+
+                <div class="text-end mt-3">
+                  <button type="button" id="btnGenerateBlueprintEdit" class="btn btn-info text-white me-2" data-prodesp-submit-guard data-prodesp-guard-label="Gerando…"><i class="fas fa-file-csv me-2"></i>Gerar Blueprint</button>
+                  <button type="button" id="btnSalvar" class="btn btn-primary" disabled onclick="saveEdit()" data-prodesp-submit-guard>Salvar</button>
+                </div>
+
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Modais auxiliares fora do editModal (evita backdrop preso ao empilhar sobre edição) -->
+      <div class="modal fade" id="prodespConfirmDadosFieldModal" tabindex="-1" aria-labelledby="prodespConfirmDadosFieldModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+          <div class="modal-content shadow">
+            <div class="modal-header border-0 pb-0">
+              <h5 class="modal-title d-flex align-items-center gap-2" id="prodespConfirmDadosFieldModalLabel">
+                <span class="rounded-circle bg-warning bg-opacity-25 text-warning d-inline-flex align-items-center justify-content-center" style="width:2.25rem;height:2.25rem;">
+                  <i class="fas fa-exclamation-triangle" aria-hidden="true"></i>
+                </span>
+                <span>Confirmar Dados Field</span>
+              </h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+            </div>
+            <div class="modal-body pt-2">
+              <p class="text-muted mb-3">
+                Confirme os Dados Field antes de iniciar o atendimento. Corrija se necessário.
+                Se cancelar, o atendimento <strong>não</strong> será iniciado.
+              </p>
+              <div class="row g-3">
+                <div class="col-12">
+                  <label class="form-label" for="confirmDadosFieldContratada">Contratada</label>
+                  <select id="confirmDadosFieldContratada" class="form-select" required>
+                    <option selected disabled value="">Selecione a contratada...</option>
+                    {% for contratada in prodesp_contratadas_permitidas %}
+                    <option value="{{ contratada }}">{{ contratada }}</option>
+                    {% endfor %}
+                  </select>
+                </div>
+                <div class="col-12">
+                  <label class="form-label" for="confirmDadosFieldField">Field</label>
+                  <input type="text" id="confirmDadosFieldField" class="form-control" required autocomplete="off" />
+                </div>
+                <div class="col-12">
+                  <label class="form-label" for="confirmDadosFieldContato">Contato Field</label>
+                  <input type="tel" id="confirmDadosFieldContato" class="form-control" required autocomplete="off" />
+                </div>
+              </div>
+            </div>
+            <div class="modal-footer border-0 pt-0">
+              <button type="button" class="btn btn-outline-secondary" id="prodespConfirmDadosFieldCancelar">Cancelar</button>
+              <button type="button" class="btn btn-primary" id="prodespConfirmDadosFieldConfirmar" data-prodesp-submit-guard data-prodesp-guard-label="Confirmando…">
+                <i class="fas fa-play me-1" aria-hidden="true"></i>Confirmar / Iniciar atendimento
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal fade" id="prodespConfirmMplsModal" tabindex="-1" aria-labelledby="prodespConfirmMplsModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+          <div class="modal-content shadow">
+            <div class="modal-header border-0 pb-0">
+              <h5 class="modal-title d-flex align-items-center gap-2" id="prodespConfirmMplsModalLabel">
+                <span class="rounded-circle bg-primary bg-opacity-10 text-primary d-inline-flex align-items-center justify-content-center" style="width:2.25rem;height:2.25rem;">
+                  <i class="fas fa-network-wired" aria-hidden="true"></i>
+                </span>
+                <span>Enviar para Config MPLS?</span>
+              </h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+            </div>
+            <div class="modal-body pt-2">
+              <p class="text-muted mb-3 mb-md-2">
+                Deseja alterar o substatus e enviar este atendimento para a fila de configuração MPLS?
+              </p>
+              <div class="alert alert-primary py-2 mb-3 d-flex align-items-center gap-2" role="status">
+                <i class="fas fa-arrow-right flex-shrink-0" aria-hidden="true"></i>
+                <span class="fw-semibold" id="prodespConfirmMplsSubstatusNome">Em Configuração do MPLS</span>
+              </div>
+              <div class="card border bg-light">
+                <div class="card-body py-2 px-3">
+                  <span class="text-muted small d-block">Analista MPLS selecionado</span>
+                  <span class="fw-semibold text-dark" id="prodespConfirmMplsAnalista">—</span>
+                </div>
+              </div>
+              <p class="text-muted small mt-3 mb-0">
+                Se escolher <strong>Não</strong>, o analista permanece e o substatus atual não é alterado.
+              </p>
+            </div>
+            <div class="modal-footer border-0 pt-0">
+              <button type="button" class="btn btn-outline-secondary" id="prodespConfirmMplsNao">Não, manter substatus</button>
+              <button type="button" class="btn btn-primary" id="prodespConfirmMplsSim">
+                <i class="fas fa-check me-1" aria-hidden="true"></i>Sim, enviar
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal fade" id="quebraAtendimentoModal" tabindex="-1" aria-labelledby="quebraAtendimentoModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="quebraAtendimentoModalLabel">Motivo da quebra</h5>
+            </div>
+            <div class="modal-body">
+              <p class="mb-2">
+                Descreva o motivo da quebra (<strong id="quebraAtendimentoSubstatusLabel"></strong>).
+                O texto será salvo em <strong>Observações</strong>.
+              </p>
+              <textarea id="quebraAtendimentoTexto" class="form-control" rows="4" placeholder="Ex.: O cliente informou que tem que fechar o local devido ao horário."></textarea>
+              <div class="d-flex justify-content-between mt-2 small">
+                <span id="quebraAtendimentoHelp" class="text-muted">Mínimo de 10 caracteres para salvar.</span>
+                <span id="quebraAtendimentoCounter" class="text-muted">0/10</span>
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-outline-secondary" id="quebraAtendimentoCancelar">Cancelar</button>
+              <button type="button" class="btn btn-danger" id="quebraAtendimentoSalvar" disabled data-prodesp-submit-guard data-prodesp-guard-label="Confirmando…">Confirmar quebra</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal fade" id="retornoSubstatusModal" tabindex="-1" aria-labelledby="retornoSubstatusModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="retornoSubstatusModalLabel">Retorno de substatus</h5>
+            </div>
+            <div class="modal-body">
+              <p class="mb-2">
+                Descreva o motivo do retorno (<strong id="retornoSubstatusTitulo"></strong>).
+                O texto será salvo em <strong>Observações</strong>.
+              </p>
+              <textarea id="retornoSubstatusTexto" class="form-control" rows="4" placeholder="Digite no mínimo 10 caracteres..."></textarea>
+              <div class="d-flex justify-content-between mt-2 small">
+                <span id="retornoSubstatusHelp" class="text-muted">Mínimo de 10 caracteres para salvar.</span>
+                <span id="retornoSubstatusCounter" class="text-muted">0/10</span>
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-outline-secondary" id="retornoSubstatusCancelar">Cancelar</button>
+              <button type="button" class="btn btn-warning" id="retornoSubstatusSalvar" disabled data-prodesp-submit-guard data-prodesp-guard-label="Confirmando…">Confirmar retorno</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal fade" id="aguardaGestaoModal" tabindex="-1" aria-labelledby="aguardaGestaoModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="aguardaGestaoModalLabel">Aguarda Gestão</h5>
+            </div>
+            <div class="modal-body">
+              <p class="mb-2" id="aguardaGestaoDescricao">
+                Informe o contexto para o time Gestão. O texto será salvo em Observações.
+              </p>
+              <textarea id="aguardaGestaoTexto" class="form-control" rows="4" placeholder="Digite no mínimo 30 caracteres..."></textarea>
+              <div class="d-flex justify-content-between mt-2 small">
+                <span id="aguardaGestaoHelp" class="text-muted">Mínimo de 30 caracteres para salvar.</span>
+                <span id="aguardaGestaoCounter" class="text-muted">0/30</span>
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-outline-secondary" id="aguardaGestaoCancelar">Cancelar</button>
+              <button type="button" class="btn btn-primary" id="aguardaGestaoSalvar" disabled data-prodesp-submit-guard data-prodesp-guard-label="Salvando…">Salvar</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal fade" id="comSuporteModal" tabindex="-1" aria-labelledby="comSuporteModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="comSuporteModalLabel"><span id="comSuporteTitulo">Com Suporte</span></h5>
+            </div>
+            <div class="modal-body">
+              <p class="mb-2" id="comSuporteDescricao">
+                Descreva o problema que está ocorrendo. Este texto será salvo em Observações.
+              </p>
+              <textarea id="comSuporteTexto" class="form-control" rows="4" placeholder="Digite no mínimo 10 caracteres..."></textarea>
+              <div class="d-flex justify-content-between mt-2 small">
+                <span id="comSuporteHelp" class="text-muted">Mínimo de 10 caracteres para salvar.</span>
+                <span id="comSuporteCounter" class="text-muted">0/10</span>
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-outline-secondary" id="comSuporteCancelar">Cancelar</button>
+              <button type="button" class="btn btn-info text-white" id="comSuporteSalvar" disabled data-prodesp-submit-guard data-prodesp-guard-label="Salvando…">Salvar</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal fade" id="aguardandoClienteModal" tabindex="-1" aria-labelledby="aguardandoClienteModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="aguardandoClienteModalLabel">Aguardando Cliente</h5>
+            </div>
+            <div class="modal-body">
+              <p class="mb-2" id="aguardandoClienteDescricao">
+                Descreva o ocorrido. Este texto será salvo em <strong>Observações</strong>.
+              </p>
+              <textarea id="aguardandoClienteTexto" class="form-control" rows="4" placeholder="Digite no mínimo 10 caracteres..."></textarea>
+              <div class="d-flex justify-content-between mt-2 small">
+                <span id="aguardandoClienteHelp" class="text-muted">Mínimo de 10 caracteres para salvar.</span>
+                <span id="aguardandoClienteCounter" class="text-muted">0/10</span>
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-outline-secondary" id="aguardandoClienteCancelar">Cancelar</button>
+              <button type="button" class="btn btn-primary" id="aguardandoClienteSalvar" disabled data-prodesp-submit-guard data-prodesp-guard-label="Salvando…">Salvar</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {% include "partials/prodesp_caderno_teste_modal.html" %}
+      {% include "partials/prodesp_blueprint_confirm_modal.html" %}
+
+      <div class="modal fade" id="createModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-xl modal-dialog-centered">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title">Novo Atendimento</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+
+            <div class="modal-body">
+              <form id="createForm">
+                <ul class="nav nav-tabs mb-3" id="createTab" role="tablist">
+                  <li class="nav-item" role="presentation">
+                    <button class="nav-link active" id="create-dados-unidade-conectividade-tab" data-bs-toggle="tab" data-bs-target="#create-dados-unidade-conectividade-pane" type="button" role="tab" aria-controls="create-dados-unidade-conectividade-pane" aria-selected="true">Dados Unidade e Conectividade</button>
+                  </li>
+                  <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="create-atendimento-tab" data-bs-toggle="tab" data-bs-target="#create-atendimento-pane" type="button" role="tab" aria-controls="create-atendimento-pane" aria-selected="false">Dados Atendimento</button>
+                  </li>
+                  <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="create-provisionamento-tab" data-bs-toggle="tab" data-bs-target="#create-provisionamento-pane" type="button" role="tab" aria-controls="create-provisionamento-pane" aria-selected="false">Dados de Equipamentos e Links</button>
+                  </li>
+                </ul>
+
+                <div class="tab-content" id="createTabContent">
+                  <div class="tab-pane fade show active" id="create-dados-unidade-conectividade-pane" role="tabpanel" aria-labelledby="create-dados-unidade-conectividade-tab" tabindex="0">
+                    <h6 class="text-primary mb-3">Dados da Unidade</h6>
+                    <div class="row g-3 mb-4">
+
+                      <div class="col-md-4">
+                        <label class="form-label">Data Agendamento</label>
+                        <input type="date" id="createDataAgendamento" class="form-control" />
+                      </div>
+                      <div class="col-md-4">
+                        <label class="form-label">Hora Agendamento</label>
+                        <input type="time" id="createHoraAgendamento" class="form-control" />
+                      </div>
+
+                      <hr> 
+                      
+                      <div class="col-md-4">
+                        <label for="createIdVgr" class="form-label fw-bold text-primary"><i class="fas fa-search me-1"></i>ID VGR</label>
+                        <input type="text" id="createIdVgr" class="form-control" placeholder="Ex.: 2177114" required />
+                      </div>
+
+                      <div class="col-md-4">
+                        <label class="form-label">ID Intragov</label>
+                        <input type="text" id="createIdintragov" class="form-control" />
+                      </div>
+
+                      <div class="col-md-4">
+                        <label class="form-label">Nome Unidade</label>
+                        <input type="text" id="createNome" class="form-control" />
+                      </div>
+
+                      <div class="col-md-4">
+                        <label class="form-label" for="createAcronimo">Sigla Secretaria (Acrônimo)</label>
+                        <input type="text" id="createAcronimo" class="form-control" required placeholder="Ex.: {{ blueprint_acronimo_hint or 'DETRAN, PROCON, PRO-SANGUE…' }}" />
+                      </div>
+
+                      <div class="col-md-4">
+                        <label class="form-label">Endereço</label>
+                        <input type="text" id="createEndereco" class="form-control" required />
+                      </div>
+
+                      <div class="col-md-4">
+                        <label class="form-label">Número</label>
+                        <input type="text" id="createNumero" class="form-control" required maxlength="10" title="Máximo 10 caracteres (número do imóvel, não telefone)" />
+                      </div>
+
+                      <div class="col-md-4">
+                        <label class="form-label">Bairro</label>
+                        <input type="text" id="createBairro" class="form-control" required />
+                      </div>
+
+                      <div class="col-md-4">
+                        <label class="form-label">Município</label>
+                        <input type="text" id="createMunicipio" class="form-control" required />
+                      </div>
+
+                      <div class="col-md-4">
+                        <label class="form-label">UF</label>
+                        <input type="text" id="createEstado" class="form-control" required />
+                      </div>
+
+                      <div class="col-md-4">
+                        <label class="form-label">Complemento</label>
+                        <input type="text" id="createComplemento" class="form-control" />
+                      </div>
+
+                      <div class="col-md-4">
+                        <label class="form-label">CEP</label>
+                        <input type="text" id="createCep" class="form-control" required />
+                      </div>
+
+                      <div class="col-md-4">
+                        <label class="form-label">Latitude</label>
+                        <input type="text" id="createLatitude" class="form-control" />
+                      </div>
+
+                      <div class="col-md-4">
+                        <label class="form-label">Longitude</label>
+                        <input type="text" id="createLongitude" class="form-control" />
+                      </div>
+
+                      <div class="col-md-4">
+                        <label class="form-label">Telefone Contato</label>
+                        <input type="text" id="createTelefoneContato" class="form-control" />
+                      </div>
+
+                      <div class="col-12 mt-1">
+                        <button type="button" class="btn btn-sm btn-outline-primary" id="btnEnriquecerEnderecoCreate" title="Preenche número (do endereço), bairro, CEP e coordenadas quando vazios ou com dados fictícios (ex.: xxxxx)">
+                          <i class="fas fa-map-marked-alt me-1"></i>Completar endereço
+                        </button>
+                        <small class="text-muted ms-2">ViaCEP / OpenCEP / BrasilAPI e Nominatim (busca e reverso por coordenadas).</small>
+                      </div>
+
+                      <hr>
+
+                      <h6 class="text-primary mb-3">Dados Conectividade</h6>
+                      <p class="text-muted small mb-2">Rótulos e exemplos alinhados ao formulário <strong>Gerar Blueprint</strong> (mesmas colunas no banco).</p>
+                      <div class="row g-3 mb-4">
+                        <div class="col-md-4">
+                          <label class="form-label" for="createHostname">Hostname</label>
+                          <input type="text" id="createHostname" class="form-control" />
+                        </div>
+
+                        <div class="col-md-4">
+                          <label class="form-label" for="createIpLan01">IP LAN 1 (CIDR)</label>
+                          <input type="text" id="createIpLan01" class="form-control prodesp-ip-input" placeholder="Ex.: 10.14.128.1/24" />
+                          <small class="text-muted d-block">IP com máscara CIDR (ex.: 10.14.128.1/24).</small>
+                        </div>
+
+                        {% with lan_prefix='create', lan_mode='form' %}
+                        {% include 'partials/prodesp_lan_extra_unidades.html' %}
+                        {% endwith %}
+
+                        <div class="col-md-4">
+                          <label class="form-label" for="createIpLanTransito">IP LAN Trânsito</label>
+                          <input type="text" id="createIpLanTransito" class="form-control prodesp-ip-input" placeholder="Ex.: 10.250.50.217 (gateway CPE)" />
+                          <small class="text-muted d-block">Gateway do link MPLS (na planilha: Trânsito_CPE).</small>
+                        </div>
+
+                        <div class="col-md-4">
+                          <label class="form-label" for="createLoopbackVivo">Loopback Vivo</label>
+                          <input type="text" id="createLoopbackVivo" class="form-control prodesp-ip-input prodesp-loopback-field" data-loopback-role="vivo" placeholder="Ex.: 10.254.x.x" />
+                        </div>
+
+                        <div class="col-md-4">
+                          <label class="form-label" for="createLoopbackCliente">Loopback Cliente</label>
+                          <input type="text" id="createLoopbackCliente" class="form-control prodesp-ip-input prodesp-loopback-field" data-loopback-role="cliente" placeholder="Ex.: 10.252.x.x" />
+                        </div>
+
+                        <div class="col-md-4">
+                          <label class="form-label" for="createLoopbackOnBgp">Loopback On BGP</label>
+                          <input type="text" id="createLoopbackOnBgp" class="form-control prodesp-ip-input prodesp-loopback-field" data-loopback-role="bgp" placeholder="Ex.: 10.253.x.x" />
+                        </div>
+
+                      </div>
+
+                      {% with mv_prefix='create', mv_mode='form' %}
+                      {% include 'partials/prodesp_mv_opcionais_unidades.html' %}
+                      {% endwith %}
+
+                    </div>
+                  </div>
+
+                  <div class="tab-pane fade" id="create-atendimento-pane" role="tabpanel" aria-labelledby="create-atendimento-tab" tabindex="0">
+                    <h6 class="text-primary mb-3">Dados Atendimento</h6>
+                    <div class="row g-3 mb-4">
+                      <div class="col-md-4">
+                        <label class="form-label">Status</label>
+                        <select id="createStatus" class="form-select" required>
+                          <option value="" selected disabled>Selecione o status...</option>
+                          <option value="Em Atendimento">Em Atendimento</option>
+                          <option value="Concluído">Concluído</option>
+                          <option value="Concluído Parcial">Concluído Parcial</option>
+                          <option value="Quebra">Quebra</option>
+                          <option value="Quebra TBRA">Quebra TBRA</option>
+                        </select>
+                      </div>
+
+                      <div class="col-md-4">
+                        <label class="form-label">Substatus</label>
+                        <select id="createSubstatus" class="form-select" required>
+                          <option selected disabled value="">Selecione o Substatus...</option>
+                          <!-- gerado via js -->
+                        </select>
+                      </div>
+
+                      <div class="col-12 d-none" id="createAguardandoClienteWrap">
+                        <label class="form-label" for="createAguardandoClienteMotivo">Descrição do ocorrido <span class="text-danger">*</span> <small class="text-muted">(obrigatório ao selecionar &quot;Aguardando Cliente&quot;)</small></label>
+                        <textarea id="createAguardandoClienteMotivo" class="form-control" rows="3" placeholder="Descreva por que o cliente não autorizou a continuidade neste momento..."></textarea>
+                      </div>
+
+                      <div class="col-md-4">
+                        <label class="form-label">Analista Gestão{% if admin_user == 1 %} <small class="text-muted">(admin pode alterar)</small>{% endif %}</label>
+                        <input type="text" id="createAnalistaAtuante" class="form-control" value="{{ current_user.nome_user }}" readonly />
+                      </div>
+
+                      <div class="col-md-4">
+                        <label class="form-label">Analista Configuração{% if admin_user == 1 %} <small class="text-muted">(admin pode alterar)</small>{% endif %}</label>
+                        <input type="text" id="createAnalistaConfiguracao" class="form-control" readonly />
+                      </div>
+
+                      <div class="col-md-4 prodesp-analista-mpls-field">
+                        <label class="form-label">Analista MPLS <small class="text-muted d-block" style="font-size:0.65rem;">Terceiro — obrigatório para entrar e sair de Em Config. MPLS</small></label>
+                        <input type="hidden" id="createAnalistaMplsAtendimentos" />
+                        <select id="createAnalistaMplsSelect" class="form-select prodesp-analista-mpls-select d-none" disabled aria-label="Selecionar analista MPLS terceiro">
+                          <option value="">Selecione o analista MPLS...</option>
+                        </select>
+                        <input type="text" id="createAnalistaMplsOutros" class="form-control prodesp-analista-mpls-outros d-none mt-1" maxlength="60" placeholder="Nome do analista MPLS (Outros)" disabled />
+                        <div id="createAnalistaMplsDisplay" class="form-control bg-light text-secondary prodesp-analista-mpls-display">—</div>
+                      </div>
+                      <div class="col-md-4">
+                        <label class="form-label">Analista Caderno Teste{% if admin_user == 1 %} <small class="text-muted">(admin pode alterar)</small>{% endif %}</label>
+                        <input type="text" id="createAnalistaCadernoTeste" class="form-control" readonly />
+                      </div>
+                      {% with prefix='create' %}{% include "partials/prodesp_caderno_toolbar_inc.html" %}{% endwith %}
+                      {% with prefix='create' %}{% include "partials/prodesp_certificado_toolbar_inc.html" %}{% endwith %}
+                      <div class="col-md-4">
+                        <label class="form-label">Ticket NOC <small class="text-muted">(obrigatório em Status e Substatus Concluído)</small></label>
+                        <input type="text" id="createTicketNoc" class="form-control" placeholder="Ex.: 1680355" maxlength="7" inputmode="numeric" autocomplete="off" />
+                      </div>
+                      <div class="col-md-12">
+                        <label class="form-label">Logs Configuração</label>
+                        <p class="prodesp-log-config-hint mb-1">
+                          O texto do log fica em caixa com rolagem. Arraste o canto inferior para ajustar a altura
+                          (<button type="button" class="btn btn-link btn-sm p-0 prodesp-log-config-reset-height" data-prodesp-log-reset-height>redefinir padrão</button>).
+                          Limite ampliado (MEDIUMTEXT) para coletas FGT extensas.
+                        </p>
+                        <div class="input-group mb-2">
+                          <textarea class="form-control" id="createLogInput" rows="1" placeholder="Inserir novo log..."></textarea>
+                          <button class="btn btn-primary" type="button" id="btn-add-log-create">Adicionar</button>
+                        </div>
+                        <div name="log" id="log-configuracao-remota-create" class="table-responsive">
+                          <div class="titles-incident">
+                            <span></span> <!-- Para o botão de exclusão -->
+                          </div>
+                        </div>
+                      </div>
+
+                    </div>
+
+                    <hr>
+
+                    <h6 class="text-primary mb-1">Dados Field</h6>
+                    <p class="text-muted small mb-3">Editável antes de iniciar (Agendamento, SUPERVISORES/GP e Admin). Obrigatório ao iniciar «Em Atendimento» e ao enviar da Gestão para fila Aguardando.</p>
+                    <div class="row g-3 mb-4">
+                      <div class="col-md-4">
+                        <label class="form-label">Contratada</label>
+                        <select id="createContratada" class="form-select" required>
+                          <option selected disabled value="">Selecione a contratada...</option>
+                          {% for contratada in prodesp_contratadas_permitidas %}
+                          <option value="{{ contratada }}">{{ contratada }}</option>
+                          {% endfor %}
+                        </select>
+                      </div>
+
+                      <div class="col-md-4">
+                        <label class="form-label">Field</label>
+                        <input type="text" id="createField" class="form-control" required />
+                      </div>
+
+                      <div class="col-md-4">
+                        <label class="form-label">Contato Field</label>
+                        <input type="tel" id="createContatoField" class="form-control" required />
+                      </div>
+
+                    </div>
+
+                    <hr>
+
+                    <h6 class="text-primary mb-3">Fora do padrão <small class="text-muted fw-normal">(obrigatório ao encerrar com Quebra)</small></h6>
+                    <div id="motivos-container-create" class="row g-2"></div>
+
+                    <hr>
+
+                    <h6 class="text-primary mb-3">Observações</h6>
+                    <div class="card mb-4 mt-3">
+                      <div class="card-body">
+                        <div class="results">
+                          <div id="insert">
+                            <div class="col-md-12">
+                              <div class="input-group align-items-center">
+                                <textarea class="form-control" id="createObservacaoTexto" rows="2" placeholder="Ex.: Field vai atrasar devido ao trânsito"></textarea>
+
+                                <div class="input-group-append">
+                                  <button type="button" id="btn-add-observacao-create" class="btn btn-primary btn-sm ms-2">Adicionar</button>
+                                </div>
+                              </div>
+                              <small class="text-muted d-block mt-1">Enquanto o atendimento não for iniciado, a observação fica vinculada à unidade.</small>
+                              <input type="hidden" value="" id="createObservacaoParentId" />
+                            </div>
+                          </div>
+                          
+                          <hr class="my-4"/>
+                          
+                          <div class="log">
+                            <label for="">Observação Adicionadas</label>
+                            <div name="log" id="log-observacao-create" class="table-responsive">
+                              <div class="titles-incident">
+                                <span>DATA</span>
+                                <span>OBSERVAÇÕES</span>
+                                <span></span>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                  </div>
+
+                  <div class="tab-pane fade" id="create-provisionamento-pane" role="tabpanel" aria-labelledby="create-provisionamento-tab" tabindex="0">
+                    <div class="mt-4">
+                      <h6 class="text-primary mb-3">Dados Equipamentos</h6>
+                      
+                      <div class="results">
+                        <div id="insert-equip-create">
+                          <div class="row g-4">
+
+                            <div class="col-md-3">
+                              <label for="createEquipamentoModelo" class="form-label">Modelo</label>
+                              <select class="form-select" id="createEquipamentoModelo">
+                                <option value="" selected disabled>Selecione...</option>
+                                <option value="FortiGate 40F">FortiGate 40F</option>
+                                <option value="FortiGate 60F">FortiGate 60F</option>
+                                <option value="FortiGate 120G">FortiGate 120G</option>
+                                <option value="FortiGate 900G">FortiGate 900G</option>
+                                <option value="FortiGate 3200F">FortiGate 3200F</option>
+                                <option value="FortiGate 3700F">FortiGate 3700F</option>
+                                <option value="FortiGate 600F">FortiGate 600F</option>
+                                <option value="FortiSwitch 2048F">FortiSwitch 2048F</option>
+                              </select>
+                            </div>
+
+                            <div class="col-md-3">
+                              <label for="createEquipamentoDescricao" class="form-label">Descrição</label>
+                              <input type="text" class="form-control" id="createEquipamentoDescricao" readonly />
+                            </div>
+
+                            <div class="col-md-3">
+                              <label for="createEquipamentoSerial" class="form-label">Serial</label>
+                              <input type="text" class="form-control" id="createEquipamentoSerial" />
+                            </div>
+
+                            <div class="col-md-3">
+                              <label for="createEquipamentoVersao" class="form-label">Versão (FortiOS)</label>
+                              <input type="text" class="form-control" id="createEquipamentoVersao" value="7.4.11" placeholder="Padrão: 7.4.11" />
+                            </div>                            
+                          </div>
+                          <div class="action text-end mt-3">
+
+                          </div>
+
+                          <div class="action text-end mt-3">
+                            <button type="button" id="btn-add-equipamento-create" class="btn btn-primary btn-sm">Adicionar Equipamento</button>
+                            <button type="button" id="btn-confirm-equipamento-create" class="btn btn-success btn-sm d-none"><i class="fas fa-check"></i> Confirmar Edição</button>
+                            <button type="button" id="btn-cancel-equipamento-create" class="btn btn-secondary btn-sm d-none"><i class="fas fa-times"></i> Cancelar</button>
+                          </div>
+
+                        </div>
+
+                        <div class="log">
+
+                          <label for="">Equipamentos Adicionados</label>
+
+                          <div name="log" id="log-equipamento-create" class="prodesp-incident-list"></div>
+                        </div>
+
+                      </div>
+                      
+                    </div>
+
+                    <div class="mt-4" id="createLinksCard">
+                      
+
+                      <hr class="my-4" />
+
+                      <div class="mt-4">
+                        <h6 class="text-primary mb-3">Dados Links</h6>
+                        <p class="text-muted small mb-2">Ao escolher o tipo: <strong>MPLS</strong> = link principal do Blueprint; <strong>STATIC</strong> = backup. Use os placeholders como referência das colunas CSV.</p>
+                        <div class="results mb-3">
+                          <div id="insert-link-create">
+                            <div class="row g-3" id="create-link-fields-container">
+                              <div class="col-md-3 link-field-wrapper link-id-vgr-vivo-wrapper" data-link-type="STATIC MPLS" style="display:none;">
+                                <label for="createLinkIdVgr" class="form-label">ID VGR do Link <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control prodesp-no-space-input" id="createLinkIdVgr" placeholder="MPLS: ID VTV SCM | STATIC: ID VTV SAI-BL" />
+                              </div>
+                              <div class="col-md-3">
+                                <label for="createLinkTipo" class="form-label">Tipo <span class="text-danger">*</span></label>
+                                <select class="form-select" id="createLinkTipo">
+                                  <option value="" selected disabled>Selecione o tipo...</option>
+                                  <option value="STATIC">STATIC</option>
+                                  <option value="MPLS">MPLS</option>
+                                  <option value="DHCP">DHCP</option>
+                                  <option value="PPPoE">PPPoE</option>
+                                </select>
+                              </div>
+
+                              <div class="col-md-3">
+                                <label for="createLinkDesignador" class="form-label">Designador <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control prodesp-no-space-input" id="createLinkDesignador" placeholder="MPLS: LP_SCM | STATIC: LP_SAI-BL" autocomplete="off" />
+                              </div>
+
+                              <div class="col-md-3">
+                                <label for="createLinkOperadora" class="form-label">Operadora <span class="text-danger">*</span></label>
+                                <select class="form-select" id="createLinkOperadora">
+                                  <option value="">Selecione...</option>
+                                  <option value="VIVO">VIVO</option>
+                                  <option value="CLARO">CLARO</option>
+                                  <option value="OUTRA">OUTRA</option>
+                                </select>
+                              </div>
+
+                              <div class="col-md-3">
+                                <label for="createLinkVlan" class="form-label">VLAN</label>
+                                <input type="text" class="form-control prodesp-no-space-input" id="createLinkVlan"/>
+                              </div>
+
+                              <div class="col-md-3">
+                                <label for="createLinkVelocidade" class="form-label">Velocidade (Mbps) <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control prodesp-velocity-mbps-input" id="createLinkVelocidade" placeholder="Ex.: 300 Mbps, 10G ou 155000 Kbps — grava em Mbps" autocomplete="off" />
+                              </div>
+
+                              <div class="col-md-3 link-field-wrapper" data-link-type="STATIC MPLS">
+                                <label for="createLinkIpWan" class="form-label">IP WAN <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control prodesp-ip-plain-only" id="createLinkIpWan" placeholder="MPLS: WAN do FG | STATIC: IP_WAN_SDWAN" />
+                              </div>
+
+                              <div class="col-md-3 link-field-wrapper" data-link-type="STATIC MPLS">
+                                <label for="createLinkIpGateway" class="form-label">IP Gateway <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control prodesp-ip-plain-only" id="createLinkIpGateway" placeholder="MPLS: gateway CPE | STATIC: IP_Gateway_SAI" />
+                              </div>
+                              <div class="col-md-3 link-field-wrapper mpls-vivo-redundante-wrapper" data-link-type="MPLS" style="display:none;">
+                                <div class="form-check mt-4">
+                                  <input type="checkbox" class="form-check-input" id="createLinkRedundanteCritico" value="1" />
+                                  <label class="form-check-label" for="createLinkRedundanteCritico">Redundante Crítico</label>
+                                </div>
+                                  <small class="text-muted d-block">MPLS + VIVO: sem RC → WAN = GW+1 / GW = WAN−1; com RC → WAN = GW+3 / GW = WAN−3.</small>
+                              </div>
+
+                              <div class="col-md-3 link-field-wrapper" data-link-type="STATIC MPLS">
+                                <label for="createLinkIpMascara" class="form-label">IP Máscara <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control prodesp-ip-input" id="createLinkIpMascara" />
+                              </div>
+                              <div class="col-12 link-field-wrapper" data-link-type="STATIC MPLS">
+                                <small class="text-muted">Operadora VIVO: MPLS → máscara /29; sem RC: WAN = GW+1; com Redundante Crítico: WAN = GW+3. STATIC → par /30, ímpar /31; gateway = WAN − 1.</small>
+                              </div>
+
+                              <div class="col-md-3 link-field-wrapper" data-link-type="PPPoE">
+                                <label for="createLinkPppoeUser" class="form-label">PPPoE User <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control" id="createLinkPppoeUser" />
+                              </div>
+
+                              <div class="col-md-3 link-field-wrapper" data-link-type="PPPoE">
+                                <label for="createLinkPppoePass" class="form-label">PPPoE Password <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control" id="createLinkPppoePass" />
+                              </div>
+
+                            </div>
+                          </div>
+
+                          <div class="action text-end mt-3">
+                            <button type="button" id="btn-add-link-create" class="btn btn-primary btn-sm">Adicionar Link</button>
+                            <button type="button" id="btn-confirm-link-create" class="btn btn-success btn-sm d-none" title="Confirmar Edição"><i class="fas fa-check"></i></button>
+                            <button type="button" id="btn-cancel-link-create" class="btn btn-secondary btn-sm d-none" title="Cancelar"><i class="fas fa-times"></i></button>
+                          </div>
+                          <hr class="my-4" />
+                          <div class="log">
+                            <label for="">Links Adicionados</label>
+                            <div name="log" id="log-link-create" class="prodesp-incident-list"></div>
+                          </div>
+                        </div>
+                    </div>
+                  </div>
+                </div>
+
+              </form>
+            </div>
+
+            <div class="modal-footer">
+              <button type="button" class="btn btn-info text-white" id="btnGenerateBlueprintCreate" data-prodesp-submit-guard data-prodesp-guard-label="Gerando…"><i class="fas fa-file-csv me-2"></i>Gerar Blueprint</button>
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar </button>
+              <button type="button" class="btn btn-primary" id="btnCreateIncident" onclick="handleCreateModalSave()" data-prodesp-submit-guard>Criar </button>
+            </div>
+
+          </div>
+        </div>
+      </div>

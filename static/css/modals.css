@@ -1,0 +1,552 @@
+/* ==========================================================================
+   PRODESP — Modais, logs de incidentes e formulários auxiliares
+   ========================================================================== */
+
+/* ==================================== */
+/* Estilos de Modais           */
+/* ==================================== */
+
+.modal-content {
+    border-radius: 10px;
+    box-shadow: 0 6px 15px rgba(0,0,0,0.1);
+    border: 1px solid #dee2e6; /* Se quiser destacar o contorno do card */
+}
+.modal-header {
+    background-color: #f8f9fa;
+    border-bottom: 1px solid #dee2e6;
+    padding: 15px;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+}
+.modal-title {
+    color: #343a40;
+    font-weight: 500;
+}
+.modal-body {
+    padding: 20px;
+}
+.modal-body .row {
+    margin-bottom: 15px;
+}
+.modal-body label {
+    font-weight: bold;
+    color: #495057;
+    margin-bottom: 5px;
+    display: block;
+}
+.modal-body input.form-control {
+    border-radius: 6px;
+    border: 1px solid #ced4da;
+    padding: 10px;
+    font-size: 1rem;
+}
+.modal-footer {
+    border-top: 1px solid #dee2e6;
+    padding: 15px;
+    display: flex;
+    justify-content: flex-end;
+    border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 10px;
+}
+.modal-footer .btn-primary {
+    border-radius: 6px;
+    padding: 10px 20px;
+    font-size: 1rem;
+}
+
+/* Tamanho e alinhamento do modal */
+/* Estilos de detalhes dentro do modal */
+.modal-body h6 {
+    font-size: .9rem; /* Deixa os títulos de seção mais sutis */
+    font-weight: 600;
+    margin-top: 1rem;
+    border-bottom: 1px solid #dee2e6;
+    padding-bottom: 0.25rem;
+    letter-spacing: .5px;
+}
+.modal-body dl {
+    margin-bottom: 0.75rem;
+}
+.modal-body dt {
+    font-weight: 500;
+}
+.modal-body dd {
+    margin-bottom: 0.5rem;
+    white-space: normal; /* Permite quebra de linha para dados longos no modal */
+    overflow-wrap: break-word; /* Força quebra de palavras longas */
+}
+.modal-body dl.row > dt,
+.modal-body dl.row > dd {
+    margin-bottom: .5rem; /* Aumenta o espaçamento vertical entre linhas do dl */
+}
+
+/* Para realçar campos inválidos */
+input.is-invalid, select.is-invalid {
+    border-color: #dc3545;
+    background-color: #f8d7da;
+}
+
+/* Layout responsivo de colunas no modal */
+@media (min-width: 768px) {
+    #detailsContainer .row > .col-md-6 {
+        padding: 1rem;
+        border-radius: .25rem;
+    }
+    #detailsContainer .row > .col-md-6:nth-child(odd) {
+        background: rgba(0,0,0,0.02); /* Exemplo de cor de fundo suave */
+    }
+}
+
+/* Cabeçalhos de card mais sutis */
+.card-header {
+    background-color: #f5f5f5;
+    font-size: 1rem;
+    font-weight: 600;
+}
+
+/* Remove bordas extras de fieldset, se aplicável */
+fieldset {
+    border: none;
+    padding: 0;
+    margin: 0;
+}
+
+/* Aumenta o padding interno dos cards */
+.card-body {
+    padding: 1.25rem;
+}
+
+/* Estilos para tabelas dentro de modais (se houver) */
+.modal-body .table-responsive {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    margin-bottom: 1rem;
+}
+@media (max-width: 576px) {
+    .modal-body .table thead th,
+    .modal-body .table tbody td {
+        font-size: .75rem;
+        padding: .4rem;
+    }
+}
+.modal-body .table thead th {
+    text-align: center;
+    font-size: 0.85rem;
+    padding: 0.6rem;
+    vertical-align: middle;
+    white-space: normal; /* Permite quebra de cabeçalhos longos em tabelas de modal */
+}
+.modal-body .table tbody td {
+    text-align: center;
+    padding: 0.6rem;
+    min-width: 75px;
+}
+.modal-body .table-responsive thead tr th {
+    position: sticky;
+    top: 0;
+    background: #343a40;
+    z-index: 1;
+}
+/* ==================================== */
+/* Day After (Específicos)     */
+/* ==================================== */
+
+#day-after{
+    display: none; /* Ou block, conforme a necessidade de exibição */
+}
+
+.results {
+    /* Área de inserção (campos acima do log) */
+    #insert {
+        display: flex;
+        justify-content: flex-start;
+        gap: 0.6rem;
+        flex-wrap: wrap;
+    }
+
+    /* Scroll do container de ocorrências */
+    .log {
+    /* aplica a ambos: #log e #log-croqui */
+    #log,
+    #log-croqui,
+    #log-observacao-edit,
+    #log-observacao-view,
+    #log-link-view,
+    #log-link-details,
+    #log-observacao-details,
+    #log-observacao-create,
+    #log-equipamento-edit,
+    #log-equipamento-view,
+    #log-equipamento-details,
+    #log-equipamento-create,
+    #log-link-edit,
+    #log-link-create {
+      width: 100%;
+      height: auto;
+      max-height: 300px;
+      border-radius: 0.4rem;
+      border: 1px solid #ccc;
+      overflow-y: auto;
+
+      .titles-incident {
+        display: grid; /* Alterado para grid para alinhar com as linhas */
+        align-items: center;
+        width: 100%;
+        background-color: #343a40;;
+        color: white;
+        border-top-left-radius: 0.4rem;
+        border-top-right-radius: 0.4rem;
+        gap: 10px;
+        padding: 8px;
+
+        span {
+          text-align: center;
+          font-weight: bold;
+        }
+      }
+
+      .card-incident {
+        display: grid;
+        align-items: center;
+        gap: 10px;
+        padding: 8px;
+        border-bottom: 1px solid #eee;
+
+        .fields {
+          display: contents; /* Permite que os filhos participem do grid do pai (.card-incident) */
+          
+          /* liste todas as classes de “campo” aqui */
+          .incident-data,
+          .incident-device,
+          .incident-device2,
+          .incident-fabricante,
+          .incident-ip-old,
+          .incident-ip-now,
+          .incident-reason,
+          .incident-resolucao,
+          .incident-funcionamento,
+          .incident-chamado,
+          .incident-responsible,
+          .incident-analista,
+          /* e para croqui: */
+          .incident-number,
+          .incident-os,
+          .incident-motivo,
+          .incident-chamado-croqui,
+          .incident-responsavel-croqui,
+          .incident-ip-new,
+          .incident-analista-croqui,
+          /* equipamentos: */
+          .equipamento-modelo,
+          .equipamento-serial,
+          .equipamento-mac,
+          .equipamento-iot,
+          .equipamento-descricao
+           {
+            padding: 0.4rem 0.6rem;
+            border: 1px solid #dee2e6;
+            background-color: #fff;
+            border-radius: 4px;
+            min-height: 38px;
+            display: flex;
+            align-items: center;
+            word-break: break-word;
+            font-size: 0.85rem;
+          }
+        }
+      }
+    }
+  }
+}
+
+/* Ações de Botões (Day After) */
+.action {
+    width: 100%;
+    text-align: end;
+
+    button {
+        padding: .6rem;
+        background-color: #007bff;
+        border: 1px solid transparent;
+        border-radius: .4rem;
+        font-weight: bold;
+        color: white;
+        transition: .2s;
+
+        &:active {
+            box-shadow: 2px 2px 6px inset #222;
+            transform: translateY(2px);
+        }
+    }
+}
+
+/* Estilo para desabilitar elementos */
+.disable {
+    background-color: #6c757d;
+}
+
+/* ========================================================================== */
+/* DEFINIÇÕES DE GRID PARA TABELAS (Observações, Equipamentos, Links)         */
+/* ========================================================================== */
+
+
+/* --- OBSERVAÇÕES (Data, Texto, [Ação]) --- */
+#log-observacao-view .titles-incident,
+#log-observacao-view .card-incident,
+#log-observacao-details .titles-incident,
+#log-observacao-details .card-incident {
+    grid-template-columns: 150px 1fr;
+}
+#log-observacao-edit .titles-incident,
+#log-observacao-edit .card-incident,
+#log-observacao-create .titles-incident,
+#log-observacao-create .card-incident {
+    grid-template-columns: 150px 1fr 50px;
+}
+
+#log-equipamento-edit .titles-incident,
+#log-equipamento-edit .card-incident,
+#log-equipamento-create .titles-incident,
+#log-equipamento-create .card-incident,
+#log-link-edit .titles-incident,
+#log-link-edit .card-incident,
+#log-link-create .titles-incident,
+#log-link-create .card-incident,
+#log-equipamento-view .titles-incident,
+#log-equipamento-view .card-incident,
+#log-equipamento-details .titles-incident,
+#log-equipamento-details .card-incident,
+#log-link-view .titles-incident,
+#log-link-view .card-incident,
+#log-link-details .titles-incident,
+#log-link-details .card-incident {
+    display: none;
+}
+
+/* --- LOGS CONFIGURAÇÃO (meta, caixa scroll redimensionável, ação) --- */
+#log-configuracao-remota-edit .titles-incident,
+#log-configuracao-remota-create .titles-incident {
+    display: none;
+}
+
+#log-configuracao-remota-edit .prodesp-log-config-card,
+#log-configuracao-remota-create .prodesp-log-config-card {
+    display: grid;
+    grid-template-columns: 150px 1fr 44px;
+    align-items: start;
+    gap: 10px;
+    padding: 10px 8px;
+    border-bottom: 1px solid #eee;
+}
+
+#log-configuracao-remota-edit .prodesp-log-config-meta,
+#log-configuracao-remota-create .prodesp-log-config-meta {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    font-size: 0.85rem;
+}
+
+#log-configuracao-remota-edit .prodesp-log-config-meta .incident-data,
+#log-configuracao-remota-create .prodesp-log-config-meta .incident-data,
+#log-configuracao-remota-edit .prodesp-log-config-meta .incident-user,
+#log-configuracao-remota-create .prodesp-log-config-meta .incident-user {
+    padding: 0.35rem 0.5rem;
+    border: 1px solid #dee2e6;
+    border-radius: 4px;
+    background: #fff;
+    word-break: break-word;
+}
+
+#log-configuracao-remota-edit .incident-log-text-wrap,
+#log-configuracao-remota-create .incident-log-text-wrap {
+    resize: vertical;
+    overflow: auto;
+    min-height: 72px;
+    max-height: 520px;
+    border: 1px solid #ced4da;
+    border-radius: 6px;
+    background: #f8f9fa;
+    padding: 0.45rem 0.6rem;
+}
+
+#log-configuracao-remota-edit .incident-log-text-wrap .incident-log-text,
+#log-configuracao-remota-create .incident-log-text-wrap .incident-log-text {
+    white-space: pre-wrap;
+    word-break: break-word;
+    font-size: 0.82rem;
+    line-height: 1.35;
+    text-align: left;
+}
+
+.prodesp-log-config-hint {
+    font-size: 0.78rem;
+    color: #6c757d;
+}
+
+.prodesp-log-config-reset-height {
+    font-size: 0.78rem;
+    padding: 0.1rem 0.45rem;
+    vertical-align: baseline;
+}
+/* Adiciona uma borda vermelha e muda a cor do texto do botão do accordion quando inválido */
+.accordion-button.is-invalid {
+    border: 1px solid var(--bs-danger);
+    color: var(--bs-danger);
+    box-shadow: none; /* Remove o box-shadow azul padrão do bootstrap ao focar */
+}
+
+/* Muda a cor do ícone de seta (chevron) do bootstrap para vermelho */
+.accordion-button.is-invalid::after {
+    filter: invert(16%) sepia(98%) saturate(5531%) hue-rotate(352deg) brightness(84%) contrast(113%);
+}
+
+/* Garante que o botão não fique azul ao ser clicado, se for inválido */
+.accordion-button.is-invalid:not(.collapsed):focus {
+    box-shadow: none;
+}
+
+/* Estilo para o botão de copiar dentro de um input-group */
+.btn-copy {
+    /* O Bootstrap já lida bem com isso, mas podemos forçar o tamanho se necessário */
+    padding-top: 0;
+    padding-bottom: 0;
+    margin-bottom: 0;
+}
+
+/* Estilo para o ícone de copiar dentro da lista de equipamentos renderizada */
+.btn-copy-inline {
+    color: #6c757d; /* Cinza secundário do Bootstrap */
+    cursor: pointer;
+    margin-left: 4px; /* Espaçamento do texto */
+    transition: color 0.2s ease-in-out;
+}
+
+.btn-copy-inline:hover {
+    color: #0d6efd; /* Azul primário do Bootstrap */
+}
+
+.input-group .btn-copy {
+  height: calc(1.5em + 1.2rem + 2px);
+}
+
+/* Listas de equipamentos/links nos modais create/edit (accordion) */
+.prodesp-incident-list,
+#log-equipamento-edit,
+#log-equipamento-create,
+#log-link-edit,
+#log-link-create,
+#log-equipamento-view,
+#log-link-view,
+#log-equipamento-details,
+#log-link-details {
+  width: 100%;
+  min-width: 0;
+  max-height: 360px;
+  overflow-y: auto;
+  border: 1px solid #dee2e6;
+  border-radius: 0.4rem;
+  background: #fff;
+}
+
+.prodesp-incident-accordion .accordion-item {
+  background: transparent;
+}
+
+.prodesp-incident-accordion-header {
+  min-width: 0;
+}
+
+.prodesp-incident-item-editing > .accordion-header {
+  position: sticky;
+  top: 0;
+  z-index: 3;
+  background: #fff;
+  border-bottom: 1px solid #dee2e6;
+  box-shadow: 0 0.2rem 0.45rem rgba(0, 0, 0, 0.08);
+}
+
+.prodesp-incident-item-editing .prodesp-incident-actions-slot {
+  background: #fff;
+}
+
+.prodesp-incident-accordion-header .accordion-button {
+  flex: 1 1 auto;
+  min-width: 0;
+  font-size: 0.85rem;
+  padding: 0.5rem 0.75rem;
+  box-shadow: none;
+  white-space: normal;
+  word-break: break-word;
+}
+
+.prodesp-incident-actions-slot {
+  flex: 0 0 auto;
+  border-left: 1px solid rgba(0, 0, 0, 0.08);
+  background: rgba(0, 0, 0, 0.02);
+}
+
+.prodesp-incident-fields-grid .prodesp-incident-readonly {
+  min-height: 2rem;
+  display: flex;
+  align-items: center;
+}
+
+.prodesp-incident-actions-slot:empty {
+  display: none;
+  border: none;
+}
+
+@media (max-width: 991.98px) {
+  .prodesp-incident-accordion-header .accordion-button {
+    font-size: 0.8rem;
+    padding: 0.45rem 0.6rem;
+  }
+}
+
+/* Largura padrão dos modais operacionais */
+.modal-dialog {
+    max-width: 1800px !important;
+    width: 90% !important;
+    margin: 1.75rem auto;
+}
+
+/* Confirmação Blueprint — blocos LAN (IP + máscara + Rede) */
+#modalBlueprintConfirm .modal-dialog {
+    max-width: 720px !important;
+    width: 92% !important;
+}
+
+.bp-confirm-lan-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.bp-confirm-lan-block {
+    border: 1px solid #dee2e6;
+    border-radius: 8px;
+    padding: 0.75rem 0.9rem;
+    background: #fafbfc;
+}
+
+.bp-confirm-lan-block-title {
+    font-size: 0.8rem;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+    color: #495057;
+    margin-bottom: 0.5rem;
+    padding-bottom: 0.35rem;
+    border-bottom: 1px solid #e9ecef;
+}
+
+.bp-confirm-lan-block .form-label {
+    font-weight: 500;
+    font-size: 0.8rem;
+}
+
+.bp-confirm-lan-block input.form-control,
+.bp-confirm-lan-block select.form-select {
+    padding: 0.35rem 0.5rem;
+}
