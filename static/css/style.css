@@ -1,0 +1,12 @@
+/*
+ * LEGADO — não referenciado pelos templates PRODESP atuais.
+ *
+ * Layout substituído por:
+ *   theme.css          — tokens, reset, tipografia base
+ *   layout.css         — grid, sidebar, header, .rd-container
+ *   tables.css         — DataTables, colunas, Select2 no thead
+ *   modals.css         — modais, logs de incidentes, formulários
+ *   dashboard_style.css — KPIs, cards, gráficos, indicadores
+ *
+ * Novas páinas: {% include 'snippets/prodesp_stylesheets.html' %}
+ */
