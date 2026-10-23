@@ -1,0 +1,16 @@
+button:active {
+    border: 1px inset #999
+}
+
+button{
+    padding: 1rem;
+    font-size: 1.6rem;
+    font-weight: bold;
+    color: #ccc;
+    background-color: #555;
+    border-radius: .8rem;
+}
+
+button:hover{
+    background-color: #333;
+}

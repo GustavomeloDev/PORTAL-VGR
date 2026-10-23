@@ -1,0 +1,33 @@
+:root {
+    /* Removido color-scheme para garantir modo claro por padrão em todos os navegadores */
+    /* color-scheme: light; */
+    --primary: hwb(279 0% 66%);
+    --accent: #380057;
+    --secondary: #f40a78;
+    /* --primary: #5b1a6e;
+    --accent: #f40a78;
+    --secondary: #9b00d1; */
+
+  --dark: #343a40;
+  --light: #f8f9fa;
+  --white: #ffffff;
+  --gray: #ced4da;
+  --gray-dark: #6c757d;
+  --radius: 8px;
+  --space: 1rem;
+  --font-base: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+/* Badge Cyan (Azul Ciano) */
+.bg-cyan {
+  background-color: #00bcd4 !important; /* Material Cyan */
+  color: #ffffff !important;
+}

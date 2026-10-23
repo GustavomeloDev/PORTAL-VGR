@@ -1,0 +1,55 @@
+/* Daltonismo: ao ativar .cb-mode no body, aplicar paleta acessível */
+.cb-mode .badge.bg-success { 
+  background-color: #795548 !important;
+  color: #ffffff !important;
+}
+.cb-mode .badge.bg-warning, 
+.cb-mode .badge.bg-warning.text-dark { 
+  background-color: #f57c00 !important;
+  color: #000000 !important;
+}
+.cb-mode .badge.bg-danger { 
+  background-color: #000000 !important;
+  color: #ffffff !important;
+}
+.cb-mode .badge.bg-info, 
+.cb-mode .badge.bg-info.text-dark { 
+  background-color: #9e9e9e !important;
+  color: #000000 !important;
+}
+.cb-mode .badge.bg-secondary { 
+  background-color: #6d4c41 !important;
+  color: #ffffff !important;
+}
+.cb-mode .badge.bg-warning.bg-opacity-75.text-dark { 
+  background-color: #6d4c41 !important;
+  color: #ffffff !important;
+}
+.cb-mode .badge.bg-cyan { 
+  background-color: #ffb300 !important;
+  color: #000000 !important;
+}
+
+/* Botão toggle visual */
+#colorBlindToggle.active {
+  filter: brightness(1.1);
+  border-color: #ffffff !important;
+}
+ 
+.cb-mode .header {
+  background: cornflowerblue !important;
+  color: #003b46 !important;
+  h1 {
+    i{
+      color: aliceblue !important;
+    }
+  }
+}
+.cb-mode .sidebar {
+  background-color: #87CEEB !important;
+  color: #003b46 !important;
+}
+.cb-mode .sidebar a,
+.cb-mode .btn {
+  color: #ffffff !important;
+}

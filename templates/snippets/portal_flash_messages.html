@@ -1,0 +1,15 @@
+{# Escopo: portal_flash_scope (str ou omitido). Fixo no canto: portal_flash_fixed=true #}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/portal_flash.css') }}">
+{% set _scope = portal_flash_scope | default(none) %}
+{% set _fixed = portal_flash_fixed | default(false) %}
+{% set _messages = portal_flashed_messages(_scope) %}
+{% if _messages %}
+<div class="portal-flash-messages{% if _fixed %} portal-flash-fixed{% else %} flash-messages mb-3{% endif %}" role="status" aria-live="polite">
+  {% for category, message in _messages %}
+  <div class="alert alert-{{ portal_flash_alert_class(category) }} alert-dismissible fade show" role="alert">
+    <span class="portal-flash-text">{{ message }}</span>
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fechar"></button>
+  </div>
+  {% endfor %}
+</div>
+{% endif %}

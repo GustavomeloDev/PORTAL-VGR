@@ -1,0 +1,96 @@
+/* Estilo do conteúdo principal */
+.content {
+    margin-left: 250px; /* Alinhado com a sidebar */
+    padding: 100px;
+    padding-top: 150px; /* Espaço suficiente para o cabeçalho */
+    background-color: #ffffff;
+    min-height: calc(100vh - 80px); /* Altura mínima para ocupar a tela inteira menos o cabeçalho */
+    box-sizing: border-box;
+}
+
+
+/* Estilo do formulário */
+form {
+    max-width: 600px;
+    margin: 40px auto 0 auto;
+    background-color: #ffffff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: bold;
+}
+
+input[type="text"], input[type="file"], input[type="password"] {
+    width: 95%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #ced4da;
+    border-radius: 4px;
+}
+
+input[type="submit"] {
+    background-color: #28a745;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 3px;
+    cursor: pointer;
+}
+
+input[type="submit"]:hover {
+    background-color: #218838;
+}
+
+button {
+    background-color: #28a745;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 3px;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #218838;
+}
+
+#logs {
+    white-space: pre-wrap; /* Quebra linhas longas */
+    word-wrap: break-word; /* Quebra palavras longas para evitar estouro do conteúdo */
+    /*max-width: 100%; /* Garante que o conteúdo do <pre> não ultrapasse a largura do container */
+    /*overflow-x: auto; /* Adiciona rolagem horizontal se necessário */
+}
+
+/* Estilo do campo select */
+select {
+    width: 98.5%; /* Largura consistente com os inputs */
+    padding: 10px; /* Espaçamento interno para melhorar a usabilidade */
+    border: 1px solid #ced4da; /* Borda leve */
+    border-radius: 4px; /* Cantos arredondados */
+    background-color: #ffffff; /* Fundo branco */
+    font-size: 16px; /* Tamanho de fonte legível */
+    color: #495057; /* Cor da fonte */
+    appearance: none; /* Remove o estilo padrão do navegador */
+    background-image: url('data:image/svg+xml;charset=US-ASCII,<svg xmlns="http://www.w3.org/2000/svg" width="10" height="6" viewBox="0 0 10 6"><path fill="%23495057" d="M5 6L0 0h10z"/></svg>'); /* Ícone de seta */
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+    background-size: 10px 6px;
+    box-sizing: border-box; /* Inclui bordas no cálculo da altura e largura */
+}
+
+/* Hover e focus no select */
+select:hover {
+    border-color: #80bdff; /* Azul leve ao passar o mouse */
+    outline: none;
+}
+
+select:focus {
+    border-color: #80bdff; /* Azul leve ao focar */
+    box-shadow: 0 0 5px rgba(128, 189, 255, 0.5); /* Efeito de sombra */
+    outline: none;
+}

@@ -1,0 +1,13 @@
+{# Heartbeat: presença técnica (user_activity / coluna «Ativo» na supervisão). Status de negócio: POST login ou retomada de sessão (remember) com Indisponível → Disponível; logout/idle 2h → Indisponível; reconciliação ≈5 min para quem saiu sem logout. #}
+{% if current_user.is_authenticated %}
+<link rel="stylesheet" href="{{ url_for('login.static', filename='css/notificacoes.css') }}">
+{% include 'snippets/portal_notificacoes_offcanvas.html' %}
+{# Deep link ?open_view= — strip imediato da URL (sem defer); modal abre via portalConsumirOpenView no módulo. #}
+<script src="{{ url_for('login.static', filename='js/portal_open_view.js') }}"></script>
+<script defer src="{{ url_for('login.static', filename='js/portal_presence.js') }}" data-interval-ms="{{ PRESENCE_PING_INTERVAL_MS|default(180000) }}" data-url="{{ url_for('login.api_presence') }}"></script>
+<script defer src="{{ url_for('login.static', filename='js/portal_notificacoes.js') }}"></script>
+<script defer src="{{ url_for('login.static', filename='js/portal_notif_global.js') }}" data-poll-ms="{{ PORTAL_NOTIF_POLL_MS|default(90000) }}" data-count-url="{{ url_for('login.api_notif_count') }}" data-inbox-url="{{ url_for('login.api_notificacoes_inbox') }}" data-central-url="{{ url_for('login.avisos_central') }}"></script>
+{% if mostrar_fab_disponibilidade|default(false) and url_ajustes_disponibilidade_fab %}
+<script defer src="{{ url_for('login.static', filename='js/portal_status_global.js') }}" data-context-url="{{ url_for('login.api_disponibilidade_contexto') }}" data-save-url="{{ url_for('login.painel_update_status') }}" data-ajustes-url="{{ url_ajustes_disponibilidade_fab }}"></script>
+{% endif %}
+{% endif %}

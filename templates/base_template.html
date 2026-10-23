@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head> 
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>{% block title %}Portal Agendamento{% endblock %}</title>
+
+    <!-- ============================================= LINKS ============================================================ -->
+    <!-- Font Awesome (ícones) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Toast CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
+
+    <!-- Font Awesome (ícones) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+    <!-- DataTables Core -->
+    <link rel="stylesheet" href="https://cdn.datatables.net/2.3.2/css/dataTables.dataTables.css">
+
+    <!-- DataTables ColumnControl -->
+    <link rel="stylesheet" href="https://cdn.datatables.net/columncontrol/1.0.6/css/columnControl.dataTables.css">
+
+    <!-- DataTables Buttons (ccSearchClear) -->
+    <link rel="stylesheet" href="https://cdn.datatables.net/buttons/3.2.3/css/buttons.dataTables.css">
+
+    <!-- DataTables DateTime (para filtro de datas) -->
+    <link rel="stylesheet" href="https://cdn.datatables.net/datetime/1.5.5/css/dataTables.dateTime.min.css">
+
+    <!-- Thema e Layout Padrão -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/theme.css') }}?v={{ range(1, 10000) | random }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/layout.css') }}?v={{ range(1, 10000) | random }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/colorblind.css') }}?v={{ range(1, 10000) | random }}">
+    
+
+    <!-- Base Styles  -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/base_style.css') }}?v={{ range(1, 10000) | random }}">
+
+    <!-- Scripts (Moved to Head with defer) -->
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.7.1.js" defer></script>
+
+    <!-- jQuery Mask -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js" defer></script>
+
+    <!-- Toast -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js" defer></script>
+
+    <!-- DataTables Core -->
+    <script src="https://cdn.datatables.net/2.3.2/js/dataTables.js" defer></script>
+
+    <!-- DataTables ColumnControl -->
+    <script src="https://cdn.datatables.net/columncontrol/1.0.6/js/dataTables.columnControl.js" defer></script>
+    <script src="https://cdn.datatables.net/columncontrol/1.0.6/js/columnControl.dataTables.js" defer></script>
+
+    <!-- DataTables Buttons (ccSearchClear) -->
+    <script src="https://cdn.datatables.net/buttons/3.2.3/js/dataTables.buttons.js" defer></script>
+    <script src="https://cdn.datatables.net/buttons/3.2.3/js/buttons.dataTables.js" defer></script>
+
+    <!-- DataTables DateTime (se usar filtro por datas) -->
+    <script src="https://cdn.datatables.net/datetime/1.5.5/js/dataTables.dateTime.min.js" defer></script>
+
+    <!-- Bootstrap -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js" defer></script>
+    <script src="/core/static/js/ui/portal_modal_a11y.js?v=1" defer></script>
+
+    <script>
+      window.AppConfig = {
+        user: {
+          admin: "{{ current_user.admin_user | default(0) }}",
+          gestor: "{{ current_user.gestor_user | default(0) }}",
+          name: "{{ current_user.nome_user | default('') }}",
+          departments: {% if current_user.is_authenticated %}{{ current_user.departamentos_todos() | list | tojson }}{% else %}[]{% endif %}
+        }
+      };
+      
+      window.LOGGED_IN_USER_ADMIN = window.AppConfig.user.admin;
+      window.LOGGED_IN_USER_GESTOR = window.AppConfig.user.gestor;
+      window.LOGGED_IN_USER_NAME = window.AppConfig.user.name;
+      window.LOGGED_IN_USER_DEPARTAMENTOS = window.AppConfig.user.departments;
+    </script>
+    <script src="/static/js/portal_perfil_rules.js"></script>
+    <script>
+      // Disponibiliza o currentUser globalmente para uso no JS
+      window.currentUser = {
+          admin_user: parseInt(window.AppConfig.user.admin),
+          gestor_user: parseInt(window.AppConfig.user.gestor),
+          nome_user: window.AppConfig.user.name,
+          departamento_user: (window.AppConfig.user.departments[0] || ""),
+          departamentos_todos: window.AppConfig.user.departments
+      };
+    </script>
+
+    <script type="module" src="/core/static/js/accessibility/color-blind-mode.js?v={{ range(1, 10000) | random }}" defer></script>
+    {% block scripts %}{% endblock %} {# Espaço para scripts adicionais #}
+
+    {% block head %}{% endblock %} {# Espaço para CSS ou meta tags adicionais #}
+
+  </head>
+  <body>
+    <aside  class="sidebar">
+      <!-- Logo principal -->
+      <img src="{{ url_for('static', filename='img/logo.png') }}" alt="Logo Vivo Vita" class="sidebar-logo">
+
+      {% block menu %}{% endblock %}
+    
+      <!-- Logo secundário no rodapé -->
+      <div class="sidebar-footer">
+        <a href="{{ url_for('login.pos_login') }}" class="logout-button text-decoration-none text-center d-block">Inicio - Projetos</a>
+        <a href="{{ url_for('login.logout') }}" class="logout-button btn-logout-specific text-decoration-none text-center d-block">Logout</a>
+        {% block logo %}{% endblock %}
+      </div>
+    </aside >
+
+    <div class="content_container">
+      <header>
+        <h1>{% block header_title %}{% endblock %}</h1> {# Título do cabeçalho pode ser alterado #}
+        <div class="header-actions">
+          <!-- <button class="btn btn-icon" id="sidebarToggle" title="Menu">☰</button> -->
+          <button class="toggle-btn" id="colorBlindToggle" aria-pressed="false" title="Toggle Color Blind Mode">
+            <i class="fa-solid fa-low-vision"></i> Color Blind
+          </button>
+        </div>
+      </header>
+      <main>
+
+        {% set portal_flash_scope = 'agendamentos' %}
+        {% include 'snippets/portal_flash_messages.html' %}
+        {% block content %}{% endblock %} {# Aqui é onde o conteúdo específico de cada página vai #}
+
+      </main>
+    </div>
+    {% include 'snippets/portal_presence.html' %}
+  </body>
+</html>
