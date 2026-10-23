@@ -1,8 +1,0 @@
-{# CSS base PRODESP — ordem: tokens → layout → tabelas → modais → dashboard #}
-<link rel="stylesheet" href="{{ url_for('prodesp.static', filename='css/theme.css') }}" />
-<link rel="stylesheet" href="{{ url_for('prodesp.static', filename='css/layout.css') }}" />
-{% if include_operational_styles|default(true) %}
-<link rel="stylesheet" href="{{ url_for('prodesp.static', filename='css/tables.css') }}" />
-<link rel="stylesheet" href="{{ url_for('prodesp.static', filename='css/modals.css') }}?v=bp-confirm-4" />
-{% endif %}
-<link rel="stylesheet" href="{{ url_for('prodesp.static', filename='css/dashboard_style.css') }}?v=dt-wrap-1" />
