@@ -1,0 +1,55 @@
+{# Campos opcionais MV_* (Blueprint CSV) — modais de atendimento e Gerar Blueprint.
+   mv_prefix: edit | create | view | details | blueprint
+   mv_mode: form | readonly | blueprint
+   mv_unidade: dict (somente blueprint)
+   Fonte: prodesp_mv_opcionais_fields (db_field_limits.UNIDADES_MV_OPCIONAIS_SPEC)
+#}
+{% set mv_accordion_id = mv_prefix ~ 'MvOpcionaisAccordion' %}
+{% set mv_collapse_id = mv_prefix ~ 'MvOpcionaisPane' %}
+
+<div class="accordion mb-3 prodesp-mv-opcionais-accordion" id="{{ mv_accordion_id }}">
+  <div class="accordion-item border">
+    <h2 class="accordion-header" id="{{ mv_prefix }}MvOpcionaisHeading">
+      <button class="accordion-button collapsed py-2" type="button" data-bs-toggle="collapse"
+        data-bs-target="#{{ mv_collapse_id }}" aria-expanded="false" aria-controls="{{ mv_collapse_id }}">
+        <i class="fas fa-file-csv me-2 text-secondary"></i>
+        <span>Campos opcionais <span class="text-muted fw-normal">(Blueprint CSV)</span></span>
+      </button>
+    </h2>
+    <div id="{{ mv_collapse_id }}" class="accordion-collapse collapse" aria-labelledby="{{ mv_prefix }}MvOpcionaisHeading"
+      data-bs-parent="#{{ mv_accordion_id }}">
+      <div class="accordion-body pt-2">
+        <p class="text-muted small mb-3">
+          Opcional. Alimenta colunas <code>MV_*</code> do CSV de blueprint.
+          <strong>Lan Trânsito</strong> aqui é distinto de <strong>IP LAN Trânsito</strong> (gateway do link MPLS).
+        </p>
+        <div class="row g-3">
+          {% for field in prodesp_mv_opcionais_fields %}
+          {% if mv_mode == 'blueprint' %}
+          {% set field_id = 'bp_' ~ field.db_col %}
+          {% else %}
+          {% set field_id = mv_prefix ~ field.id_suffix %}
+          {% endif %}
+          <div class="col-md-4">
+            <label class="form-label" for="{{ field_id }}">{{ field.label }}</label>
+            {% if mv_mode == 'blueprint' %}
+            <input type="text" name="{{ field.db_col }}" id="{{ field_id }}"
+              class="form-control {% if field.cidr %}prodesp-ip-input{% else %}prodesp-ip-plain-only{% endif %}"
+              value="{{ (mv_unidade[field.db_col] if mv_unidade is defined and mv_unidade else '') or '' }}"
+              placeholder="{{ field.csv_col }}"
+              {% if prodesp_mv_field_limits is defined and prodesp_mv_field_limits.get(field.db_col) %} maxlength="{{ prodesp_mv_field_limits[field.db_col] }}"{% endif %}>
+            {% elif mv_mode == 'readonly' %}
+            <input type="text" id="{{ field_id }}" class="form-control" readonly>
+            {% else %}
+            <input type="text" id="{{ field_id }}" class="form-control {% if field.cidr %}prodesp-ip-input{% else %}prodesp-ip-plain-only{% endif %}"
+              placeholder="{{ field.csv_col }}"
+              {% if prodesp_form_field_limits is defined and prodesp_form_field_limits.get(field_id) %} maxlength="{{ prodesp_form_field_limits[field_id] }}"{% endif %}>
+            {% endif %}
+            <small class="text-muted d-block">{{ field.csv_col }}{% if field.cidr %} · CIDR (máscara no CSV){% endif %}</small>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

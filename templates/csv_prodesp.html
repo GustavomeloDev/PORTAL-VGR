@@ -1,0 +1,215 @@
+{% extends "base_prodesp.html" %}
+
+{% block title %}PRODESP - CSV Agendamento{% endblock %}
+{% block nav_section %}csv{% endblock %}
+{% block header_title %}<strong>PRODESP</strong> - CSV AGENDAMENTOS{% endblock %}
+
+{% block head %}
+<style>
+  .alert code {
+    color: #856404;
+    font-weight: bold;
+    background-color: rgba(0, 0, 0, 0.05);
+    padding: 0.1rem 0.3rem;
+    border-radius: 4px;
+  }
+  .csv-preview-summary {
+    font-size: 0.95rem;
+  }
+  .csv-preview-invalid-table .form-control-sm {
+    min-width: 6rem;
+    font-size: 0.8rem;
+  }
+  .csv-preview-invalid-scroll {
+    max-height: min(520px, 55vh);
+    overflow: auto;
+    border: 1px solid #dee2e6;
+    border-radius: 0.375rem;
+    background: #fff;
+    margin-bottom: 0;
+  }
+  .csv-preview-invalid-scroll .table thead th {
+    position: sticky;
+    top: 0;
+    z-index: 2;
+    background-color: #343a40;
+    color: #fff;
+    font-weight: 600;
+    box-shadow: 0 1px 0 #212529;
+  }
+  .csv-preview-invalid-scroll td {
+    vertical-align: middle;
+  }
+  #csv-preview-invalid-section {
+    margin-bottom: 1.25rem;
+  }
+  #csv-preview-sem-acao-section {
+    clear: both;
+    border-top: 1px solid #dee2e6;
+    padding-top: 1.25rem;
+    margin-top: 0.25rem;
+  }
+  .csv-preview-valid-scroll {
+    max-height: 420px;
+    overflow-y: auto;
+  }
+  .csv-preview-collapse-toggle .csv-collapse-icon {
+    transition: transform 0.15s ease;
+    width: 1rem;
+    display: inline-block;
+  }
+  .csv-preview-collapse-toggle[aria-expanded="true"] .csv-collapse-icon {
+    transform: rotate(90deg);
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="rd-container">
+  <div class="row mb-4">
+    <div class="col-12">
+      <h5 class="performance-title"><i class="fas fa-file-csv me-2"></i>IMPORTAÇÃO DE AGENDAMENTOS</h5>
+    </div>
+  </div>
+
+  <div class="card mb-4 shadow-sm border-0">
+    <div class="card-header bg-white py-3">
+      <h5 class="mb-0 text-dark fw-bold"><i class="fas fa-info-circle me-2 text-primary"></i>Instruções e Modelo</h5>
+    </div>
+    <div class="card-body">
+      <div class="alert alert-warning border-start border-4 border-warning mb-4" role="alert">
+        <h4 class="alert-heading h5 fw-bold"><i class="fas fa-exclamation-triangle me-2"></i>Atenção</h4>
+        <p class="mb-1">O campo <strong>id_vgr</strong> deve ser numérico (somente dígitos).</p>
+        <p class="mb-1">O campo <strong>data_agendamento</strong> deve seguir o formato: <code>dd/mm/yyyy</code> (Ex.: 25/12/2024).</p>
+        <p class="mb-1">O campo <strong>hora_agendamento</strong> deve seguir o formato: <code>HH:mm</code> (Ex.: 14:30). Texto inválido (ex.: «A/C») bloqueia a linha.</p>
+        <p class="mb-1">Para linhas com <strong>data</strong> e/ou <strong>hora</strong> de agendamento, os campos <strong>contratada</strong>, <strong>data_agendamento</strong> e <strong>hora_agendamento</strong> são <strong>obrigatórios</strong>.</p>
+        <p class="mb-1"><strong>contratada</strong> deve ser exatamente um dos valores: DELFIA, INELCOM, MAMInfo, SPREAD, Vivo Redes - Capital, Vivo Redes - Interior (não aceita vazio, «—» ou valor inexistente).</p>
+        <p class="mb-1">Se <strong>field</strong> estiver preenchido: <strong>contato_field</strong> é obrigatório (10 ou 11 dígitos) e, quando Field for uma empresa da lista oficial, deve ser igual à contratada.</p>
+        <p class="mb-1"><strong>id_vgr</strong> duplicado no mesmo arquivo: a segunda ocorrência é ignorada e aparece em «não agendadas».</p>
+        <p class="mb-1">Os campos <strong>field</strong> e <strong>contato_field</strong> são opcionais (exceto a regra acima) e registram o planejamento de Dados Field <em>antes</em> de iniciar o atendimento.</p>
+        <p class="mb-1">Linhas <strong>rejeitadas na pré-visualização</strong> (mesmo sem correção) entram no <strong>e-mail de resumo</strong> para o time de agendamento.</p>
+        <p class="mb-1">Unidades <strong>já concluídas</strong> ou <strong>VGR inexistente</strong> aparecem como «sem ação no portal» — não há correção possível pelo CSV.</p>
+        <p class="mb-1">Linhas <strong>corrigíveis</strong> (contratada, hora, data etc.) podem ser editadas na tabela; use <strong>Aplicar correções em todas</strong> após editar.</p>
+        <p class="mb-1">Unidades com <strong>atendimento Concluído</strong> não podem receber novo agendamento via CSV; o relatório indicará a data do último concluído.</p>
+        <hr>
+        <p class="mb-0">O sistema atualizará a agenda e/ou os dados planejados da unidade, sem criar atendimento. Ao final, será exibido um resumo no portal e enviado por e-mail.</p>
+      </div>
+      <div class="text-center">
+        <button type="button" class="btn btn-primary px-4 py-2 fw-bold" id="gerar-csv">
+          <i class="fas fa-download me-2"></i>Baixar Modelo CSV
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div class="card shadow-sm border-0">
+    <div class="card-header bg-white py-3">
+      <h5 class="mb-0 text-dark fw-bold">
+        <i class="fas fa-upload me-2 text-success"></i>Upload de Arquivo
+      </h5>
+    </div>
+    <div class="card-body py-4">
+      <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6 text-center">
+          <label for="input-import-file" class="form-label fw-bold mb-3">Selecione o arquivo CSV preenchido para processamento</label>
+          <input type="file" class="form-control mb-4" name="input-import-file" id="input-import-file" accept=".csv">
+          <button type="button" class="btn btn-success px-5 py-2 fw-bold" id="btn-upload" disabled>
+            <i class="fas fa-upload me-2"></i>Enviar linhas válidas
+          </button>
+          <button type="button" class="btn btn-outline-secondary mt-2 d-none" id="btn-export-post-erros">
+            <i class="fas fa-file-download me-1"></i>Baixar todas não aplicadas (último envio)
+          </button>
+          <button type="button" class="btn btn-outline-primary mt-2 d-none" id="btn-corrigir-post-erros">
+            <i class="fas fa-edit me-1"></i>Corrigir no portal (somente corrigíveis)
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="csv-preview-panel" class="card mt-4 shadow-sm border-0 d-none">
+    <div class="card-header bg-white py-3 d-flex flex-wrap justify-content-between align-items-center gap-2">
+      <h5 class="mb-0 text-dark fw-bold"><i class="fas fa-table me-2 text-primary"></i>Pré-visualização</h5>
+      <div class="d-flex flex-wrap gap-2">
+        <button type="button" class="btn btn-sm btn-success btn-aplicar-todas-invalidas d-none" disabled>
+          <i class="fas fa-check-double me-1"></i>Aplicar correções em todas
+        </button>
+        <button type="button" class="btn btn-sm btn-outline-danger" id="btn-export-invalid-csv" disabled>
+          <i class="fas fa-file-download me-1"></i>Baixar rejeitadas (pré-validação + sem ação)
+        </button>
+      </div>
+    </div>
+    <div class="card-body">
+      <p id="csv-preview-summary" class="csv-preview-summary fw-semibold mb-3 text-secondary"></p>
+
+      <div id="csv-preview-valid-section" class="mb-4 d-none">
+        <button
+          class="btn btn-link text-success text-decoration-none p-0 fw-semibold csv-preview-collapse-toggle"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#csv-preview-valid-collapse"
+          aria-expanded="false"
+          aria-controls="csv-preview-valid-collapse"
+        >
+          <i class="fas fa-chevron-right csv-collapse-icon me-1"></i>
+          Linhas válidas (serão enviadas)
+          <span class="badge bg-success ms-1" id="csv-preview-valid-count">0</span>
+        </button>
+        <div id="csv-preview-valid-collapse" class="collapse mt-2">
+          <div id="csv-preview-valid" class="csv-preview-valid-scroll"></div>
+        </div>
+      </div>
+
+      <div id="csv-preview-invalid-section" class="d-none">
+        <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-2">
+          <h6 class="text-danger mb-0">Linhas para correção — edite os campos abaixo</h6>
+          <button type="button" class="btn btn-sm btn-success btn-aplicar-todas-invalidas" disabled>
+            <i class="fas fa-check-double me-1"></i>Aplicar correções em todas
+          </button>
+        </div>
+        <div id="csv-preview-invalid"></div>
+        <p id="csv-preview-sem-acao-resumo" class="text-muted small mt-2 mb-0 d-none"></p>
+      </div>
+
+      <div id="csv-preview-sem-acao-section" class="mb-4 d-none">
+        <button
+          class="btn btn-link text-secondary text-decoration-none p-0 fw-semibold csv-preview-collapse-toggle"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#csv-preview-sem-acao-collapse"
+          aria-expanded="false"
+          aria-controls="csv-preview-sem-acao-collapse"
+        >
+          <i class="fas fa-chevron-right csv-collapse-icon me-1"></i>
+          Sem ação no portal (concluídas, VGR inexistente, duplicadas)
+          <span class="badge bg-secondary ms-1" id="csv-preview-sem-acao-count">0</span>
+        </button>
+        <div id="csv-preview-sem-acao-collapse" class="collapse mt-2">
+          <p class="text-muted small mb-2">Estas linhas não podem ser corrigidas pelo portal. Use o e-mail ou a planilha para acompanhamento.</p>
+          <div id="csv-preview-sem-acao" class="csv-preview-valid-scroll"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <datalist id="prodesp-csv-contratadas-list"></datalist>
+
+  <div class="toast-container position-fixed top-0 end-0 p-3"></div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+  window.PRODESP_CONTRATADAS_PERMITIDAS = {{ prodesp_contratadas_permitidas | tojson }};
+  document.addEventListener("DOMContentLoaded", function () {
+    const dl = document.getElementById("prodesp-csv-contratadas-list");
+    (window.PRODESP_CONTRATADAS_PERMITIDAS || []).forEach(function (c) {
+      if (!dl) return;
+      const opt = document.createElement("option");
+      opt.value = c;
+      dl.appendChild(opt);
+    });
+  });
+</script>
+<script src="{{ url_for('prodesp.static', filename='js/painel_csv_prodesp.js') }}"></script>
+{% endblock %}

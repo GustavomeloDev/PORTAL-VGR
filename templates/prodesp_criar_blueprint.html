@@ -1,0 +1,574 @@
+{# prodesp/templates/prodesp_criar_blueprint.html #}
+{% extends "base_prodesp.html" %}
+
+{% block title %}PRODESP - Gerar Blueprint{% endblock %}
+{% block nav_section %}blueprint{% endblock %}
+{% block header_title %}<strong>PRODESP</strong> - GERAR BLUEPRINT{% endblock %}
+
+{% block prodesp_stylesheets_include %}
+{% with include_operational_styles=false %}
+{% include 'snippets/prodesp_stylesheets.html' %}
+{% endwith %}
+{% endblock %}
+
+{% block head %}
+<style>
+      .motivos-view-box {
+        border: 1px solid #dee2e6;
+        border-radius: 12px;
+        background: #fff;
+        padding: 0.75rem;
+        min-height: 3rem;
+      }
+
+      .motivos-accordion .accordion-button {
+        background: linear-gradient(180deg, #ffffff 0%, #f8f9fa 100%);
+        font-size: 0.95rem;
+      }
+
+      .motivos-accordion .accordion-body {
+        background: #fff;
+      }
+
+      .motivos-selected > .accordion-header .accordion-button {
+        background: linear-gradient(180deg, #e8f5e9 0%, #f8fff8 100%);
+        border-left: 4px solid #198754;
+      }
+    </style>
+{% endblock %}
+
+{% block content %}
+        <div class="container-fluid py-4">
+            {% if blueprint_error %}
+            <div class="alert alert-danger alert-dismissible fade show shadow-sm mb-4" role="alert">
+                <h4 class="alert-heading"><i class="fas fa-exclamation-triangle me-2"></i>Não foi possível gerar o Blueprint</h4>
+                <p class="mb-0">{{ blueprint_error }}</p>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fechar"></button>
+            </div>
+            {% endif %}
+
+            {% if download_link %}
+            <div class="alert alert-success shadow-sm mb-4" id="blueprintDownloadAlert" data-download-url="{{ download_link }}">
+                <h4 class="alert-heading"><i class="fas fa-check-circle me-2"></i>Arquivo CSV Gerado!</h4>
+                <p class="mb-2">O download do Blueprint deve iniciar automaticamente. Se não iniciar, use o botão abaixo:</p>
+                <hr>
+                <a href="{{ download_link }}" id="blueprintDownloadLink" class="btn btn-success"><i class="fas fa-download me-2"></i>Baixar Blueprint CSV</a>
+            </div>
+            {% endif %}
+
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0"><i class="fas fa-search me-2"></i>Buscar Unidade por ID VGR</h5>
+                </div>
+                <div class="card-body">
+                    <form action="{{ url_for('prodesp.buscar_unidade_blueprint') }}" method="POST" class="row g-3">
+                        <div class="col-md-9">
+                            <label for="id_vgr_search" class="form-label">ID VGR:</label>
+                            <input type="text" id="id_vgr_search" name="id_vgr" class="form-control" required 
+                                   value="{{ unidade.id_vgr_unidades if unidade else '' }}" placeholder="Ex.: 2177114">
+                        </div>
+                        <div class="col-md-3 d-flex align-items-end">
+                            <button type="submit" class="btn btn-primary w-100"><i class="fas fa-search me-2"></i>Buscar Unidade</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            {% if unidade %}
+            <form action="{{ url_for('prodesp.gerar_blueprint_prodesp_action') }}" method="POST" id="blueprint-form" data-prodesp-submit-guard novalidate>
+                <input type="hidden" name="id_vgr_unidades" value="{{ unidade.id_vgr_unidades }}">
+                <input type="hidden" name="id_unidades" value="{{ unidade.id_unidades }}">
+                
+                <h3 class="mb-4">Dados da Unidade (ID VGR: {{ unidade.id_vgr_unidades }})</h3>
+
+                <!-- SEÇÃO 1: Informações Gerais -->
+                <div class="card data-section">
+                    <div class="card-header">
+                        <h5 class="card-title"><i class="fas fa-info-circle me-2"></i>Informações Gerais</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6 form-group">
+                                <label class="form-label">Nome da Unidade:</label>
+                                <input type="text" class="form-control read-only-field" value="{{ unidade.nome_unidades }}" readonly>
+                            </div>
+                            <div class="col-md-6 form-group">
+                                <label class="form-label">Endereço:</label>
+                                <input type="text" class="form-control read-only-field" value="{{ unidade.endereco_unidades }}, {{ unidade.numero_unidades }}" readonly>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 form-group">
+                                <label class="form-label required-label">Sigla Secretaria (Acrônimo):</label>
+                                <input type="text" name="acronimo_unidades" id="acronimo_unidades" class="form-control prodesp-no-space-input" value="{{ unidade.acronimo_unidades or '' }}" required placeholder="Ex.: {{ blueprint_acronimo_hint or 'DETRAN, PROCON, PRO-SANGUE…' }}"{% if blueprint_field_limits is defined and blueprint_field_limits.get('acronimo_unidades') %} maxlength="{{ blueprint_field_limits.acronimo_unidades }}"{% endif %}>
+                                <small class="text-muted d-block">A sigla define o layout do CSV e o Device Blueprint. Catálogo: Admin → Secretarias Blueprint (acrônimos conhecidos: {{ blueprint_acronimo_hint or 'conforme cadastro' }}).</small>
+                                <small class="text-muted d-block">O Device Blueprint final e o motivo aparecem no modal de confirmação antes de gerar o CSV. Acrônimo sem cadastro ativo usa o modelo legado BP_OES_{modelo}.</small>
+                                <small class="text-muted d-block">Rede LAN: em geral IP da rede = IP LAN − 1 (regra «nova»); regra «antiga» (rede .0) e faixas DHCP são configuráveis por secretaria.</small>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 form-group">
+                                <label class="form-label required-label">Hostname:</label>
+                                <input type="text" name="hostname_unidades" class="form-control prodesp-no-space-input" value="{{ unidade.hostname_unidades or '' }}" required{% if blueprint_field_limits is defined and blueprint_field_limits.get('hostname_unidades') %} maxlength="{{ blueprint_field_limits.hostname_unidades }}"{% endif %}>
+                                <small class="text-muted">Até {{ blueprint_field_limits.hostname_unidades if blueprint_field_limits is defined else 80 }} caracteres.</small>
+                            </div>
+                            <div class="col-md-6 form-group">
+                                <label class="form-label required-label">IP LAN 1 (CIDR):</label>
+                                <input type="text" name="ip_lan_01_unidades" class="form-control prodesp-ip-input" value="{{ unidade.ip_lan_01_unidades or '' }}" required placeholder="Ex.: 10.14.128.1/24">
+                                <small class="text-muted">IP com máscara CIDR (ex.: 10.14.128.1/24).</small>
+                            </div>
+                        </div>
+                        {% if unidade %}
+                        <div class="row g-3 mb-2">
+                          {% with lan_prefix='blueprint', lan_mode='blueprint', lan_unidade=unidade %}
+                          {% include 'partials/prodesp_lan_extra_unidades.html' %}
+                          {% endwith %}
+                        </div>
+                        {% endif %}
+                        <div class="row">
+                            <div class="col-md-4 form-group">
+                                <label class="form-label">Loopback Vivo:</label>
+                                <input type="text" name="loopback_vivo_unidades" class="form-control prodesp-ip-input prodesp-loopback-field" data-loopback-role="vivo" value="{{ unidade.loopback_vivo_unidades or '' }}" placeholder="Ex.: 10.254.x.x">
+                                <small class="text-muted d-block">Prefixo 10.254 — os dois últimos números iguais nos três loopbacks.</small>
+                            </div>
+                            <div class="col-md-4 form-group">
+                                <label class="form-label">Loopback Cliente:</label>
+                                <input type="text" name="loopback_cliente_unidades" class="form-control prodesp-ip-input prodesp-loopback-field" data-loopback-role="cliente" value="{{ unidade.loopback_cliente_unidades or '' }}" placeholder="Ex.: 10.252.x.x">
+                                <small class="text-muted d-block">Prefixo 10.252</small>
+                            </div>
+                            <div class="col-md-4 form-group">
+                                <label class="form-label">Loopback On BGP:</label>
+                                <input type="text" name="loopback_on_bgp_unidades" class="form-control prodesp-ip-input prodesp-loopback-field" data-loopback-role="bgp" value="{{ unidade.loopback_on_bgp_unidades or '' }}" placeholder="Ex.: 10.253.x.x">
+                                <small class="text-muted d-block">Prefixo 10.253</small>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 form-group">
+                                <label class="form-label">Latitude:</label>
+                                <input type="text" name="latitude_unidades" class="form-control prodesp-coord-input prodesp-no-space-input" value="{{ unidade.latitude_unidades or '' }}" placeholder="Ex.: -23.185166">
+                                <small class="text-muted">Número decimal; ponto ou vírgula.</small>
+                            </div>
+                            <div class="col-md-6 form-group">
+                                <label class="form-label">Longitude:</label>
+                                <input type="text" name="longitude_unidades" class="form-control prodesp-coord-input prodesp-no-space-input" value="{{ unidade.longitude_unidades or '' }}" placeholder="Ex.: -45.8768593">
+                                <small class="text-muted">Número decimal; ponto ou vírgula.</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                {% if unidade %}
+                {% with mv_prefix='blueprint', mv_mode='blueprint', mv_unidade=unidade %}
+                {% include 'partials/prodesp_mv_opcionais_unidades.html' %}
+                {% endwith %}
+                {% endif %}
+
+                <!-- SEÇÃO 2: Equipamento -->
+                <div class="card data-section">
+                    <div class="card-header">
+                        <h5 class="card-title"><i class="fas fa-server me-2"></i>Dados do Equipamento</h5>
+                    </div>
+                    <div class="card-body">
+                        {% set equipamento = equipamentos[0] if equipamentos else {} %}
+                        <div class="row">
+                            <div class="col-md-4 form-group">
+                                <label class="form-label required-label">Número de série:</label>
+                                <input type="text" name="serial_equipamentos" id="serial_equipamentos" class="form-control prodesp-no-space-input" value="{{ equipamento.serial_equipamentos or '' }}" required autocomplete="off">
+                                <small class="text-muted">Blueprint antecipado pode usar serial provisório. Com atendimento Em Atendimento / Concluído / Concluído Parcial, o serial deve estar no padrão Fortinet (FGT40FTK…).</small>
+                            </div>
+                            <div class="col-md-4 form-group">
+                                <label class="form-label">Versão do equipamento (FortiOS):</label>
+                                <input type="text" name="versao_equipamentos" class="form-control prodesp-no-space-input" value="{{ equipamento.versao_equipamentos or '7.4.11' }}" placeholder="Padrão: 7.4.11">
+                            </div>
+                            <div class="col-md-4 form-group">
+                                <label class="form-label">Modelo:</label>
+                                <input type="text" id="modelo_equipamentos_display" class="form-control read-only-field" value="{{ equipamento.modelo_equipamentos or '' }}" readonly aria-describedby="modelo-serial-help">
+                                <small id="modelo-serial-help" class="text-muted">Obtido automaticamente a partir do serial (ex.: FGT40FTK… → FortiGate 40F). Não é editável aqui; o Portal confirma o valor ao gerar o Blueprint.</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SEÇÃO 3: Link MPLS -->
+                <div class="card data-section">
+                    <div class="card-header">
+                        <h5 class="card-title"><i class="fas fa-network-wired me-2"></i>Link Principal (MPLS)</h5>
+                    </div>
+                    <div class="card-body">
+                        {% set link_mpls = links.get('MPLS', {}) %}
+                        <input type="hidden" name="mpls_id_link" value="{{ link_mpls.id_link or '' }}">
+                        <div class="row">
+                            <div class="col-md-4 form-group">
+                                <label class="form-label required-label">Operadora:</label>
+                                <select name="mpls_operadora" class="form-select operadora-select" data-prefix="mpls">
+                                    <option value="">Selecione...</option>
+                                    <option value="VIVO" {% if link_mpls.operadora_links == 'VIVO' %}selected{% endif %}>VIVO</option>
+                                    <option value="CLARO" {% if link_mpls.operadora_links == 'CLARO' %}selected{% endif %}>CLARO</option>
+                                    <option value="OUTRA" {% if link_mpls.operadora_links not in ['VIVO', 'CLARO'] and link_mpls.operadora_links %}selected{% endif %}>OUTRA</option>
+                                </select>
+                            </div>
+                            <div class="col-md-4 form-group mpls-id-vgr-container" style="display: {{ 'block' if link_mpls.operadora_links == 'VIVO' else 'none' }};">
+                                <label class="form-label required-label">ID VGR do Link:</label>
+                                <input type="text" name="mpls_id_vgr" class="form-control prodesp-no-space-input" value="{{ link_mpls.id_vgr_links or '' }}" placeholder="ID VTV SCM">
+                            </div>
+                            <div class="col-md-4 form-group">
+                                <label class="form-label required-label">Designador:</label>
+                                <input type="text" name="mpls_designador" class="form-control prodesp-no-space-input" value="{{ link_mpls.designador_links or '' }}" placeholder="LP_SCM">
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4 form-group">
+                                <label class="form-label">IP WAN:</label>
+                                <input type="text" name="mpls_ip_wan" class="form-control prodesp-ip-plain-only" value="{{ link_mpls.ip_wan_links or '' }}" placeholder="Ex.: IP WAN do FortiGate (planilha: Trânsito_FG)" autocomplete="off">
+                            </div>
+                            <div class="col-md-4 form-group">
+                                <label class="form-label">Máscara:</label>
+                                <input type="text" name="mpls_ip_mascara" class="form-control prodesp-ip-input" value="{{ link_mpls.ip_mascara_links or '' }}">
+                            </div>
+                            <div class="col-md-4 form-group">
+                                <label class="form-label">Gateway:</label>
+                                <input type="text" name="mpls_ip_gateway" class="form-control prodesp-ip-plain-only" value="{{ link_mpls.ip_gateway_links or '' }}" placeholder="Ex.: gateway do CPE (planilha: Trânsito_CPE)" autocomplete="off">
+                            </div>
+                        </div>
+                        <div class="row mpls-redundante-critico-row" style="display: {{ 'flex' if link_mpls.operadora_links == 'VIVO' else 'none' }};">
+                            <div class="col-md-12 form-group">
+                                <div class="form-check">
+                                    <input type="checkbox" class="form-check-input" name="mpls_redundante_critico" id="mpls_redundante_critico" value="1"
+                                        {% if link_mpls.redundante_critico_links %}checked{% endif %}>
+                                    <label class="form-check-label" for="mpls_redundante_critico">
+                                        Redundante Crítico
+                                    </label>
+                                </div>
+                                <small class="text-muted d-block">
+                                    MPLS + VIVO: preencha Gateway ou WAN — sem RC: WAN = GW+1 / GW = WAN−1;
+                                    com Redundante Crítico: WAN = GW+3 / GW = WAN−3.
+                                </small>
+                            </div>
+                        </div>
+                        <p class="text-muted small mb-3 prodesp-vivo-link-hint">Operadora <strong>VIVO</strong> (MPLS): máscara <strong>255.255.255.248</strong> (/29). Sem RC: WAN = Gateway+1; com <strong>Redundante Crítico</strong>: WAN = Gateway+3 (e o inverso ao preencher o WAN).</p>
+                        <div class="row">
+                            <div class="col-md-6 form-group">
+                                <label class="form-label">Velocidade (Mbps):</label>
+                                <input type="text" name="mpls_velocidade" class="form-control prodesp-velocity-mbps-input" value="{{ link_mpls.velocidade_links or '' }}" placeholder="Ex.: 300 Mbps, 10G ou 155000 Kbps — grava em Mbps" autocomplete="off">
+                            </div>
+                            <div class="col-md-6 form-group">
+                                <label class="form-label">VLAN:</label>
+                                <input type="text" name="mpls_vlan" class="form-control prodesp-no-space-input" value="{{ link_mpls.vlan_links or '' }}">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SEÇÃO 4: Link STATIC -->
+                <div class="card data-section">
+                    <div class="card-header">
+                        <h5 class="card-title"><i class="fas fa-link me-2"></i>Link Backup (STATIC)</h5>
+                    </div>
+                    <div class="card-body">
+                        {% set link_static = links.get('STATIC', {}) %}
+                        <input type="hidden" name="static_id_link" value="{{ link_static.id_link or '' }}">
+                        <div class="row">
+                            <div class="col-md-4 form-group">
+                                <label class="form-label required-label">Operadora:</label>
+                                <select name="static_operadora" class="form-select operadora-select" data-prefix="static">
+                                    <option value="">Selecione...</option>
+                                    <option value="VIVO" {% if link_static.operadora_links == 'VIVO' %}selected{% endif %}>VIVO</option>
+                                    <option value="CLARO" {% if link_static.operadora_links == 'CLARO' %}selected{% endif %}>CLARO</option>
+                                    <option value="OUTRA" {% if link_static.operadora_links not in ['VIVO', 'CLARO'] and link_static.operadora_links %}selected{% endif %}>OUTRA</option>
+                                </select>
+                            </div>
+                            <div class="col-md-4 form-group static-id-vgr-container" style="display: {{ 'block' if link_static.operadora_links == 'VIVO' else 'none' }};">
+                                <label class="form-label required-label">ID VGR do Link:</label>
+                                <input type="text" name="static_id_vgr" class="form-control prodesp-no-space-input" value="{{ link_static.id_vgr_links or '' }}" placeholder="ID VTV SAI-BL">
+                            </div>
+                            <div class="col-md-4 form-group">
+                                <label class="form-label required-label">Designador:</label>
+                                <input type="text" name="static_designador" class="form-control prodesp-no-space-input" value="{{ link_static.designador_links or '' }}" placeholder="LP_SAI-BL">
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4 form-group">
+                                <label class="form-label">IP WAN:</label>
+                                <input type="text" name="static_ip_wan" class="form-control prodesp-ip-plain-only" value="{{ link_static.ip_wan_links or '' }}" placeholder="Ex.: IP WAN (planilha: IP_WAN_SDWAN)" autocomplete="off">
+                            </div>
+                            <div class="col-md-4 form-group">
+                                <label class="form-label">Máscara:</label>
+                                <input type="text" name="static_ip_mascara" class="form-control prodesp-ip-input" value="{{ link_static.ip_mascara_links or '' }}">
+                            </div>
+                            <div class="col-md-4 form-group">
+                                <label class="form-label">Gateway:</label>
+                                <input type="text" name="static_ip_gateway" class="form-control prodesp-ip-plain-only" value="{{ link_static.ip_gateway_links or '' }}" placeholder="Ex.: gateway (planilha: IP_Gateway_SAI)" autocomplete="off">
+                            </div>
+                        </div>
+                        <p class="text-muted small mb-3 prodesp-vivo-link-hint">Operadora <strong>VIVO</strong> (STATIC): último número do IP par → máscara /30; ímpar → /31; gateway = WAN − 1 ao informar o IP WAN.</p>
+                        <div class="row">
+                            <div class="col-md-6 form-group">
+                                <label class="form-label">Velocidade (Mbps):</label>
+                                <input type="text" name="static_velocidade" class="form-control prodesp-velocity-mbps-input" value="{{ link_static.velocidade_links or '' }}" placeholder="Ex.: 300 Mbps, 10G ou 155000 Kbps — grava em Mbps" autocomplete="off">
+                            </div>
+                            <div class="col-md-6 form-group">
+                                <label class="form-label">VLAN:</label>
+                                <input type="text" name="static_vlan" class="form-control prodesp-no-space-input" value="{{ link_static.vlan_links or '' }}">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="d-grid gap-2 d-md-flex justify-content-md-end mb-5">
+                    <button type="submit" class="btn btn-primary btn-lg px-5 shadow" data-prodesp-guard-label="Gerando Blueprint…"><i class="fas fa-file-csv me-2"></i>Salvar e Gerar Blueprint CSV</button>
+                </div>
+            </form>
+            {% endif %}
+        </div>
+{% endblock %}
+
+{% block scripts %}
+    <script src="{{ url_for('prodesp.static', filename='js/prodesp_live_field_validation.js') }}?v=bp-req-6"></script>
+    <script src="{{ url_for('prodesp.static', filename='js/prodesp_blueprint_confirm.js') }}?v=bp-confirm-10"></script>
+    {% include "partials/prodesp_blueprint_confirm_modal.html" %}
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const dlAlert = document.getElementById('blueprintDownloadAlert');
+            const dlUrl = dlAlert && dlAlert.getAttribute('data-download-url');
+            if (dlUrl) {
+              if (
+                window.ProdespBlueprintConfirm &&
+                typeof window.ProdespBlueprintConfirm.triggerDownload === 'function'
+              ) {
+                window.ProdespBlueprintConfirm.triggerDownload(dlUrl);
+              } else {
+                const a = document.createElement('a');
+                a.href = dlUrl;
+                a.target = '_blank';
+                a.rel = 'noopener';
+                document.body.appendChild(a);
+                a.click();
+                a.remove();
+              }
+            }
+
+            // Controle de ID VGR condicional para links
+            const operadoraSelects = document.querySelectorAll('.operadora-select');
+
+            operadoraSelects.forEach(select => {
+                select.addEventListener('change', function() {
+                    const prefix = this.getAttribute('data-prefix');
+                    const container = document.querySelector(`.${prefix}-id-vgr-container`);
+                    const input = container.querySelector('input');
+
+                    if (this.value === 'VIVO') {
+                        container.style.display = 'block';
+                        input.setAttribute('required', 'required');
+                    } else {
+                        container.style.display = 'none';
+                        input.removeAttribute('required');
+                    }
+                    if (prefix === 'mpls') {
+                        const redundanteRow = document.querySelector('.mpls-redundante-critico-row');
+                        if (redundanteRow) {
+                            redundanteRow.style.display = this.value === 'VIVO' ? 'flex' : 'none';
+                        }
+                    }
+                });
+            });
+
+            {% if unidade %}
+            const SERIAL_MODEL_RULES = {{ serial_model_rules | default([], true) | tojson }};
+            const DEFAULT_MODELO_FALLBACK = 'FortiGate 40F';
+
+            function inferModeloFromSerial(serial) {
+                const s = (serial || '').toUpperCase().replace(/\s/g, '');
+                if (!s) {
+                    return '';
+                }
+                for (let i = 0; i < SERIAL_MODEL_RULES.length; i++) {
+                    const pair = SERIAL_MODEL_RULES[i];
+                    const fragment = pair[0];
+                    const label = pair[1];
+                    if (s.includes(fragment)) {
+                        return label;
+                    }
+                }
+                return DEFAULT_MODELO_FALLBACK;
+            }
+
+            function stripAllWhitespaceFromIpFields(root) {
+                (root || document).querySelectorAll('.prodesp-ip-input').forEach(function (el) {
+                    el.value = el.value.replace(/\s+/g, '');
+                });
+            }
+
+            function stripAllWhitespaceFromNoSpaceFields(root) {
+                (root || document).querySelectorAll('.prodesp-no-space-input').forEach(function (el) {
+                    el.value = el.value.replace(/\s+/g, '');
+                });
+                (root || document).querySelectorAll('.prodesp-ip-plain-only').forEach(function (el) {
+                    if (window.ProdespLiveValidation && ProdespLiveValidation.sanitizePlainIpv4) {
+                        el.value = ProdespLiveValidation.sanitizePlainIpv4(el.value);
+                    } else {
+                        el.value = el.value.replace(/\s+/g, '').replace(/\//g, '');
+                    }
+                });
+            }
+
+            const serialInput = document.getElementById('serial_equipamentos');
+            const modeloDisplay = document.getElementById('modelo_equipamentos_display');
+            if (serialInput && modeloDisplay) {
+                function refreshModeloEquipamento() {
+                    modeloDisplay.value = inferModeloFromSerial(serialInput.value);
+                }
+                serialInput.addEventListener('input', refreshModeloEquipamento);
+                serialInput.addEventListener('change', refreshModeloEquipamento);
+                refreshModeloEquipamento();
+                if (window.ProdespLiveValidation && ProdespLiveValidation.bindSerialFortinetInput) {
+                    /* Antecipado: aviso amarelo se provisório; server bloqueia se houver atendimento ativo/concluído. */
+                    ProdespLiveValidation.bindSerialFortinetInput(serialInput, {
+                        obrigatorio: true,
+                        exigePadrao: false,
+                        onAfter: refreshModeloEquipamento,
+                    });
+                }
+            }
+
+            function bindProdespBlueprintIpFields() {
+                var form = document.getElementById('blueprint-form');
+                if (!form) return;
+                form.querySelectorAll('.prodesp-ip-input').forEach(function (el) {
+                    if (el.classList.contains('prodesp-ip-plain-only')) return;
+                    // Loopbacks: paste/input já tratados por ProdespLiveValidation.initLoopbackTriplet
+                    if (el.classList.contains('prodesp-loopback-field')) return;
+                    if (el.dataset.prodespBlueprintIpBound === '1') return;
+                    el.dataset.prodespBlueprintIpBound = '1';
+                    el.addEventListener('input', function () {
+                        var v = el.value;
+                        var cleaned = v.replace(/\s+/g, '');
+                        if (cleaned !== v) {
+                            var pos = el.selectionStart;
+                            el.value = cleaned;
+                            if (pos != null && el.setSelectionRange) {
+                                var shrink = v.length - cleaned.length;
+                                el.setSelectionRange(Math.max(0, pos - shrink), Math.max(0, pos - shrink));
+                            }
+                        }
+                    });
+                    el.addEventListener('keydown', function (e) {
+                        if (e.key === ' ' || e.code === 'Space') e.preventDefault();
+                    });
+                    el.addEventListener('paste', function (e) {
+                        e.preventDefault();
+                        var raw = (e.clipboardData || window.clipboardData).getData('text') || '';
+                        var text = raw.replace(/\s+/g, '');
+                        var start = el.selectionStart != null ? el.selectionStart : el.value.length;
+                        var end = el.selectionEnd != null ? el.selectionEnd : el.value.length;
+                        el.value = el.value.slice(0, start) + text + el.value.slice(end);
+                        var np = start + text.length;
+                        if (el.setSelectionRange) el.setSelectionRange(np, np);
+                    });
+                });
+                form.querySelectorAll('.prodesp-coord-input').forEach(function (el) {
+                    el.addEventListener('blur', function () {
+                        var v = (el.value || '').trim().replace(/\s+/g, '');
+                        if (v) {
+                            el.value = v.replace(',', '.');
+                        }
+                    });
+                });
+            }
+
+            stripAllWhitespaceFromIpFields(document.getElementById('blueprint-form'));
+            stripAllWhitespaceFromNoSpaceFields(document.getElementById('blueprint-form'));
+            bindProdespBlueprintIpFields();
+            if (window.ProdespLiveValidation) {
+                ProdespLiveValidation.injectCss();
+                ProdespLiveValidation.initBlueprintForm('blueprint-form');
+            }
+
+            const bpForm = document.getElementById('blueprint-form');
+            if (bpForm && window.ProdespBlueprintConfirm) {
+                bpForm.addEventListener('submit', function (ev) {
+                    if (bpForm.dataset.bpConfirmOk === '1') return;
+                    ev.preventDefault();
+                    if (
+                      window.ProdespLiveValidation &&
+                      typeof ProdespLiveValidation.validateBlueprintForm === 'function'
+                    ) {
+                      const checked = ProdespLiveValidation.validateBlueprintForm(bpForm);
+                      if (!checked.valid) {
+                        if (window.ProdespSubmitGuard && typeof ProdespSubmitGuard.unlockForm === 'function') {
+                          ProdespSubmitGuard.unlockForm(bpForm);
+                        }
+                        return;
+                      }
+                    }
+                    const idVgr = (bpForm.querySelector('[name="id_vgr_unidades"]') || {}).value;
+                    if (!idVgr) {
+                        bpForm.submit();
+                        return;
+                    }
+                    const formFields =
+                      typeof ProdespBlueprintConfirm.collectFormFields === "function"
+                        ? ProdespBlueprintConfirm.collectFormFields(bpForm)
+                        : {};
+                    ProdespBlueprintConfirm.previewThenConfirm(
+                      idVgr,
+                      { form: formFields, overrides: {} },
+                      function (ov) {
+                        const host = bpForm.querySelector('[name="hostname_unidades"]');
+                        if (host && ov.hostname != null) host.value = ov.hostname;
+                        const map = {
+                            ip_lan_01: 'ip_lan_01_unidades',
+                            mv_ip_lan_sec: 'mv_ip_lan_sec_unidades',
+                            mv_ip_lan_ter: 'mv_ip_lan_ter_unidades',
+                            mv_ip_lan_qua: 'mv_ip_lan_qua_unidades',
+                            mv_rede_lan_sec: 'mv_rede_lan_sec_unidades',
+                            mv_rede_lan_ter: 'mv_rede_lan_ter_unidades',
+                            mv_rede_lan_qua: 'mv_rede_lan_qua_unidades',
+                        };
+                        Object.keys(map).forEach(function (k) {
+                            const el = bpForm.querySelector('[name="' + map[k] + '"]');
+                            if (el && ov[k] != null) el.value = ov[k];
+                        });
+                        [
+                            ['lan', 'ip_lan_01_unidades'],
+                            ['lan_sec', 'mv_ip_lan_sec_unidades'],
+                            ['lan_ter', 'mv_ip_lan_ter_unidades'],
+                            ['lan_qua', 'mv_ip_lan_qua_unidades'],
+                        ].forEach(function (pair) {
+                            const mask = ov['mask_' + pair[0]];
+                            const el = bpForm.querySelector('[name="' + pair[1] + '"]');
+                            if (!el || !mask || !(el.value || '').trim()) return;
+                            const ip = String(el.value).split('/')[0].trim();
+                            // Máscara pontilhada → /CIDR (todas /0–/32)
+                            function dottedMaskToCidr(mask) {
+                                const parts = String(mask || '').split('.').map(function (p) {
+                                    return parseInt(p, 10);
+                                });
+                                if (parts.length !== 4 || parts.some(function (p) {
+                                    return isNaN(p) || p < 0 || p > 255;
+                                })) return '';
+                                let bits = 0;
+                                parts.forEach(function (p) { bits = ((bits << 8) | p) >>> 0; });
+                                let prefix = 0;
+                                let seenZero = false;
+                                for (let i = 31; i >= 0; i--) {
+                                    if ((bits >>> i) & 1) {
+                                        if (seenZero) return '';
+                                        prefix++;
+                                    } else {
+                                        seenZero = true;
+                                    }
+                                }
+                                return '/' + prefix;
+                            }
+                            const cidr = dottedMaskToCidr(mask);
+                            if (ip && cidr) el.value = ip + cidr;
+                        });
+                        bpForm.dataset.bpConfirmOk = '1';
+                        bpForm.submit();
+                    });
+                });
+            }
+            {% endif %}
+        });
+    </script>
+{% endblock %}

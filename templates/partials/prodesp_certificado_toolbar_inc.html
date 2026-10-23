@@ -1,0 +1,26 @@
+{# Toolbar Exportação de Certificado — prefix: edit | view | create | details #}
+<div class="col-12 prodesp-certificado-toolbar{% if admin_user != 1 %} d-none{% endif %}" id="{{ prefix }}CertificadoToolbar" data-prodesp-certificado-prefix="{{ prefix }}">
+  <div class="card border-secondary bg-light">
+    <div class="card-body py-3">
+      <h6 class="text-secondary mb-2"><i class="fas fa-certificate me-1"></i>Exportação de certificado FortiGate</h6>
+      <p class="small text-muted mb-2 mb-md-0">
+        Exporta certificado(s) local(is) via SSH (jump → loopback) e TFTP. Alvo padrão: Fortinet_CA_SSL (.cer). Disponível apenas para administradores.
+      </p>
+      <div class="d-flex flex-wrap gap-2 mt-2 align-items-center">
+        <button type="button" class="btn btn-sm btn-outline-secondary prodesp-certificado-btn-exportar"{% if prefix == 'edit' %} id="btnEditExportarCertificado"{% endif %}>
+          <span class="prodesp-certificado-btn-label"><i class="fas fa-download me-1"></i>Exportar certificado</span>
+          <span class="prodesp-certificado-btn-spinner d-none" aria-hidden="true">
+            <span class="spinner-border spinner-border-sm me-1" role="status"></span>Exportando…
+          </span>
+        </button>
+      </div>
+      <div id="{{ prefix }}CertificadoToolbarStatus" class="mt-2 d-none" role="status" aria-live="polite">
+        <div class="d-flex align-items-start gap-2 small mb-0 p-2 rounded border bg-white">
+          <span class="spinner-border spinner-border-sm text-secondary flex-shrink-0 prodesp-certificado-toolbar-spinner" role="status" aria-hidden="true"></span>
+          <span id="{{ prefix }}CertificadoToolbarStatusText" class="text-secondary fw-semibold"></span>
+        </div>
+      </div>
+      <div id="{{ prefix }}CertificadoToolbarResult" class="alert py-2 px-3 mt-2 mb-0 d-none small" role="alert"></div>
+    </div>
+  </div>
+</div>
