@@ -1,0 +1,607 @@
+/**
+ * Toolbar / fonte / refresh / cabeçalho / Ações / Select2 — padrão DataTables do Portal.
+ * Visual alinhado ao PRODESP (#343a40, ColumnControl invisível no th, btn-icon).
+ * Select2 bootstrap-5: complemento dos filtros ColumnControl (paridade tables.css).
+ */
+
+:root {
+  /* Colunas (toolbar) acima do ColumnControl (padrão 2002 / páginas login 3000) */
+  --dtcc-dropdown_z-index: 1060;
+  --dtcc-button_opacity: 0;
+  --dtcc-button_hover-opacity: 0;
+  --dtcc-button_disabled-opacity: 0;
+  --dtcc-button-icon_color: transparent;
+  --portal-dt-cols-z: 5100;
+  /* Altura do th alinhada à fila PRODESP (sem inflar com padding/min-height) */
+  --portal-dt-th-min-height: 0;
+  --portal-dt-th-padding-y: 0.55rem;
+  --portal-dt-th-padding-x: 0.5rem;
+  --portal-dt-th-font-size: 0.8rem;
+  --portal-dt-th-line-height: 1.25;
+  /* Cabeçalho “cápsula” + zebra (paridade fila PRODESP / tables.css) */
+  --portal-dt-header-radius: 0.5rem;
+  --portal-dt-stripe-bg: #f8f9fa;
+  /* Select2 (tema bootstrap-5) no contexto DataTables / ColumnControl */
+  --portal-dt-select2-bg: #343a40;
+  --portal-dt-select2-fg: #fff;
+  --portal-dt-select2-muted: #6c757d;
+  --portal-dt-select2-border: #6c757d;
+  --portal-dt-select2-darker: #444;
+  --portal-dt-select2-placeholder: #bbb;
+  --portal-dt-select2-highlight: rgba(0, 123, 255, 0.5);
+}
+
+.portal-dt-toolbar-host {
+  position: relative;
+  z-index: 20;
+  overflow: visible !important;
+}
+
+/* Dropdown Colunas abre acima de qualquer painel ColumnControl (stacking context). */
+.portal-dt-toolbar-host:has(.dropdown-menu.show),
+.portal-dt-toolbar-host:has(.show > .dropdown-menu) {
+  z-index: var(--portal-dt-cols-z);
+}
+
+.portal-dt-toolbar {
+  width: 100%;
+  overflow: visible !important;
+}
+
+.portal-dt-toolbar .btn-outline-secondary {
+  white-space: nowrap;
+}
+
+.portal-dt-toolbar .dropdown {
+  position: relative;
+  z-index: var(--portal-dt-cols-z);
+}
+
+.portal-dt-refresh-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem 0.75rem;
+}
+
+.portal-dt-refresh-bar .fa-sync-alt.fa-spin,
+.portal-dt-refresh-bar .fa-redo.fa-spin {
+  opacity: 0.85;
+}
+
+.portal-dt-font-control label {
+  font-size: 0.875rem;
+  white-space: nowrap;
+}
+
+.portal-dt-cols-menu,
+.portal-dt-toolbar .dropdown-menu {
+  max-height: 18rem;
+  overflow-y: auto;
+  min-width: 14rem;
+  z-index: var(--portal-dt-cols-z) !important;
+}
+
+/*
+ * ColumnControl: .table-wrap com overflow-x:auto força overflow-y:auto e corta o dropdown.
+ */
+.table-wrap:has(table.dataTable),
+.table-wrap:has(.dt-container),
+.table-wrap:has(.dataTables_wrapper) {
+  overflow: visible !important;
+}
+
+/* Ganha do z-index: 3000 !important das páginas login (especificidade maior). */
+body div.dtcc-dropdown {
+  z-index: 1060 !important;
+}
+
+div.dt-scroll-head,
+div.dt-scroll-headInner {
+  /* visible quebrava scrollX (thead vazava além do body). CC dropdown já é body-level. */
+  overflow-x: hidden !important;
+  overflow-y: visible !important;
+}
+
+div.dt-scroll-headInner {
+  box-sizing: border-box;
+}
+
+/* Com scrollX: respiro entre cabeçalho e corpo (efeito cápsula) */
+div.dt-scroll-head {
+  margin-bottom: 0.25rem;
+}
+
+div.dt-scroll-body {
+  overflow-x: auto !important;
+  overflow-y: visible !important;
+}
+
+/*
+ * border-collapse:separate — permite border-radius nos th (collapse esconde o raio).
+ * Sem overflow:hidden no wrap (preciso para wrap do título + dropdown CC).
+ */
+table.dataTable,
+div.dt-scroll-head table.dataTable,
+div.dt-scroll-body table.dataTable {
+  border-collapse: separate !important;
+  border-spacing: 0;
+}
+
+/* —— Cabeçalho (estilo PRODESP / modelo fila) —— */
+table.dataTable thead th,
+div.dt-scroll-head table.dataTable thead th {
+  background-color: #343a40 !important;
+  color: #fff !important;
+  font-weight: 600 !important;
+  font-size: var(--portal-dt-th-font-size, 0.8rem) !important;
+  letter-spacing: 0.02em;
+  border-bottom: 2px solid #495057 !important;
+  text-transform: none !important;
+  vertical-align: middle !important;
+  position: relative;
+  padding: var(--portal-dt-th-padding-y, 0.55rem) var(--portal-dt-th-padding-x, 0.5rem) !important;
+  min-height: 0;
+  height: auto !important;
+  max-height: none !important;
+  line-height: 1.35 !important;
+  box-sizing: border-box;
+  /* Quebra se o título for maior que a largura — cabeçalho cresce (fila) */
+  white-space: normal !important;
+  word-break: break-word !important;
+  overflow-wrap: break-word !important;
+  overflow: visible !important;
+  text-overflow: clip !important;
+}
+
+/* Título da coluna: pode quebrar; NÃO truncar com reticências */
+table.dataTable thead th .dt-column-title,
+div.dt-scroll-head table.dataTable thead th .dt-column-title {
+  display: block;
+  margin: 0;
+  padding: 0;
+  line-height: 1.35;
+  position: relative;
+  z-index: 1;
+  pointer-events: none;
+  max-height: none !important;
+  overflow: visible !important;
+  white-space: normal !important;
+  word-break: break-word !important;
+  overflow-wrap: break-word !important;
+  text-overflow: clip !important;
+}
+
+/* Corpo: texto longo quebra e a linha cresce (não ocultar) */
+table.dataTable tbody td,
+div.dt-scroll-body table.dataTable tbody td {
+  white-space: normal !important;
+  word-break: break-word !important;
+  overflow-wrap: break-word !important;
+  overflow: visible !important;
+  vertical-align: middle !important;
+}
+
+/*
+ * Checklist/search do ColumnControl nunca no fluxo do th (só no dropdown).
+ * Evita cabeçalho alto com «Selecionar tudo» / inputs.
+ */
+table.dataTable thead th span.dtcc .dtcc-list,
+table.dataTable thead th span.dtcc .dtcc-content,
+table.dataTable thead th span.dtcc .dtcc-search,
+table.dataTable thead th span.dtcc .dtcc-spacer,
+div.dt-scroll-head table.dataTable thead th span.dtcc .dtcc-list,
+div.dt-scroll-head table.dataTable thead th span.dtcc .dtcc-content,
+div.dt-scroll-head table.dataTable thead th span.dtcc .dtcc-search,
+div.dt-scroll-head table.dataTable thead th span.dtcc .dtcc-spacer {
+  display: none !important;
+}
+
+/*
+ * Cabeçalho “cápsula” (4 cantos) — paridade visual fila/dashboard.
+ * Raio nos th extremos; fundo #343a40 já no th (não depender de overflow:hidden).
+ */
+table.dataTable thead tr th:first-child,
+div.dt-scroll-head table.dataTable thead tr th:first-child {
+  border-top-left-radius: var(--portal-dt-header-radius, 0.5rem);
+  border-bottom-left-radius: var(--portal-dt-header-radius, 0.5rem);
+}
+
+table.dataTable thead tr th:last-child,
+div.dt-scroll-head table.dataTable thead tr th:last-child {
+  border-top-right-radius: var(--portal-dt-header-radius, 0.5rem);
+  border-bottom-right-radius: var(--portal-dt-header-radius, 0.5rem);
+}
+
+table.dataTable thead th.cc,
+div.dt-scroll-head table.dataTable thead th.cc {
+  cursor: pointer;
+}
+
+table.dataTable thead th span.dt-column-order,
+div.dt-scroll-head table.dataTable thead th span.dt-column-order {
+  display: none !important;
+}
+
+/*
+ * ColumnControl no cabeçalho: ícone some; botão cobre o th inteiro (clique = filtro),
+ * igual PRODESP — o usuário vê só o título da coluna.
+ * Seletores alinhados ao CSS oficial (span.dtcc button.dtcc-button).
+ */
+table.dataTable thead th span.dtcc button.dtcc-button,
+table.dataTable thead th .dtcc-button,
+div.dt-scroll-head table.dataTable th span.dtcc button.dtcc-button,
+div.dt-scroll-head table.dataTable th .dtcc-button {
+  position: absolute !important;
+  top: 0 !important;
+  left: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  opacity: 0 !important;
+  z-index: 10;
+  cursor: pointer;
+  pointer-events: auto;
+  border: none !important;
+  background: transparent !important;
+  padding: 0 !important;
+  margin: 0 !important;
+}
+
+table.dataTable thead th span.dtcc,
+div.dt-scroll-head table.dataTable th span.dtcc {
+  /* Fora do fluxo do th — altura = só título + padding */
+  position: absolute !important;
+  inset: 0 !important;
+  display: block !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  overflow: hidden !important;
+  pointer-events: none;
+}
+
+table.dataTable thead th span.dtcc span.dtcc-button-icon,
+table.dataTable thead th span.dtcc span.dtcc-button-icon svg,
+table.dataTable thead th .dtcc-button-icon,
+table.dataTable thead th .dtcc-button-icon svg,
+div.dt-scroll-head table.dataTable th span.dtcc span.dtcc-button-icon,
+div.dt-scroll-head table.dataTable th span.dtcc span.dtcc-button-icon svg {
+  opacity: 0 !important;
+  width: 0 !important;
+  height: 0 !important;
+  overflow: hidden !important;
+  color: transparent !important;
+}
+
+/* Com scrollX: esconder ColumnControl + Select2 no thead espelho do body */
+div.dt-scroll-body thead .dtcc,
+div.dt-scroll-body thead .dtcc-button,
+div.dt-scroll-body thead .select2,
+div.dt-scroll-body thead .select2-container {
+  display: none !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+}
+
+/* Evita “Carregando…” fantasma no thead (DataTables 2) */
+table.dataTable thead .dt-processing,
+div.dt-scroll-head .dt-processing,
+table.dataTable thead th .dt-processing {
+  display: none !important;
+}
+
+/* loadingRecords / emptyTable no corpo — centrado (não confundir com hide do thead) */
+table.dataTable tbody td.dataTables_empty,
+table.dataTable tbody td.dt-empty,
+div.dt-scroll-body table.dataTable tbody td.dataTables_empty,
+div.dt-scroll-body table.dataTable tbody td.dt-empty {
+  text-align: center !important;
+  vertical-align: middle !important;
+}
+
+/* Setas de ordenação legadas (DT 1.x / CSS sorting:after) */
+.dataTable thead th.sorting:after,
+.dataTable thead th.sorting_asc:after,
+.dataTable thead th.sorting_desc:after {
+  display: none !important;
+}
+
+.dt-container .dt-search,
+.dataTables_wrapper .dataTables_filter {
+  margin-bottom: 0.625rem;
+}
+
+/*
+ * Zebra padrão Portal (tables.css / fila).
+ * Aplica em toda DataTable do toolkit — table-striped no HTML reforça Bootstrap.
+ */
+table.dataTable > tbody > tr:nth-child(even) > td,
+div.dt-scroll-body table.dataTable > tbody > tr:nth-child(even) > td {
+  background-color: var(--portal-dt-stripe-bg, #f8f9fa);
+}
+
+table.dataTable > tbody > tr:nth-child(odd) > td,
+div.dt-scroll-body table.dataTable > tbody > tr:nth-child(odd) > td {
+  background-color: #fff;
+}
+
+table.dataTable tbody tr:hover > td,
+div.dt-scroll-body table.dataTable tbody tr:hover > td {
+  background-color: rgba(0, 123, 255, 0.05) !important;
+}
+
+/* —— Coluna Ações (estilo PRODESP; sempre centralizado com os ícones) ——
+   Default 180px cabe ~5 btn-icon (Admin inventário). Override:
+   --portal-dt-acoes-width no wrapper/tabela. */
+table.dataTable thead th.col-acoes,
+div.dt-scroll-head table.dataTable thead th.col-acoes {
+  min-width: var(--portal-dt-acoes-width, 180px);
+  width: var(--portal-dt-acoes-width, 180px) !important;
+  background-color: #343a40 !important;
+  border-left: 1px solid #495057 !important;
+  text-align: center !important;
+}
+
+table.dataTable thead th.col-acoes .dt-column-title,
+div.dt-scroll-head table.dataTable thead th.col-acoes .dt-column-title {
+  text-align: center !important;
+}
+
+div.dt-scroll-head table.dataTable thead th.col-acoes {
+  position: sticky;
+  right: 0;
+  z-index: 12;
+  box-shadow: -4px 0 8px -4px rgba(0, 0, 0, 0.35);
+}
+
+table.dataTable tbody td.portal-dt-acoes {
+  text-align: center !important;
+  vertical-align: middle;
+  overflow: visible !important;
+  min-width: var(--portal-dt-acoes-width, 180px);
+  width: var(--portal-dt-acoes-width, 180px) !important;
+  padding-left: 0.45rem !important;
+  padding-right: 0.55rem !important;
+  border-left: 1px solid var(--bs-border-color, #dee2e6);
+}
+
+div.dt-scroll-body tbody td.portal-dt-acoes {
+  position: sticky;
+  right: 0;
+  z-index: 3;
+  background-color: #fff;
+  box-shadow: -4px 0 8px -4px rgba(0, 0, 0, 0.1);
+}
+
+div.dt-scroll-body table.dataTable > tbody > tr:nth-child(odd) > td.portal-dt-acoes {
+  background-color: #fff !important;
+}
+
+div.dt-scroll-body table.dataTable > tbody > tr:nth-child(even) > td.portal-dt-acoes {
+  background-color: var(--portal-dt-stripe-bg, #f8f9fa) !important;
+}
+
+div.dt-scroll-body tbody tr:hover > td.portal-dt-acoes {
+  background-color: rgba(0, 123, 255, 0.05) !important;
+}
+
+.portal-dt-acoes-inner {
+  display: inline-flex;
+  flex-wrap: nowrap;
+  align-items: center;
+  justify-content: center;
+  gap: 0.2rem;
+  min-width: max-content;
+}
+
+.portal-dt-acoes .btn-icon,
+table.dataTable tbody td.portal-dt-acoes .btn-icon {
+  font-size: 1.05rem;
+  padding: 0.12rem 0.2rem;
+  flex-shrink: 0;
+  line-height: 1;
+  border: none;
+  background: transparent;
+  color: #495057;
+  cursor: pointer;
+}
+
+.portal-dt-acoes .btn-icon:hover,
+table.dataTable tbody td.portal-dt-acoes .btn-icon:hover {
+  color: #0d6efd;
+}
+
+.portal-dt-acoes .btn-icon.text-danger,
+table.dataTable tbody td.portal-dt-acoes .btn-icon.text-danger {
+  color: #dc3545;
+}
+
+.portal-dt-acoes .btn-icon.text-danger:hover,
+table.dataTable tbody td.portal-dt-acoes .btn-icon.text-danger:hover {
+  color: #b02a37;
+}
+
+.portal-dt-acoes .btn-icon.text-warning,
+table.dataTable tbody td.portal-dt-acoes .btn-icon.text-warning {
+  color: #e0a800;
+}
+
+.portal-dt-acoes .btn-icon.text-success,
+table.dataTable tbody td.portal-dt-acoes .btn-icon.text-success {
+  color: #198754;
+}
+
+/* Fonte via CSS variable no wrapper DataTables */
+[id$="_wrapper"].portal-dt-font-on {
+  --portal-dt-font-size: 14px;
+}
+
+[id$="_wrapper"].portal-dt-font-on table.dataTable,
+[id$="_wrapper"].portal-dt-font-on table.dataTable th,
+[id$="_wrapper"].portal-dt-font-on table.dataTable td,
+[id$="_wrapper"].portal-dt-font-on .dt-scroll-head thead th,
+[id$="_wrapper"].portal-dt-font-on .dt-scroll-body tbody td,
+[id$="_wrapper"].portal-dt-font-on .dt-scroll-body thead th div.dt-scroll-sizing {
+  font-size: var(--portal-dt-font-size, 14px) !important;
+}
+
+@media (max-width: 767.98px) {
+  .portal-dt-refresh-bar {
+    width: 100%;
+    justify-content: flex-end;
+  }
+}
+
+/*
+ * Select2 (tema bootstrap-5) — complemento do ColumnControl / filtros DT.
+ * Login KPI usa select2--default (não afetado). Escopo: bootstrap-5 + contexto DT/CC.
+ * Paridade visual com prodesp/static/css/tables.css (variáveis neutras).
+ */
+.select2-container--bootstrap-5 .select2-selection--multiple,
+.select2-container--bootstrap-5 .select2-selection--single {
+  min-height: 35px;
+  padding: 0.355rem 0.35rem;
+  border: 1px solid var(--portal-dt-select2-border, #6c757d);
+  border-radius: var(--bs-border-radius, 0.25rem);
+  width: 100%;
+  box-sizing: border-box;
+  background-color: var(--portal-dt-select2-bg, #343a40);
+  color: var(--portal-dt-select2-fg, #fff) !important;
+  max-height: 40px;
+  overflow-y: auto;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.select2-container--bootstrap-5 .select2-selection--multiple::-webkit-scrollbar,
+.select2-container--bootstrap-5 .select2-selection--single::-webkit-scrollbar {
+  display: none;
+}
+
+.select2-container--bootstrap-5
+  .select2-selection--multiple
+  .select2-selection__rendered
+  .select2-selection__choice {
+  background-color: var(--portal-dt-select2-bg, #343a40);
+  border: 1px solid var(--portal-dt-select2-border, #6c757d);
+  color: var(--portal-dt-select2-fg, #fff) !important;
+  margin-top: 0.2rem;
+  margin-bottom: 0.2rem;
+  padding: 0.2rem 0.25rem;
+  line-height: 1;
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: center;
+  font-size: 1.2rem;
+  flex-direction: column;
+}
+
+.select2-container--bootstrap-5
+  .select2-selection--multiple
+  .select2-selection__choice__display {
+  font-size: 0.55em;
+  line-height: 1.2;
+  padding: 0.1em 0.2em;
+}
+
+.select2-container--bootstrap-5
+  .select2-selection--multiple
+  .select2-selection__choice
+  .select2-selection__choice__remove {
+  display: none !important;
+}
+
+.select2-container--bootstrap-5 .select2-selection__choice__remove::before {
+  color: var(--portal-dt-select2-fg, #fff) !important;
+}
+
+.select2-container--bootstrap-5 .select2-dropdown {
+  background-color: var(--portal-dt-select2-bg, #343a40);
+  color: var(--portal-dt-select2-fg, #fff);
+  border: 1px solid var(--portal-dt-select2-bg, #343a40);
+  z-index: 1060;
+}
+
+.select2-container--bootstrap-5
+  .select2-dropdown
+  .select2-results__options
+  .select2-results__option.select2-results__option--highlighted {
+  background-color: var(--portal-dt-select2-bg, #343a40) !important;
+  color: var(--portal-dt-select2-fg, #fff) !important;
+}
+
+.select2-container--bootstrap-5
+  .select2-dropdown
+  .select2-results__options
+  .select2-results__option.select2-results__option--selected.select2-results__option--highlighted {
+  background-color: var(--portal-dt-select2-highlight, rgba(0, 123, 255, 0.5)) !important;
+  color: var(--portal-dt-select2-fg, #fff) !important;
+}
+
+.select2-container--bootstrap-5
+  .select2-dropdown
+  .select2-results__options
+  .select2-results__option[aria-selected="true"] {
+  background-color: var(--portal-dt-select2-bg, #343a40);
+  color: var(--portal-dt-select2-fg, #fff);
+}
+
+.select2-container--bootstrap-5 .select2-search--dropdown .select2-search__field {
+  color: var(--portal-dt-select2-fg, #fff);
+  background-color: var(--portal-dt-select2-bg, #343a40) !important;
+  border: 1px solid var(--portal-dt-select2-darker, #444);
+}
+
+.select2-container--bootstrap-5 .select2-selection__placeholder {
+  color: var(--portal-dt-select2-placeholder, #bbb) !important;
+}
+
+.select2-container--bootstrap-5 .select2-selection__arrow b {
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23ffffff' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M2 5L8 11 14 5'/%3e%3c/svg%3e");
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 16px 12px;
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.select2-container--bootstrap-5 .select2-selection--multiple .select2-selection__clear,
+.select2-container--bootstrap-5 .select2-selection--single .select2-selection__clear {
+  position: absolute;
+  top: 50%;
+  right: 0.325rem;
+  width: 0.75rem;
+  height: 0.75rem;
+  padding: 0.25em;
+  overflow: hidden;
+  text-indent: 100%;
+  white-space: nowrap;
+  transform: translateY(-50%);
+  background: transparent
+    url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%23ffffff'%3e%3cpath d='M.293.293a1 1 0 011.414 0L8 6.586 14.293.293a1 1 0 111.414 1.414L9.414 8l6.293 6.293a1 1 0 01-1.414 1.414L8 9.414l-6.293 6.293a1 1 0 01-1.414-1.414L6.586 8 .293 1.707a1 1 0 010-1.414z'/%3e%3c/svg%3e")
+    50% / 0.75rem auto no-repeat;
+  color: var(--portal-dt-select2-fg, #fff) !important;
+  background-color: transparent !important;
+}
+
+.select2-container--bootstrap-5 .select2-results__options {
+  overflow-y: auto !important;
+  max-height: 200px;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.select2-container--bootstrap-5 .select2-results__options::-webkit-scrollbar {
+  display: none !important;
+}
+
+.select2-container--bootstrap-5
+  .select2-dropdown
+  .select2-results__options
+  .select2-results__option {
+  padding: 0.375rem 0.275rem;
+  font-size: 0.8rem;
+}
+

@@ -1,0 +1,354 @@
+/* Layout padrão do Portal — sidebar / header / main / página. */
+
+body {
+  display: grid;
+  grid-template-areas:
+    "sidebar header"
+    "sidebar main";
+  grid-template-columns: 250px 1fr;
+  grid-template-rows: auto 1fr;
+  min-height: 100vh;
+  margin: 0;
+}
+
+.sidebar {
+  background-color: var(--primary);
+  padding: var(--space);
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  height: 100vh;
+  overflow-y: auto;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 250px;
+  z-index: 1000;
+}
+
+.sidebar-logo {
+  display: block;
+  width: 70%;
+  margin: 0 auto calc(var(--space) * 4);
+}
+
+.sidebar ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.sidebar li + li {
+  margin-top: 0.3rem;
+}
+
+.sidebar li a {
+  display: block;
+  padding: 6px 10px;
+  color: #e0e0e0;
+  text-decoration: none;
+  font-weight: bold;
+  font-size: 0.95rem;
+  transition: background-color 0.2s ease, color 0.2s ease, border-left-color 0.2s ease;
+  border-left: 4px solid transparent;
+}
+
+.sidebar li a:hover {
+  background-color: rgba(255, 255, 255, 0.08);
+  color: #ffffff;
+  border-left-color: #563a66;
+  border-radius: 10px;
+}
+
+/* Seleção ativa = barra branca à esquerda (mesmo padrão PRODESP; sem fundo preenchido) */
+.sidebar li a.active,
+.sidebar li a.active:focus {
+  background-color: transparent;
+  box-shadow: none;
+  color: #ffffff;
+  font-weight: 500;
+  border-left-color: #ffffff;
+  border-radius: 0;
+}
+
+.sidebar li.nav-section-item {
+  margin-top: 0.85rem;
+  list-style: none;
+}
+
+.nav-section-label {
+  display: block;
+  padding: 0.25rem 10px 0.1rem;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: rgba(255, 255, 255, 0.5);
+  text-transform: uppercase;
+  pointer-events: none;
+  border-left: 4px solid transparent;
+}
+
+.sidebar-footer {
+  padding: 8px 15px;
+  margin-top: auto;
+  border-top: 1px solid #4a4e51;
+  text-align: center;
+}
+
+.sidebar-footer .logout-button,
+.pos-login-button {
+  display: block;
+  width: 100%;
+  padding: 10px 15px;
+  margin-bottom: 12px;
+  background-color: #343a40;
+  color: #f8f9fa;
+  border: 1px solid #495057;
+  border-radius: 5px;
+  text-align: center;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+
+.sidebar-footer .logout-button:last-of-type {
+  margin-bottom: 20px;
+}
+
+.sidebar-footer .logout-button:hover,
+.sidebar-footer .logout-button:focus {
+  background-color: #30333a;
+  border-color: #1b1d20;
+  color: #ffffff;
+}
+
+.sidebar-footer .pos-login-button:hover,
+.sidebar-footer .pos-login-button:focus {
+  background-color: #dc3545;
+  border-color: #b02a37;
+  color: #ffffff;
+}
+
+.sidebar-footer-logo {
+  display: block;
+  margin: 10px auto 0;
+  max-width: 180px;
+  height: auto;
+  opacity: 0.8;
+  filter: brightness(0) invert(1);
+}
+
+.sidebar ul li a.dropdown-toggle::after {
+  display: inline-block;
+  margin-left: 0.255em;
+  vertical-align: 0.255em;
+  content: "";
+  border-top: 0.3em solid;
+  border-right: 0.3em solid transparent;
+  border-bottom: 0;
+  border-left: 0.3em solid transparent;
+  float: right;
+  margin-top: 8px;
+  transition: transform 0.2s ease-in-out;
+}
+
+.sidebar ul li a[aria-expanded="true"]::after {
+  transform: rotate(180deg);
+}
+
+.sidebar ul ul.collapse {
+  padding-left: 20px;
+  background-color: rgba(0, 0, 0, 0.15);
+}
+
+.sidebar ul ul.collapse li a {
+  padding: 10px 20px;
+  font-size: 0.9em;
+}
+
+#sidebarToggle {
+  display: none;
+  font-size: 1.5rem;
+  background: none;
+  border: none;
+  color: var(--white);
+  cursor: pointer;
+  z-index: 1100;
+}
+
+.header {
+  position: fixed;
+  top: 0;
+  left: 250px;
+  right: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space);
+  background: linear-gradient(to right, var(--accent), var(--secondary));
+  color: var(--white);
+  z-index: 1000;
+}
+
+.header h1 {
+  margin: 0;
+}
+
+.header .btn-icon {
+  position: absolute;
+  right: var(--space);
+  background: none;
+  border: none;
+  font-size: 1.25rem;
+  color: var(--white);
+  cursor: pointer;
+}
+
+.main {
+  grid-area: main;
+  overflow-y: auto;
+  padding: var(--space);
+  padding-top: 140px;
+  background-color: var(--light);
+  margin-top: 0;
+}
+
+/* Card de página — aplicado pelo base_portal_module em .main (não repetir no template). */
+.portal-page,
+.rd-container {
+  margin: 30px auto;
+  background: #fff;
+  padding: 30px;
+  border-radius: 12px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+  max-width: 1800px;
+}
+
+.btn-primary {
+  background-color: #28a745;
+  color: var(--white);
+  border: none;
+}
+
+.btn-primary:hover {
+  background-color: #218838;
+}
+
+/* Ícones de ação (DataTables / toolbars) — padrão PRODESP/portal */
+.btn-icon {
+  background: none;
+  border: none;
+  padding: 0.12rem 0.28rem;
+  font-size: 1.15rem;
+  line-height: 1;
+  color: #495057;
+  cursor: pointer;
+  transition: color 0.15s ease;
+}
+
+.btn-icon:hover {
+  color: #0d6efd;
+}
+
+.btn-icon.text-danger {
+  color: #dc3545;
+}
+
+.btn-icon.text-danger:hover {
+  color: #b02a37;
+}
+
+.btn-icon.text-success {
+  color: #198754;
+}
+
+.btn-icon.text-success:hover {
+  color: #146c43;
+}
+
+.btn-icon.text-warning {
+  color: #e0a800;
+}
+
+.btn-icon.text-secondary {
+  color: #6c757d;
+}
+
+.btn-icon.text-primary {
+  color: #0d6efd;
+}
+
+/* ---------------------------------------------------------------------------
+   Modais padrão do Portal (opt-in — não altera todo .modal-dialog do Bootstrap)
+   Uso nos templates:
+     class="modal fade portal-modal"            → cadastro / formulário médio
+     class="modal fade portal-modal-operacao"   → atendimento, agenda, inventário amplo
+   Confirmações pequenas: modal / modal-sm sem essas classes.
+--------------------------------------------------------------------------- */
+.modal.portal-modal .modal-dialog {
+  width: min(960px, calc(100vw - 1.5rem));
+  max-width: 960px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.modal.portal-modal .modal-content {
+  min-height: 420px;
+}
+
+.modal.portal-modal .modal-body {
+  min-height: 280px;
+}
+
+/* Operação — alinhado ao padrão PRODESP (90% / até 1800px, quase tela cheia) */
+.modal.portal-modal-operacao .modal-dialog {
+  width: 90% !important;
+  max-width: 1800px !important;
+  margin: 1rem auto;
+  height: calc(100vh - 2rem);
+  max-height: calc(100vh - 2rem);
+}
+
+.modal.portal-modal-operacao .modal-content {
+  height: 100%;
+  max-height: calc(100vh - 2rem);
+  display: flex;
+  flex-direction: column;
+}
+
+.modal.portal-modal-operacao .modal-body {
+  flex: 1 1 auto;
+  overflow-y: auto;
+  min-height: 0;
+}
+
+@media (max-width: 768px) {
+  body {
+    grid-template-areas:
+      "header"
+      "main";
+    grid-template-columns: 1fr;
+    grid-template-rows: 60px 1fr;
+  }
+
+  #sidebarToggle {
+    display: block;
+  }
+
+  .sidebar {
+    left: -250px;
+    transition: left 0.3s ease-in-out;
+  }
+
+  .sidebar.open {
+    left: 0;
+  }
+
+  .header {
+    left: 0;
+  }
+
+  .main {
+    padding-top: calc(var(--space) * 2);
+  }
+}
