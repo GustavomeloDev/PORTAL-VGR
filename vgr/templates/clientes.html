@@ -1,0 +1,95 @@
+{% extends "base_vgr.html" %}
+{% block title %}VGR — Clientes{% endblock %}
+{% block nav_section %}clientes{% endblock %}
+{% block header_title %}<strong>VGR</strong> — Clientes{% endblock %}
+
+{% block content %}
+  <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-2">
+    <p class="text-muted mb-0 small">Cadastro multi-cliente. Clique em <em>Abrir</em> para ver unidades, agendas e atendimentos.</p>
+    <button type="button" class="btn btn-primary btn-sm" id="btnVgrClienteNovo">
+      <i class="fa-solid fa-plus me-1"></i> Novo cliente
+    </button>
+  </div>
+  <div class="table-wrap card border-0 shadow-sm">
+    <div class="card-body p-2">
+      <table id="tblVgrClientes" class="table table-sm table-striped table-hover mb-0" style="width:100%">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th class="cc">Razão social</th>
+            <th class="cc">CNPJ</th>
+            <th class="cc">Cidade</th>
+            <th class="cc">UF</th>
+            <th class="cc">LT</th>
+            <th class="cc">Ativo</th>
+            <th class="col-acoes">Ações</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </div>
+
+<div class="modal fade" id="modalVgrCliente" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-scrollable">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="modalVgrClienteTitle">Cliente</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+      </div>
+      <div class="modal-body">
+        <input type="hidden" id="vgrCliId" value="">
+        <div class="row g-2">
+          <div class="col-md-4">
+            <label class="form-label" for="vgrCliRazao">Razão social *</label>
+            <input type="text" class="form-control form-control-sm" id="vgrCliRazao" maxlength="255" required autocomplete="organization">
+          </div>
+          <div class="col-md-3">
+            <label class="form-label" for="vgrCliCnpj">CNPJ</label>
+            <input type="text" class="form-control form-control-sm" id="vgrCliCnpj" maxlength="18" inputmode="numeric" autocomplete="off" placeholder="00.000.000/0000-00">
+          </div>
+          <div class="col-5">
+            <label class="form-label" for="vgrCliEndereco">Endereço principal</label>
+            <input type="text" class="form-control form-control-sm" id="vgrCliEndereco" maxlength="500" autocomplete="street-address">
+          </div>
+          <div class="col-md-2">
+            <label class="form-label" for="vgrCliCidade">Cidade</label>
+            <input type="text" class="form-control form-control-sm" id="vgrCliCidade" maxlength="100" autocomplete="address-level2">
+          </div>
+          <div class="col-md-2">
+            <label class="form-label" for="vgrCliUf">UF</label>
+            <input type="text" class="form-control form-control-sm text-uppercase" id="vgrCliUf" maxlength="2" autocomplete="address-level1">
+          </div>
+          <div class="col-md-2">
+            <label class="form-label" for="vgrCliCep">CEP</label>
+            <input type="text" class="form-control form-control-sm" id="vgrCliCep" maxlength="9" inputmode="numeric" autocomplete="postal-code" placeholder="00000-000">
+          </div>
+          <div class="col-md-3">
+            <label class="form-label" for="vgrCliLt">Líder técnico</label>
+            <input type="text" class="form-control form-control-sm" id="vgrCliLt" maxlength="128" autocomplete="off">
+          </div>
+          <div class="col-md-3">
+            <label class="form-label" for="vgrCliGpCs">Nome GP/CS projeto</label>
+            <input type="text" class="form-control form-control-sm" id="vgrCliGpCs" maxlength="255" autocomplete="off">
+          </div>
+        </div>
+        <p class="form-text text-danger mt-2 mb-0 d-none" id="vgrCliErro" role="alert"></p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Cancelar</button>
+        <button type="button" class="btn btn-primary btn-sm" id="btnVgrClienteSalvar">Salvar</button>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+  window.VGR_CLIENTE_AUTO_EDIT = {{ request.args.get('edit', '') | tojson }};
+</script>
+<script src="/core/static/js/utils/portal_field_validation.js?v=7"></script>
+<script src="{{ url_for('vgr.static', filename='js/vgr_dt_common.js') }}?v=19"></script>
+<script src="{{ url_for('vgr.static', filename='js/vgr_field_rules.js') }}?v=1"></script>
+<script src="{{ url_for('vgr.static', filename='js/vgr_clientes.js') }}?v=5"></script>
+{% endblock %}

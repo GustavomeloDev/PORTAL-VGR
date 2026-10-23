@@ -1,0 +1,211 @@
+{% extends "base_vgr.html" %}
+{% set is_gestao = (modo == 'gestao') %}
+{% block title %}VGR — {% if is_gestao %}Gestão atendimentos{% else %}Atendimentos{% endif %}{% endblock %}
+{% block nav_section %}{% if is_gestao %}gestao_atend{% else %}atendimentos{% endif %}{% endblock %}
+{% block header_title %}
+<strong>VGR</strong> — {% if is_gestao %}GESTÃO DE ATENDIMENTOS{% else %}ATENDIMENTOS{% endif %}
+{% endblock %}
+
+{% block content %}
+{# Layout de página no padrão PRODESP; os modais (3 abas + view + obs + confirmar Field)
+   vêm EXCLUSIVAMENTE do partial — não duplicar aqui (IDs repetidos quebram os listeners). #}
+<div class="vgr-fila-panel">
+  <div class="vgr-fila-panel-header">
+    <i class="fas fa-chart-pie"></i>
+    <span>Fila de atendimento</span>
+  </div>
+
+  <div class="vgr-fila-kpi-grid row g-2">
+    {# Col 1: Agendados + Total nas filas #}
+    <div class="col-6 col-md-4 col-xl-2">
+      <div class="d-flex flex-column gap-2 h-100">
+        <div class="card filter-card h-100" data-vgr-filter="agendados" role="button" tabindex="0"
+             style="--kpi-accent:#6c757d; --kpi-accent-soft:#e9ecef;">
+          <div class="card-body">
+            <div>
+              <div class="prodesp-kpi-label">Agendados</div>
+              <div class="prodesp-kpi-sub">Sem atividade iniciada</div>
+              <div class="prodesp-kpi-value" id="vgrKpiAgendados">0</div>
+            </div>
+            <div class="prodesp-kpi-icon"><i class="fas fa-calendar-alt"></i></div>
+          </div>
+        </div>
+        <div class="card filter-card h-100" data-vgr-filter="filas-ativas" role="button" tabindex="0"
+             style="--kpi-accent:#6c757d; --kpi-accent-soft:#e9ecef;">
+          <div class="card-body">
+            <div>
+              <div class="prodesp-kpi-label">Total nas filas</div>
+              <div class="prodesp-kpi-sub">Substatus nas filas ativas</div>
+              <div class="prodesp-kpi-value" id="vgrKpiTotalFila">0</div>
+            </div>
+            <div class="prodesp-kpi-icon"><i class="fas fa-layer-group"></i></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    {# Col 2: Aguarda Contratada + Aguarda Cliente #}
+    <div class="col-6 col-md-4 col-xl-2">
+      <div class="d-flex flex-column gap-2 h-100">
+        <div class="card filter-card h-100" data-vgr-substatus="Aguarda Contratada" role="button" tabindex="0"
+             style="--kpi-accent:#495057; --kpi-accent-soft:#e9ecef;">
+          <div class="card-body">
+            <div>
+              <div class="prodesp-kpi-label">Aguarda Contratada</div>
+              <div class="prodesp-kpi-value" data-vgr-substatus-valor="1">0</div>
+            </div>
+            <div class="prodesp-kpi-icon"><i class="fas fa-filter"></i></div>
+          </div>
+        </div>
+        <div class="card filter-card h-100" data-vgr-substatus="Aguarda Cliente" role="button" tabindex="0"
+             style="--kpi-accent:#fd7e14; --kpi-accent-soft:#ffe8d1;">
+          <div class="card-body">
+            <div>
+              <div class="prodesp-kpi-label">Aguarda Cliente</div>
+              <div class="prodesp-kpi-value" data-vgr-substatus-valor="1">0</div>
+            </div>
+            <div class="prodesp-kpi-icon"><i class="fas fa-user-clock"></i></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    {# Col 3: Aguarda Gestão — altura dupla (mesmo tratamento do «Com Suporte» no PRODESP) #}
+    <div class="col-6 col-md-4 col-xl-2">
+      <div class="card filter-card h-100" data-vgr-substatus="Aguarda Gestão" role="button" tabindex="0"
+           style="--kpi-accent:#fd7e14; --kpi-accent-soft:#ffe8d1;">
+        <div class="card-body h-100">
+          <div>
+            <div class="prodesp-kpi-label">Aguarda Gestão</div>
+            <div class="prodesp-kpi-value" data-vgr-substatus-valor="1">0</div>
+          </div>
+          <div class="prodesp-kpi-icon"><i class="fas fa-id-card"></i></div>
+        </div>
+      </div>
+    </div>
+
+    {# Col 4: fluxo Config. Remota (Aguardando ↓ Em) #}
+    <div class="col-6 col-md-4 col-xl-2">
+      <div class="d-flex flex-column h-100">
+        <div class="card filter-card" data-vgr-substatus="Aguardando Config. Remota" role="button" tabindex="0"
+             style="--kpi-accent:#3c0062; --kpi-accent-soft:#e6d9ef;">
+          <div class="card-body">
+            <div>
+              <div class="prodesp-kpi-label">Aguardando Config. Remota</div>
+              <div class="prodesp-kpi-value" data-vgr-substatus-valor="1">0</div>
+            </div>
+            <div class="prodesp-kpi-icon"><i class="fas fa-hourglass-half"></i></div>
+          </div>
+        </div>
+        <div class="kpi-arrow"><i class="fas fa-arrow-down"></i></div>
+        <div class="card filter-card" data-vgr-substatus="Em Configuração Remota" role="button" tabindex="0"
+             style="--kpi-accent:#3c0062; --kpi-accent-soft:#e6d9ef;">
+          <div class="card-body">
+            <div>
+              <div class="prodesp-kpi-label">Em Configuração Remota</div>
+              <div class="prodesp-kpi-value" data-vgr-substatus-valor="1">0</div>
+            </div>
+            <div class="prodesp-kpi-icon"><i class="fas fa-laptop"></i></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    {# Col 5: fluxo MPLS #}
+    <div class="col-6 col-md-4 col-xl-2">
+      <div class="d-flex flex-column h-100">
+        <div class="card filter-card" data-vgr-substatus="Aguardando Config. MPLS" role="button" tabindex="0"
+             style="--kpi-accent:#73308d; --kpi-accent-soft:#ead9f0;">
+          <div class="card-body">
+            <div>
+              <div class="prodesp-kpi-label">Aguardando Config. MPLS</div>
+              <div class="prodesp-kpi-value" data-vgr-substatus-valor="1">0</div>
+            </div>
+            <div class="prodesp-kpi-icon"><i class="fas fa-hourglass-half"></i></div>
+          </div>
+        </div>
+        <div class="kpi-arrow"><i class="fas fa-arrow-down"></i></div>
+        <div class="card filter-card" data-vgr-substatus="Em Configuração do MPLS" role="button" tabindex="0"
+             style="--kpi-accent:#73308d; --kpi-accent-soft:#ead9f0;">
+          <div class="card-body">
+            <div>
+              <div class="prodesp-kpi-label">Em Configuração do MPLS</div>
+              <div class="prodesp-kpi-value" data-vgr-substatus-valor="1">0</div>
+            </div>
+            <div class="prodesp-kpi-icon"><i class="fas fa-sitemap"></i></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    {# Col 6: fluxo Caderno de Teste #}
+    <div class="col-6 col-md-4 col-xl-2">
+      <div class="d-flex flex-column h-100">
+        <div class="card filter-card" data-vgr-substatus="Aguardando Caderno de Teste" role="button" tabindex="0"
+             style="--kpi-accent:#b871d2; --kpi-accent-soft:#f0e2f7;">
+          <div class="card-body">
+            <div>
+              <div class="prodesp-kpi-label">Aguardando Caderno de Teste</div>
+              <div class="prodesp-kpi-value" data-vgr-substatus-valor="1">0</div>
+            </div>
+            <div class="prodesp-kpi-icon"><i class="fas fa-hourglass-half"></i></div>
+          </div>
+        </div>
+        <div class="kpi-arrow"><i class="fas fa-arrow-down"></i></div>
+        <div class="card filter-card" data-vgr-substatus="Em Caderno de Teste" role="button" tabindex="0"
+             style="--kpi-accent:#b871d2; --kpi-accent-soft:#f0e2f7;">
+          <div class="card-body">
+            <div>
+              <div class="prodesp-kpi-label">Em Caderno de Teste</div>
+              <div class="prodesp-kpi-value" data-vgr-substatus-valor="1">0</div>
+            </div>
+            <div class="prodesp-kpi-icon"><i class="fas fa-clipboard-check"></i></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="table-wrap card border-0 shadow-sm">
+  <div class="card-body p-2">
+    <button type="button" class="btn btn-primary" id="btnVgrAtendNovo">
+      <i class="fa-solid fa-plus me-1"></i> Novo Atendimento
+    </button>
+    <table id="tblVgrAtendimentos" class="table table-sm table-striped table-hover mb-0" style="width:100%">
+      <thead>
+        <tr>
+          <th class="cc">Data Agend.</th>
+          <th class="cc">Hora Agend.</th>
+          <th class="cc">Data Atend.</th>
+          <th class="cc">Cliente</th>
+          <th class="cc">Analista</th>
+          <th class="cc">Status</th>
+          <th class="cc">Substatus</th>
+          <th class="cc">ID VGR SDWAN</th>
+          <th class="cc">ID VGR SDWIFI</th>
+          <th class="cc">ID VGR SDLAN</th>
+          <th class="col-acoes">Ações</th>
+          <th class="d-none">Ordem</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </div>
+</div>
+
+{# Fonte ÚNICA dos modais (criar/editar, visualizar, observação obrigatória, confirmar Field) #}
+{% include "partials/vgr_atendimento_modals.html" %}
+{% endblock %}
+
+{% block scripts %}
+<script>
+  window.VGR_ATEND_MODO = {{ modo | tojson }};
+  window.VGR_ACTOR = {{ (vgr_actor or { }) | tojson }};
+</script>
+<script src="/core/static/js/utils/portal_field_validation.js?v=7"></script>
+<script src="/core/static/js/utils/portal_enriquecer_endereco.js?v=2"></script>
+<script src="{{ url_for('vgr.static', filename='js/vgr_dt_common.js') }}?v=19"></script>
+<script src="{{ url_for('vgr.static', filename='js/vgr_field_rules.js') }}?v=1"></script>
+<script src="{{ url_for('vgr.static', filename='js/vgr_atendimentos.js') }}?v=23"></script>
+{% endblock %}
