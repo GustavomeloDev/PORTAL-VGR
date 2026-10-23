@@ -843,7 +843,16 @@
     return vis;
   }
 
-  var OPERADORAS_PRINCIPAIS_SET = { VIVO: 1, CLARO: 1, TIM: 1, OI: 1 };
+  /* Manter em sincronia com core/utils/operadora.py e vgr_dt_common.js. */
+  var OPERADORAS_PRINCIPAIS_SET = {
+    VIVO: 1,
+    CLARO: 1,
+    TIM: 1,
+    OI: 1,
+    STARLINK: 1,
+    VTAL: 1,
+    ATIVA: 1,
+  };
   var OPERADORA_SENTINEL_OUTROS = "OUTROS";
 
   function normalizeOperadora(val) {
@@ -1065,7 +1074,7 @@
     wanGruposVisiveis: wanGruposVisiveis,
     wanCampoVisivel: wanCampoVisivel,
     applyWanModoVisibility: applyWanModoVisibility,
-    OPERADORAS_PRINCIPAIS: ["VIVO", "CLARO", "TIM", "OI"],
+    OPERADORAS_PRINCIPAIS: ["VIVO", "CLARO", "TIM", "OI", "STARLINK", "VTAL", "ATIVA"],
     OPERADORA_SENTINEL_OUTROS: "OUTROS",
     normalizeOperadora: normalizeOperadora,
     resolveOperadora: resolveOperadora,

@@ -190,7 +190,7 @@ setup_logger(name="app", log_file="logs/app.log")
 | `coordinates.py` | lat/long | validators, seed | validators unidade |
 | `text_ids.py` | hostname, ID VGR, designador, paste | validators, hostname, licenças | validators |
 | `ticket_noc.py` | Ticket NOC (7 dígitos, começa em 1) | — | atendimento / equipamento |
-| `operadora.py` | VIVO/CLARO/TIM/OI + OUTROS | app + validators | — |
+| `operadora.py` | VIVO/CLARO/TIM/OI/STARLINK/VTAL/ATIVA + OUTROS | app + validators | — |
 | `link_required.py` | Campos WAN por modo | validators, CSV | `parse_link_payload` |
 | `link_vivo.py` | Pendências VIVO (não bloqueio) | validators | — |
 | `velocity.py` | Mbps | validators, CSV, seed | link |

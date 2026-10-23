@@ -413,7 +413,7 @@ def _mask_from_prefix(text: str) -> str | None:
 
 
 def parse_operadora(select_value: Any, outros_value: Any = None) -> str | None:
-    """VIVO/CLARO/TIM/OI ou OUTROS + texto (core.utils.operadora). Sentinel não é gravado."""
+    """Principais (VIVO/CLARO/TIM/OI/STARLINK/VTAL/ATIVA) ou OUTROS + texto (core.utils.operadora). Sentinel não é gravado."""
     from core.utils.operadora import OPERADORA_SENTINEL_OUTROS, resolve_operadora
 
     sel = re.sub(r"\s+", " ", str(select_value or "").strip()).upper()
@@ -682,7 +682,7 @@ def parse_link_payload(raw: dict[str, Any] | None, *, partial: bool = False) -> 
     )
     from core.utils.velocity import normalize_velocity_mbps, validate_velocity_mbps
 
-    # Operadora: select principal (VIVO/CLARO/TIM/OI) ou OUTROS + texto livre
+    # Operadora: select principal (VIVO/CLARO/TIM/OI/STARLINK/VTAL/ATIVA) ou OUTROS + texto livre
     # (core.utils.operadora). Precisa vir antes do designador (regra só VIVO).
     if "operadora" in raw or "operadora_outros" in raw or not partial:
         out["operadora"] = parse_operadora(raw.get("operadora"), raw.get("operadora_outros"))

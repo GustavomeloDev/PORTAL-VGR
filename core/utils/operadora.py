@@ -1,7 +1,12 @@
 """
 Operadoras de link — lista principal + OUTROS (texto livre em maiúsculas).
 
-Uso: select com VIVO/CLARO/TIM/OI e campo extra para VTAL, EMBRATEL, etc.
+Uso: select com VIVO/CLARO/TIM/OI/STARLINK/VTAL/ATIVA e campo extra para
+EMBRATEL, etc.
+
+Manter em sincronia com ``OPERADORAS_PRINCIPAIS`` de
+``core/static/js/utils/portal_field_validation.js`` e com ``OPERADORAS`` /
+``OPERADORAS_PRINCIPAIS`` de ``vgr/static/js/vgr_dt_common.js``.
 """
 
 from __future__ import annotations
@@ -9,7 +14,7 @@ from __future__ import annotations
 import re
 from typing import Any, Optional
 
-OPERADORAS_PRINCIPAIS = ("VIVO", "CLARO", "TIM", "OI")
+OPERADORAS_PRINCIPAIS = ("VIVO", "CLARO", "TIM", "OI", "STARLINK", "VTAL", "ATIVA")
 OPERADORA_SENTINEL_OUTROS = "OUTROS"
 OPERADORA_MAX_LEN = 50
 

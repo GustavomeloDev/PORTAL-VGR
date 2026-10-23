@@ -2719,7 +2719,7 @@ function vgrOpenConfirmFieldModal() {
     inp.className = "form-control form-control-sm text-uppercase d-none";
     inp.maxLength = 50;
     inp.autocomplete = "off";
-    inp.placeholder = "Ex.: VTAL, EMBRATEL";
+    inp.placeholder = "Ex.: EMBRATEL, ALGAR";
     return inp;
   }
 

@@ -237,10 +237,31 @@ class TestOperadora(unittest.TestCase):
         self.assertEqual(resolve_operadora("OUTROS", "vtal"), "VTAL")
         self.assertIsNone(resolve_operadora("OUTROS", ""))
         self.assertEqual(resolve_operadora("", "", fallback="claro"), "CLARO")
-        self.assertEqual(operadora_select_value("VTAL"), OPERADORA_SENTINEL_OUTROS)
+        self.assertEqual(operadora_select_value("EMBRATEL"), OPERADORA_SENTINEL_OUTROS)
         self.assertEqual(operadora_select_value("vivo"), "VIVO")
-        self.assertEqual(operadora_outros_value("vtal"), "VTAL")
+        self.assertEqual(operadora_outros_value("embratel"), "EMBRATEL")
         self.assertEqual(operadora_outros_value("VIVO"), "")
+
+    def test_novas_operadoras_principais(self):
+        from core.utils.operadora import (
+            OPERADORAS_PRINCIPAIS,
+            is_operadora_principal,
+            operadora_outros_value,
+            operadora_select_value,
+            resolve_operadora,
+        )
+
+        for nome in ("STARLINK", "VTAL", "ATIVA"):
+            self.assertIn(nome, OPERADORAS_PRINCIPAIS)
+            self.assertTrue(is_operadora_principal(nome.lower()))
+            # select reabre direto na opção, sem cair em OUTROS
+            self.assertEqual(operadora_select_value(nome), nome)
+            self.assertEqual(operadora_outros_value(nome), "")
+            # grava o valor do select
+            self.assertEqual(resolve_operadora(nome, ""), nome)
+            # texto residual de OUTROS não pode sobrescrever a opção escolhida
+            self.assertEqual(resolve_operadora(nome, "xyz"), nome)
+        self.assertEqual(resolve_operadora("StarLink", None), "STARLINK")
 
 
 if __name__ == "__main__":

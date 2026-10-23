@@ -147,9 +147,9 @@
   window.VGR_UNIDADE_AUTO_NOVO = {{ (request.args.get('novo') == '1') | tojson }};
   window.VGR_UNIDADE_AUTO_EDIT = {{ request.args.get('edit', '') | tojson }};
 </script>
-<script src="/core/static/js/utils/portal_field_validation.js?v=7"></script>
+<script src="/core/static/js/utils/portal_field_validation.js?v=8"></script>
 <script src="/core/static/js/utils/portal_enriquecer_endereco.js?v=2"></script>
-<script src="{{ url_for('vgr.static', filename='js/vgr_dt_common.js') }}?v=19"></script>
+<script src="{{ url_for('vgr.static', filename='js/vgr_dt_common.js') }}?v=20"></script>
 <script src="{{ url_for('vgr.static', filename='js/vgr_field_rules.js') }}?v=1"></script>
 <script src="{{ url_for('vgr.static', filename='js/vgr_unidades.js') }}?v=6"></script>
 {% endblock %}

@@ -280,7 +280,7 @@
           </div>
           <div class="col-md-4 d-none" id="vgrLinkOperadoraOutrosWrap">
             <label class="form-label" for="vgrLinkOperadoraOutros">Outra operadora *</label>
-            <input type="text" class="form-control form-control-sm text-uppercase" id="vgrLinkOperadoraOutros" maxlength="50" placeholder="Ex.: VTAL, EMBRATEL" autocomplete="off">
+            <input type="text" class="form-control form-control-sm text-uppercase" id="vgrLinkOperadoraOutros" maxlength="50" placeholder="Ex.: EMBRATEL, ALGAR" autocomplete="off">
           </div>
           <div class="col-md-4 d-none" id="vgrLinkIdVgrWrap">
             <label class="form-label" for="vgrLinkIdVgr">ID VGR do link *</label>
@@ -351,8 +351,8 @@
 <script>
   window.VGR_UNIDADE_ID = {{ unidade.id_unidade | tojson }};
 </script>
-<script src="/core/static/js/utils/portal_field_validation.js?v=7"></script>
-<script src="{{ url_for('vgr.static', filename='js/vgr_dt_common.js') }}?v=19"></script>
+<script src="/core/static/js/utils/portal_field_validation.js?v=8"></script>
+<script src="{{ url_for('vgr.static', filename='js/vgr_dt_common.js') }}?v=20"></script>
 <script src="{{ url_for('vgr.static', filename='js/vgr_field_rules.js') }}?v=1"></script>
 <script src="{{ url_for('vgr.static', filename='js/vgr_unidade_detalhe.js') }}?v=12"></script>
 {% endblock %}

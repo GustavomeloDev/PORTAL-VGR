@@ -451,6 +451,17 @@ class TestLinkOperadoraVlanVivo(unittest.TestCase):
         d = parse_link_payload(_wan(operadora="outra"))
         self.assertEqual(d["operadora"], "OUTRA")
 
+    def test_operadoras_novas_no_select(self):
+        for nome in ("STARLINK", "VTAL", "ATIVA"):
+            with self.subTest(operadora=nome):
+                d = parse_link_payload(_wan(operadora=nome))
+                self.assertEqual(d["operadora"], nome)
+
+    def test_operadora_nova_ignora_texto_residual_de_outros(self):
+        # usuário digitou em «Outra operadora» e depois escolheu STARLINK no select
+        d = parse_link_payload(_wan(operadora="STARLINK", operadora_outros="xyz"))
+        self.assertEqual(d["operadora"], "STARLINK")
+
     def test_vlan_normaliza(self):
         self.assertEqual(parse_link_payload(_wan(vlan="VLAN 100"))["vlan"], "100")
 

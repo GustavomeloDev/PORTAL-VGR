@@ -367,8 +367,8 @@
   ];
   /* Padrão core (operadora.py): principais + sentinel OUTROS (texto livre em
      campo extra). O sentinel não é gravado; o servidor grava o texto. */
-  var OPERADORAS = ["VIVO", "CLARO", "TIM", "OI", "OUTROS"];
-  var OPERADORAS_PRINCIPAIS = ["VIVO", "CLARO", "TIM", "OI"];
+  var OPERADORAS = ["VIVO", "CLARO", "TIM", "OI", "STARLINK", "VTAL", "ATIVA", "OUTROS"];
+  var OPERADORAS_PRINCIPAIS = ["VIVO", "CLARO", "TIM", "OI", "STARLINK", "VTAL", "ATIVA"];
   var TIPOS_LINK_WAN = ["WAN"];
   var TIPOS_LINK_UNIDADE = [
     "LAN",

@@ -574,7 +574,7 @@
     };
   }
 
-  /** Reabrir formulário: VTAL gravada → select OUTROS + texto VTAL. */
+  /** Reabrir formulário: principal gravada → select; outra (ex.: EMBRATEL) → select OUTROS + texto. */
   function fillOperadora(selRef, outrosRef, stored) {
     var sel = el(selRef);
     var outros = el(outrosRef);
